@@ -1,0 +1,4 @@
+{ "string": [
+  { "name": "module_desc", "value": "二人琴房" },
+  { "name": "microphone_reason", "value": "按下录音后，才能将你的声音留在琴房里。" }
+] }

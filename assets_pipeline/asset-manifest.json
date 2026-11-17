@@ -1,0 +1,453 @@
+{
+  "schema_version": 1,
+  "status": "selected_source_assets",
+  "identity_reference": "shared/assets/avatars-youth/idle_gentle.png",
+  "character_reference_sheet": {
+    "id": "character_sheet",
+    "prompt": "Create a production character reference sheet based strictly on the two provided reference artworks. Image 1 is the identity master: youthful Togawa Sakiko with soft rounded teenage face, very large warm golden amber eyes, pale silvery-blue long hair, loose bangs, simple navy ribbon side bows. Image 2 is the school clothing and body proportions reference: plain navy school cardigan with white shirt and small navy bow, navy pleated plaid school skirt, navy knee socks, ordinary flat brown school shoes. Never adult, glamorous, mature, gothic or ornate; no makeup, jewelry, corset or heels. One landscape sheet with a front bust portrait, a gentle three-quarter bust portrait, side head profile and a modest full-body standing view. Keep exactly the same face, youthful proportions, amber eyes and outfit across views, in soft delicate painterly anime style matching the original. Plain pale ivory background; no labels, words, UI, logo, watermark or extra characters. Clear fine linework and natural soft light; the original source portrait is the authority for identity.",
+    "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-265dc5fa-6c7a-499d-b105-e907c41beea9.png",
+    "path": "shared/assets/reference-youth/character-sheet.png",
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGB",
+    "bytes": 2378861,
+    "sha256": "28b0e25a1a10222b1847b4a6874427094ed69ca674e25bada50dc3192ad02f1f",
+    "visually_inspected": true,
+    "provenance_file": "youth-reference-sheet-manifest.json"
+  },
+  "identity_decision": "Use the user's selected youthful Sakiko portrait from 在场: amber eyes, silvery-blue hair, soft rounded face, navy school cardigan and simple bows.",
+  "generation_tool": "built-in image_gen; no paid API fallback",
+  "manual_visual_review": "Each selected full-resolution asset was read back and inspected. This is source-art review, not native device or 200% edge acceptance.",
+  "pending_acceptance": [
+    "Integrated day/night compositing and small-size readability on the native phone",
+    "Native screen resolution and @3x/@4x delivery; splash is 752x2092",
+    "200% zero-white-fringe criterion and reference-lock blind review",
+    "Expression switching, animation, memory and performance on the device"
+  ],
+  "excluded_history": "provisional-gothic-manifest.json and unselected older stickers/scenes remain as provenance; clients use only native-resources.json.",
+  "assets": [
+    {
+      "id": "idle_gentle",
+      "source": "C:/Users/17601/Documents/ChatGPT/在场/前端视觉创新设计/分类总库/01-程序素材/运行素材/companion/portraits/sakiko-selected-soft-youth-edit-v3-20261025.png",
+      "path": "shared/assets/avatars-youth/idle_gentle.png",
+      "kind": "avatar",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2309543,
+      "sha256": "50ed57c7cb690ac52eb49190762f878a2b8e8db5eb75d5d3d3f220e771d86974",
+      "visual_inspection": "individually inspected original full image",
+      "provenance_file": "user-reference-manifest.json"
+    },
+    {
+      "id": "listening_attentive",
+      "prompt": "Edit reference avatar while preserving EXACT youthful Sakiko identity and drawing style. Same soft rounded teenage face, huge warm amber-gold eyes, pale silvery blue hair, simple navy hair bows, school cardigan with white collar and small navy ribbon. Same close face-and-shoulders framing and facial proportions. Change only expression/hand: attentive listening, gentle caring direct gaze, slight head tilt like original, one hand cupped lightly near her ear. The hand must be delicate and correctly drawn; no new costume/jewelry. Preserve painterly anime softness, natural light and transparent background. No grown-up/mature face, makeup, sharp jaw, gothic embroidery or blue eyes. No text, frame, speech bubble or background. One character only, genuine alpha.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-9abc221b-a62e-4485-a47c-5fe195670b15.png",
+      "path": "shared/assets/avatars-youth/listening_attentive.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2332212,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true,
+      "provenance_file": "youth-expression-manifest.json",
+      "sha256": "77a33deffb9a2d74e1ffb6e3fa24b860c4a9922d1b8921189337cc00ab268880"
+    },
+    {
+      "id": "thinking_deep",
+      "prompt": "Edit the reference avatar. Keep the EXACT same youthful Togawa Sakiko identity, soft rounded teenage face, very large warm AMBER/GOLD eyes, pale silvery-blue hair, navy simple hair bows, navy school cardigan, white shirt collar and small ribbon bow. Keep the same close head-and-shoulders framing, head size, delicate anime painterly linework, gentle natural light, softness and genuine transparent background. Change ONLY expression/hand pose to thoughtful concentration: gaze slightly downward, quiet composed face, one hand gently resting under her chin. Same youthful facial proportions and school clothing. Do not make her adult, glamorous, sharp-jawed, gothic, elaborately embroidered, heavy-makeup, or blue-eyed. No new jewelry, speech, text, border or background. One character only, clean transparent alpha.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-14d8c747-ee2f-4fd0-9d8a-7b08bb39953a.png",
+      "path": "shared/assets/avatars-youth/thinking_deep.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2334321,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true,
+      "provenance_file": "youth-expression-manifest.json",
+      "sha256": "68912fecaab8c45aaea0642cb5d8583375977dc2ad13d90af12700390358ffc7"
+    },
+    {
+      "id": "coding_focused",
+      "file": "shared/assets/avatars-youth/coding_focused.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-9cb9828c-3651-4f5f-bbd9-af939d452a60.png",
+      "prompt": "Use case: identity-preserve. Edit target and exact identity reference: the supplied youthful Sakiko portrait. Create one coding_focused emotion avatar. Keep EXACT SAME character age, soft rounded teenage face, large amber/golden eyes, pale silvery-blue hair, simple navy hair ribbons, navy school cardigan, white collar, small navy gold-stitch neck bow, soft youthful anime painting style, facial proportions and tight head-and-shoulders portrait framing. Change only expression to quiet focused concentration looking slightly downward toward an unseen screen, attentive eyebrows and a small neutral mouth. Add delicate thin-frame navy headphones with small earcups, tastefully fitted over hair. No glasses, no computer visible. Preserve pale complexion, gentle lighting and transparent background. Do not mature the face, no sharper chin, no adult makeup, no gothic gown, no blue eyes, no text or added border. Output one transparent square PNG portrait.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/avatars-youth/idle_gentle.png",
+      "visual_review": "Individually inspected full output. Youthful rounded face, amber/gold eyes, silvery-blue hair, navy school outfit and tight bust framing retained; expression matches requested state. No maturity or blue-eye drift observed.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2356306,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "youth-extra-manifest.json",
+      "path": "shared/assets/avatars-youth/coding_focused.png",
+      "sha256": "89a69bbc69e7462a8aab2a05a6281217779a15c442451ea057a4bba0aa09732c"
+    },
+    {
+      "id": "tsundere_chide",
+      "file": "shared/assets/avatars-youth/tsundere_chide.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-01480583-3824-4b00-8bb0-2b888aa426f3.png",
+      "prompt": "Use case: identity-preserve. Edit target and exact identity reference: supplied youthful Sakiko portrait. Make the tsundere_chide emotion avatar. Preserve EXACT same age and soft round teenage facial proportions, same large amber/golden eyes, same pale silvery-blue hair and bangs, same simple navy side bows, navy school cardigan, white collar, small dark bow with gold stitching, same gentle anime painting and tightly framed head-and-shoulders composition. Change only expression: cheeks mildly puffed in a tiny affectionate pout, lips softly pursed, brows slightly knit in concerned admonishment about staying awake too late, golden eyes warm rather than angry. Very restrained pink cheeks, not makeup. Keep head tilt almost identical. No hands or new objects. No mature face or proportions, no adult makeup, no gothic outfit, no blue eyes. No text, symbols, border or background; genuinely transparent square PNG.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/avatars-youth/idle_gentle.png",
+      "visual_review": "Individually inspected full output. Youthful rounded face, amber/gold eyes, silvery-blue hair, navy school outfit and tight bust framing retained; expression matches requested state. No maturity or blue-eye drift observed.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2260358,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "youth-extra-manifest.json",
+      "path": "shared/assets/avatars-youth/tsundere_chide.png",
+      "sha256": "ee78bb431e63c40a48c3850dc8216f0f263709fc1fe17f41aae385234d6ab147"
+    },
+    {
+      "id": "late_night_tea",
+      "prompt": "Edit the supplied HajiSaki avatar, preserving EXACT youthful Togawa Sakiko identity: rounded teenage cheeks, large golden amber eyes, silvery pale-blue flowing hair, simple navy side bows, navy school cardigan white collar small ribbon. Same very close head-and-shoulder portrait scale and gentle painterly anime style. Change only pose to quietly holding a small ivory bone-china cup at lower chest with both hands, very faint steam, soft warm caring gaze and restrained smile. Keep face youthful like reference, no mature body/face, no gothic dress, no elaborate jewelry or blue eyes. Accurate delicate hands with fingers sensibly gripping cup. Genuine transparent background; no text/frame or extra person. Soft natural neutral light with tiny tea warmth.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-160bbf9c-e8e7-49c4-a84c-fe9fb280c2d9.png",
+      "path": "shared/assets/avatars-youth/late_night_tea.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2419372,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true,
+      "provenance_file": "youth-expression-manifest.json",
+      "sha256": "ceeb87eeabaa21408d70f86fb830735541683771b3d8bc6f62a8149c8b6159cc"
+    },
+    {
+      "id": "happy_achieved",
+      "file": "shared/assets/avatars-youth/happy_achieved.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-14d0a3de-eb6e-4d4d-aefb-c4ffd89cbc2b.png",
+      "prompt": "Use case: identity-preserve. Edit target and exact identity reference: supplied youthful Sakiko portrait. Create happy_achieved emotion avatar: after solving a difficult problem, an open bright relaxed smile, gently lifted cheeks, luminous happy amber eyes still visibly open, eyebrows relaxed with relief. Keep EXACT SAME soft round teenage face and youthful proportions, eye shape and golden color, silvery pale blue hair and bangs, simple navy side bows, navy school cardigan, white collar and small navy bow with gold stitch, tight head-and-shoulders framing and same subtle head tilt. Same soft finely painted anime texture and lighting. Expression should feel naturally delighted, not exaggerated, no open shouting mouth, no tears. No hand, object, symbols or extra ornament. No adult makeup, mature face, gothic costume, blue eyes. Genuinely transparent background, one square PNG, no text or border.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/avatars-youth/idle_gentle.png",
+      "visual_review": "Individually inspected full output. Youthful rounded face, amber/gold eyes, silvery-blue hair, navy school outfit and tight bust framing retained; expression matches requested state. No maturity or blue-eye drift observed.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2278190,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "youth-extra-manifest.json",
+      "path": "shared/assets/avatars-youth/happy_achieved.png",
+      "sha256": "39d2be70cc7495a2f1c2088067d65f26cf6173dc91cf87394d68da46610b7ef4"
+    },
+    {
+      "id": "reconnecting_anxious",
+      "prompt": "Edit this exact youthful Sakiko avatar. Preserve rounded teenage cheeks, large GOLDEN AMBER eyes, silvery-blue long hair, simple navy ribbon hair ties, navy school cardigan and white collar bow, exact original head size and face proportions, painterly anime softness. Change only expression and hand pose: gently concerned brows and tender reassuring eyes toward viewer, lips just parted, one small delicate hand extending toward viewer near the bottom of portrait as if re-establishing a lost connection. No crying or exaggerated distress. Youthful and calm, not mature, no gothic dress, no makeup/new jewelry, no blue eyes. Single close head and shoulders portrait with true transparent alpha, no text/border/background.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-adb40045-768c-4563-97da-21f2005a9405.png",
+      "path": "shared/assets/avatars-youth/reconnecting_anxious.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2299299,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true,
+      "provenance_file": "youth-expression-manifest.json",
+      "sha256": "99bf6f47e809efdd14d55da748b05bc4aec71a6a7816ecdc291b2af70eeab948"
+    },
+    {
+      "id": "sleepy_soft",
+      "prompt": "Edit the provided youthful Sakiko avatar, maintaining her EXACT facial identity, rounded teenage cheeks, big amber-gold eyes, pale silvery blue long hair with simple navy ribbons, navy school cardigan, white collar and small bow, same tight head-and-shoulders crop, gentle natural light and painterly anime style. Only change expression/hand pose: softly sleepy at night, one eye half closed and the other gently closed as she lightly rubs its outer corner with one finger, very small tender closed-mouth smile; she is calm, not crying. Correct delicate hand, face stays youthful, do not change age or school outfit; no adult glamour, heavy makeup, gothic embroidery, new jewelry or blue eyes. Transparent alpha, no background/text/frame.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-d00f7eef-4efc-4993-a977-36b09e11011b.png",
+      "path": "shared/assets/avatars-youth/sleepy_soft.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2325365,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true,
+      "provenance_file": "youth-expression-manifest.json",
+      "sha256": "6b5406f029e01cae4cbab9240b8e4cd327b23546c266d02653a24ea845c6aed3"
+    },
+    {
+      "id": "proud_smug",
+      "file": "shared/assets/avatars-youth/proud_smug.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-b36e045a-52a3-4136-914c-214eb7e06ed3.png",
+      "prompt": "Use case: identity-preserve. Edit target and exact identity reference: supplied youthful Sakiko portrait. Create proud_smug emotion avatar, a tiny reserved proud smile after taking good care of a difficult task: gently raised chin by just a few degrees, small closed-mouth smile with one corner subtly lifted, golden eyes quietly confident and amused. Warm and youthful, never condescending or seductive. Keep EXACT SAME soft round teenage face, large amber/golden eyes, silvery pale blue hair and bangs, simple navy side ribbons, navy school cardigan white collar and small navy gold-stitched bow, identical portrait scale and head-and-shoulders framing, softly painted anime style and lighting. No hands or new accessories. Do not change age, eye color, face proportions, outfit or hairstyle. No mature makeup or gothic clothing. Transparent square PNG, no lettering, symbols, border or background.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/avatars-youth/idle_gentle.png",
+      "visual_review": "Individually inspected full output. Youthful rounded face, amber/gold eyes, silvery-blue hair, navy school outfit and tight bust framing retained; expression matches requested state. No maturity or blue-eye drift observed.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2320054,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "youth-extra-manifest.json",
+      "path": "shared/assets/avatars-youth/proud_smug.png",
+      "sha256": "54b927102c7481feb575b4a7b1b417caf9097884a4e59396598466d7ebcaea29"
+    },
+    {
+      "id": "icon_document",
+      "file": "shared/assets/icons/document.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-a66e836d-53c4-4d98-906c-21b515ed43e3.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI document icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict any character. An elegant rolled ivory parchment document scroll, partially opened, tied with an ice-blue satin ribbon and a small red-tea velvet wax seal stamped with a crescent moon. Small champagne-gold decorative scroll tips, tiny antique rose ornament. Crisp polished cel-shaded painterly anime gothic finish matching reference's blue-gold dress, gentle moonlit highlights. One centered isolated object, generous transparent margin, bold readable silhouette at 48px, restrained detail. Palette ivory #EDF1FA, blue #8CB4F5, navy #0B1021, antique gold #D4AF67, seal #C24864. No text, letters, background, floor, cast shadow outside object, watermark, badge, border or folder.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1184900,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "icons-manifest.json",
+      "path": "shared/assets/icons/document.png",
+      "sha256": "66104a281622fe0d796a27ec6dc3d3a2e27af806f5707d0d46be3a0106c27831"
+    },
+    {
+      "id": "icon_archive",
+      "file": "shared/assets/icons/archive.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-6bdf5b1f-7ff4-4c03-baee-df73ee968203.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI archive icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict a character. An exquisite antique octagonal music-box gift, dark Prussian blue lacquer box with restrained champagne-gold rose and crescent inlay, silver-ice-blue satin ribbon tied across lid into a neat bow. Lid closed, viewed in three-quarter perspective, a small brass wind-up key subtly visible at side to read as a music box. Crisp polished cel-shaded painterly anime gothic material matching reference, cool moonlit highlights. Single centered isolated object, generous transparent margin, simple bold readable silhouette at 48px, keep ornate detail restrained. Palette #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. No text, labels, numbers, background, floor, external shadow, watermark, badge, border, yellow folder or zipper.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1662349,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "icons-manifest.json",
+      "path": "shared/assets/icons/archive.png",
+      "sha256": "a651dc347025557a528ca8f783d58ff9a5552bafce5db0b2272fe31630a1f325"
+    },
+    {
+      "id": "icon_code",
+      "file": "shared/assets/icons/code.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-ccf20a47-8b2c-4114-819e-d7aace4b8f1d.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI source-code project icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict any person. An elegant closed midnight-blue music score folio/book, slightly angled three-quarter view, bound in fine dark blue leather with champagne-gold metal corners and a small ice-blue ribbon bookmark. Cover combines precise gold circuit traces with five musical staff lines and a simple crescent seal; very subtle two geometric angle brackets suggest code without words. Crisp polished cel-shaded painterly anime gothic material matching reference, cool moonlit highlights, restrained detail, clear book/folio silhouette at 48px. One centered isolated object with generous transparent margin. Palette #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. No words, lettering, tiny fake text, background, floor, external shadow, watermark, badge, yellow folder.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1842402,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "icons-manifest.json",
+      "path": "shared/assets/icons/code.png",
+      "sha256": "b2cdc95452140174fc97d0d43824f1ddf78f85b7708d2a899b770ea20e6bf0f9"
+    },
+    {
+      "id": "icon_bookmark",
+      "file": "shared/assets/icons/bookmark.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-a022b743-70af-4a16-9f4e-7a419488729f.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI bookmark/favorite icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict any person. An elegant antique champagne-gold crescent moon brooch cradling a single luminous five-point icy-blue sapphire star, a small blue rose at the lower junction, restrained fine filigree and one small pear-shaped pearl drop. Refined personal keepsake, not an emblem on a button. Crisp polished cel-shaded painterly anime gothic material matching reference, soft moonlit metal and glass highlights. One centered isolated object, large clear crescent/star silhouette readable at 48px, generous transparent margin. Palette #8CB4F5 #B5CEFA #D4AF67 #EDF1FA, tiny navy accents. No text, labels, background, floor, external shadow, watermark, badge border or square backing.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1187208,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "icons-manifest.json",
+      "path": "shared/assets/icons/bookmark.png",
+      "sha256": "b315d1267c6b51ede813f09080f00a8c8ea107794ec343792ba663d69d6634ca"
+    },
+    {
+      "id": "icon_microphone",
+      "file": "shared/assets/icons/microphone.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-04d8e898-42f7-4de1-bcba-2bf9f4651ea9.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI voice/microphone icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict any person. A classic vintage studio microphone on a short elegant desk stand, silver-blue enamel and restrained champagne-gold metal, front grill inspired subtly by alternating piano keys, tiny blue rose on the collar, a single crescent detail on round midnight-blue base. Readable iconic microphone silhouette with rounded rectangular head and U-shaped cradle. Crisp polished cel-shaded painterly anime gothic material matching reference, controlled cool moonlit highlights. Single centered isolated object, generous transparent margin, visually clear at 48px, restrained detail. Palette #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. No text, labels, waveform, background, floor, external shadow, watermark, badge, square backing, cable.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 934243,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "provenance_file": "icons-manifest.json",
+      "path": "shared/assets/icons/microphone.png",
+      "sha256": "6462e4bcbc91b38e01d7b316c1bf5fe3b0ed22fde17c90f9ec4104855f64ee1e"
+    },
+    {
+      "id": "moonlit_piano_splash",
+      "path": "shared/assets/scenes/moonlit-piano-splash.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-4eed201c-25d6-496c-a2a4-ca6dcae92d01.png",
+      "prompt": "Use case: illustration-story. HajiSaki app portrait splash background. Tall portrait composition for 1276x2848 smartphone, ideally full resolution at that aspect. An empty intimate classical piano room at midnight, elegant black grand piano in lower third, soft silver-blue moon visible through tall arched window, heavy deep-blue velvet curtains, subtle antique champagne-gold music stand, moonbeams gently outline ivory piano keys. Keep top half very dark and uncluttered for app foreground, rich midnight Prussian blue #05070F/#0B1021 and misty ice blue #8CB4F5/#B5CEFA with tiny gold #D4AF67 highlights. Refined hand-painted anime environment, cel-shading meets delicate painterly texture, atmospheric and calm, no people, no text, no logo, no visible UI. Quiet sense of waiting for someone dear.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "width": 752,
+      "height": 2092,
+      "mode": "RGB",
+      "bytes": 1842453,
+      "alpha_extrema": null,
+      "provenance_file": "scenes-manifest.json",
+      "sha256": "357d67924282dadf9ed38ff57f170565a5f983d660dd294c34894ca70f1833d4"
+    },
+    {
+      "id": "rainy_piano_room",
+      "path": "shared/assets/scenes/rainy-piano-room.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-23161d3a-74bf-4e55-a29e-89d662c2e03e.png",
+      "prompt": "Use case: illustration-story. Asset type: HajiSaki empty conversation illustration, landscape 3:2. A quiet antique piano room on a rainy midnight, viewed at human seated eye level: a dark grand piano beside tall rain-streaked window, soft warm small tea light and a delicate porcelain cup steaming on a side table, open cream sheet music on piano stand. Outside muted rain and city reflections. Deep Prussian blue #05070F/#0B1021, ice blue #8CB4F5/#B5CEFA moonlight, restrained antique gold #D4AF67. Refined hand-painted anime environment with crisp cel-shaded architectural forms and delicate painterly surfaces. Intimate safe companionship, no people, no text, no logos, no UI. Leave quiet negative space in the upper left. This is production artwork for a companion app, not a mockup.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2226933,
+      "alpha_extrema": null,
+      "provenance_file": "scenes-manifest.json",
+      "sha256": "d65fdceb8e01ea72df470e96c220b85edd004d16b3730978829a08fd0c890b20"
+    },
+    {
+      "id": "search_streetlamp",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "bytes": 2580840,
+      "path": "shared/assets/scenes/search-no-results-youth.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-adc09a3c-2ab9-4b0b-b4aa-04c17d5a7c53.png",
+      "prompt": "Use case: identity-preserve. Asset type: search-no-results illustration for HajiSaki app. Use ONLY the attached youthful portrait as the character identity/outfit reference. A single square story scene: this youthful schoolgirl seen from behind and slight side profile, looking down a quiet moonlit lane under a warm antique streetlamp. She has silver-light-blue long hair, simple navy bows, soft youthful face and large amber eyes visible only slightly in profile, plain navy school cardigan with white collar, simple knee-length navy pleated school skirt, socks and ordinary shoes, fully clothed. No adult gothic gown, corset, rose jewelry, heels, mature makeup or mature proportions. Small figure in lower-left third, puddles and soft rain in blue distance, warm tiny lamp reflection, emotionally gentle and hopeful, empty street, no other people, no text, no UI. Delicate anime illustration matching reference art style, pale soft lines, restrained Prussian blue and misty ice blue with warm pale gold. Preserve young tender presence. Leave spacious calm background.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "inspection": "Youthful school outfit and plain bows replace old gothic gown; wet lane and lamp remain; no text.",
+      "provenance_file": "youth-scenes-manifest.json",
+      "sha256": "1cb94702a036606c75a22e999538faccb46ea8634d9defdd0bc60ecc1c4942a7"
+    },
+    {
+      "id": "weekly_journal_cover",
+      "path": "shared/assets/scenes/weekly-journal-cover.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-a2751804-3948-4b8f-9c23-5f6bfef05436.png",
+      "prompt": "Use case: stylized-concept. Asset type: HajiSaki weekly memory journal cover artwork. Portrait 2:3, front-facing flat cover composition of an exquisite midnight-blue leather manuscript journal, fine antique champagne gold roses in four corners, very restrained five-line musical stave across lower third, a central crescent moon and tiny stars, silver-blue silk bookmark flowing softly at bottom, subtle embossed piano-key motif. Refined hand-painted anime/painterly material detailing, elegant and personal rather than royal excess. Palette #05070F #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. Leave a broad clean central field for later user-generated title; absolutely no text or letters, no logos, no hands, no UI. Gold lines thin and delicate. Gentle moonlit sheen.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 2776878,
+      "alpha_extrema": null,
+      "provenance_file": "scenes-manifest.json",
+      "sha256": "ef6b3abeddb733e3c8ac9f953ffabc247652a890c6ba0171c3f84fbb74038538"
+    },
+    {
+      "id": "day_room",
+      "source": "C:/Users/17601/Documents/ChatGPT/在场/前端视觉创新设计/分类总库/01-程序素材/运行素材/companion/scenes/sakiko-chat-apricot-literary-v1-mother.png",
+      "path": "shared/assets/scenes-user/day-room.png",
+      "kind": "scene",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2459089,
+      "sha256": "8d8ca2d001893c16106ab797ec4a8a8c1e6576115a5a4c76ff1dd519eff4e2cd",
+      "visual_inspection": "individually inspected original full image",
+      "provenance_file": "user-reference-manifest.json"
+    },
+    {
+      "id": "night_room",
+      "source": "C:/Users/17601/Documents/ChatGPT/在场/前端视觉创新设计/分类总库/01-程序素材/运行素材/companion/scenes/sakiko-chat-dry-night-literary-mother-v1.png",
+      "path": "shared/assets/scenes-user/night-room.png",
+      "kind": "scene",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2277809,
+      "sha256": "c56541389158a7f28539062ae2174da997b4cd4301e022eab9202e34d31ab5c1",
+      "visual_inspection": "individually inspected original full image",
+      "provenance_file": "user-reference-manifest.json"
+    },
+    {
+      "id": "sticker_sleep",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 2037068,
+      "path": "shared/assets/stickers-youth/go-to-sleep.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-f328da52-c2b2-485f-ad4e-6ad2b8ff1f27.png",
+      "prompt": "Use case: identity-preserve. Asset type: one transparent chibi sticker for a private companion app. Use ONLY the supplied youthful portrait as the character identity and outfit reference. Preserve her very large amber-gold eyes, small youthful rounded face and soft cheek proportions, silvery-light-blue hair with loose bangs and two simple navy bows with restrained gold stitching; simple navy school cardigan and white rounded collar with small navy neck bow. Adapt to cute chibi proportions, fully clothed, wholesome schoolgirl energy, no gothic dress, no rose jewelry, no mature facial makeup, no adult fashion. Waist-up character softly puffing cheeks, gently holding up one index finger telling a friend to sleep. One exact readable Simplified Chinese caption below her: 快去睡觉！ No additional text. Crisp delicate anime watercolor/cel shading matching reference, soft warm blush, navy lettering with thin cream outline. Genuine transparent alpha background, no white rectangle, no floor shadow, no floating white debris. Complete character and text with 8 percent transparent margins. Square composition.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "inspection": "Chinese caption 快去睡觉！ is correct; youthful face, amber eyes and school cardigan match reference.",
+      "provenance_file": "youth-scenes-manifest.json",
+      "sha256": "2f30e927b9b321a0d25bf8d892b83e3aa823846fcfa13b7f88899d9061133b74"
+    },
+    {
+      "id": "sticker_praise",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 1917925,
+      "path": "shared/assets/stickers-youth/reluctant-praise-v2.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-f4409534-70d7-4134-8018-f53d9c87581d.png",
+      "previous_revision": "shared/assets/stickers-youth/reluctant-praise.png",
+      "revision_prompt": "Use case: background-extraction. Repair ONLY the transparent background cutout of this supplied chibi sticker. Preserve the exact youthful face, large amber-gold eyes, silvery-blue hair, navy bows, school cardigan, folded-arm pose, smile and exact Chinese caption 勉强夸你一句, along with deliberate cream text outline. Remove all disconnected white matte speckles above her hair crown and below lettering; remove white matte residue outside the silhouette. Clean transparent alpha with smooth hair edges. Do not crop, resize or change the artwork, do not change face or typography, add nothing. Keep the background fully transparent.",
+      "prompt": "Use case: identity-preserve. Asset type: single transparent chibi chat sticker. Use ONLY the supplied youthful portrait as character identity/outfit reference. Same very large amber-gold eyes, rounded youthful small face, silver-light-blue loose hair and bangs, simple navy bows with fine gold stitching, simple navy school cardigan, white round collar and small navy neck bow. Fully clothed cute chibi schoolgirl, no old gothic dress, no mature makeup or jewelry. Waist-up, arms loosely folded, head tilted a little, shy proud smile with warm blush, glancing aside as if reluctantly giving praise. Gentle and endearing, not haughty adult. Match delicate soft anime painterly style from reference. Exact readable Chinese caption beneath: 勉强夸你一句. No additional words. Navy text with thin cream outline, genuine alpha transparent background, no rectangle or floor shadow, no stray white fragments. Square with complete hair/hands/text and 8 percent padding.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "inspection": "Chinese caption 勉强夸你一句 is correct; youthful chibi with amber eyes and cardigan. Version 2 improves crown matte speckles and was visually rechecked.",
+      "provenance_file": "youth-scenes-manifest.json",
+      "sha256": "f8f0f10c6e5a7d56caabad10476085d38ce0252ab78f12aec884d21ff5029fd2"
+    },
+    {
+      "id": "sticker_trust",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "bytes": 1923943,
+      "path": "shared/assets/stickers-youth/leave-it-to-me.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-3644f4cb-3490-4566-bff8-f4f5e6de9994.png",
+      "prompt": "Use case: identity-preserve. Asset type: one transparent chibi chat sticker. Use ONLY the supplied youthful portrait as identity/outfit reference: oversized amber-gold eyes, youthful small rounded face, silver-light-blue hair with soft loose bangs, two simple navy bows with fine gold stitching, plain navy school cardigan, white round shirt collar and small navy neck bow. No gothic dress, rose jewelry, mature makeup or adult facial/body proportions. Cute wholesome schoolgirl chibi, waist-up, a gentle confident reassuring smile, one small hand lightly on her chest promising to help. Delicate soft anime painterly/cel style exactly matching reference, warm blush. Exact readable Simplified Chinese caption below: 交给我吧. No other words. Navy text thin cream outline. Transparent alpha background, clean antialiased hair edges, no white matte debris, no shadows. Full character, complete text, 8 percent transparent padding, square.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "inspection": "Chinese caption 交给我吧 is correct; youthful chibi, reference amber eyes, simple bows and school cardigan.",
+      "provenance_file": "youth-scenes-manifest.json",
+      "sha256": "c9ece6c3231ce83b3a22edeac07a0a5b210dd2b5c47d2993cdf221026e36b58e"
+    }
+  ]
+}

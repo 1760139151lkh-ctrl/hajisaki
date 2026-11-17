@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "blink_closed",
+  "revision": 2,
+  "tool": "built-in image_gen",
+  "prompt": "Use case: background-extraction. Edit ONLY the alpha cutout of the supplied closed-eye portrait. Preserve the exact entire youthful character artwork: closed eyelids, face, tiny smile, head tilt, hair strand silhouette, navy school uniform and bows, original square canvas and scale. Remove ALL disconnected stray white, bright cyan, blue or colored matte flecks floating outside the actual character silhouette, especially above the crown near the top center/right and around the outer hair curls. Outside intentional hair strands and clothing must be completely transparent alpha, with clean antialiased edges; no white glow/fringe or scattered isolated pixels. Do not redraw or move the face, change eyes, add objects, change hairstyle, crop or resize. The image remains a genuine transparent PNG. Do not invent extra hair strands to connect stray flecks.",
+  "editTarget": "ipad/assets/expressions/blink_closed.png",
+  "identityAuthority": "shared/assets/avatars-youth/idle_gentle.png",
+  "source": "C:/Users/17601/.codex/generated_images/01a1dfe1-6019-7a72-b6bf-9ea76d3f70eb/exec-2fe15872-d941-4ff1-a35e-98bee1291c5c.png",
+  "path": "ipad/assets/expressions/blink_closed-v2.png",
+  "visualInspection": "Personally inspected original output. The detached crown white fragments are substantially reduced and the lower-left curl separation is cleaner. Face, closed eyelids, smile, head angle and youthful school costume remain. Fine edge specks are still visible; 200% zero-fringe acceptance is not claimed.",
+  "selected": true,
+  "previousRevision": "ipad/assets/expressions/blink_closed.png",
+  "alignmentVerified": false,
+  "p3Verified": false,
+  "integratedRuntimeVerified": false,
+  "width": 1254,
+  "height": 1254,
+  "mode": "RGBA",
+  "bytes": 2303417,
+  "sha256": "b83fc23ad3edec27ba7f0b512c2ca79b466fbe97a04993ce17da28019dd06c0e",
+  "alphaExtrema": [
+    0,
+    255
+  ]
+}

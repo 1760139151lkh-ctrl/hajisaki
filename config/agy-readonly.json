@@ -1,0 +1,18 @@
+{
+  "toolPermission": "strict",
+  "allowNonWorkspaceAccess": false,
+  "useG1Credits": false,
+  "notifications": false,
+  "permissions": {
+    "allow": [],
+    "ask": [],
+    "deny": [
+      "command(*)",
+      "write_file(*)",
+      "read_file(*)",
+      "mcp(*)",
+      "execute_url(*)",
+      "read_url(*)"
+    ]
+  }
+}

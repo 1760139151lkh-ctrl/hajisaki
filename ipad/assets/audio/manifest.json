@@ -1,0 +1,91 @@
+{
+  "assets": [
+    {
+      "file": "send-felt-c6.wav",
+      "source": "byte-for-byte copy of shared/assets/audio/send-felt-c6.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "sample_width_bits": 16,
+      "frames": 33600,
+      "seconds": 0.7,
+      "channel_peak": [
+        0.13055419921875
+      ],
+      "channel_rms": [
+        0.038526850954647675
+      ],
+      "bytes": 67244,
+      "sha256": "097bbff07c064b958fe7b03e84a68be48302aeb7ef01be6f4ce1c95baf35554b",
+      "source_sha256": "097bbff07c064b958fe7b03e84a68be48302aeb7ef01be6f4ce1c95baf35554b"
+    },
+    {
+      "file": "reply-major-nine.wav",
+      "source": "byte-for-byte copy of shared/assets/audio/reply-major-nine.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "sample_width_bits": 16,
+      "frames": 64800,
+      "seconds": 1.35,
+      "channel_peak": [
+        0.246337890625
+      ],
+      "channel_rms": [
+        0.026718406181566796
+      ],
+      "bytes": 129644,
+      "sha256": "540fc53dff5a9168addbd67ee8f4cd12001066753184ad489961ccd29d3b50ab",
+      "source_sha256": "540fc53dff5a9168addbd67ee8f4cd12001066753184ad489961ccd29d3b50ab"
+    },
+    {
+      "file": "effort-watch-click.wav",
+      "source": "byte-for-byte copy of shared/assets/audio/effort-watch-click.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "sample_width_bits": 16,
+      "frames": 2160,
+      "seconds": 0.045,
+      "channel_peak": [
+        0.076446533203125
+      ],
+      "channel_rms": [
+        0.012321256485433429
+      ],
+      "bytes": 4364,
+      "sha256": "b127bbc999a66a9e91f1b69c268d45a465ea1008ac9a9aac72d50c6690587ab3",
+      "source_sha256": "b127bbc999a66a9e91f1b69c268d45a465ea1008ac9a9aac72d50c6690587ab3"
+    },
+    {
+      "file": "room-stereo.wav",
+      "source": "original seeded filtered-noise and damped-harmonic synthesis by build_audio.py",
+      "sample_rate": 48000,
+      "channels": 2,
+      "sample_width_bits": 16,
+      "frames": 1440000,
+      "seconds": 30.0,
+      "channel_peak": [
+        0.03839111328125,
+        0.02252197265625
+      ],
+      "channel_rms": [
+        0.007758333683445991,
+        0.0037509097667047025
+      ],
+      "bytes": 5760044,
+      "sha256": "05708fb9e15572f0057df61978e48e6097d079ad9f2a364cee23866f17079bee"
+    }
+  ],
+  "effects_default_enabled": false,
+  "ambience_default_enabled": false,
+  "ambience": {
+    "file": "room-stereo.wav",
+    "left": "predominantly filtered rain",
+    "right": "quieter rain with distant damped harmonic notes",
+    "loop": "30 second periodic synthesis",
+    "runtime_volume": 0.3
+  },
+  "limits": [
+    "Stereo placement only; no head tracking or spatial-audio certification.",
+    "Synthesized harmonic voices, not a recording of an acoustic felt piano.",
+    "WAV structure and numeric levels are measured; listening and iPad latency remain unverified."
+  ]
+}

@@ -1,0 +1,199 @@
+.knowledge-dialog {
+  width: 820px;
+}
+.knowledge-dialog h2 {
+  font-family: SimSun, serif;
+  font-size: 25px;
+  margin: 18px 0 24px;
+}
+.knowledge-progress {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.knowledge-pages figure {
+  margin: 0 0 28px;
+}
+.knowledge-pages img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.knowledge-pages figcaption {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.knowledge-pages figcaption > .primary {
+  width: auto;
+}
+.knowledge-pages figcaption > span {
+  font-size: 11px;
+  color: var(--dim);
+}
+.journal-export {
+  box-sizing: border-box;
+  width: 860px;
+  padding: 56px 60px 48px;
+  color: #1b233a;
+  background: #f6f7fb;
+  font-family: "Microsoft YaHei", system-ui, sans-serif;
+  --bg: #f6f7fb;
+  --surface: #eef2fa;
+  --raised: #fff;
+  --ink: #1b233a;
+  --muted: #63718c;
+  --dim: #78829b;
+  --blue: #406aa9;
+  --light-blue: #2e5792;
+  --gold: #9e7b3e;
+  --border: #d3dbe9;
+  --soft-border: #dfe5ef;
+  --glow: rgba(91, 128, 185, 0.08);
+}
+.journal-heading > span {
+  font-family: Georgia, "Microsoft YaHei", serif;
+  color: #9e7b3e;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+.journal-heading h1 {
+  font-family: SimSun, serif;
+  font-size: 32px;
+  line-height: 1.65;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin: 24px 0 20px;
+  overflow-wrap: anywhere;
+}
+.journal-staff {
+  height: 23px;
+  margin: 14px 0 34px;
+  color: #9e7b3e;
+  font: 30px Georgia;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 4px,
+    #d4af6736 4px,
+    #d4af6736 5px
+  );
+  line-height: 18px;
+  padding-left: 15px;
+}
+.journal-body {
+  font-family: "Microsoft YaHei", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 2;
+}
+.journal-body p {
+  text-wrap: pretty;
+}
+.journal-body pre {
+  white-space: pre-wrap;
+  overflow: visible;
+  font-size: 13px;
+}
+.journal-body pre code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.journal-body .table-scroll {
+  overflow: visible;
+}
+.journal-body table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+.journal-body th,
+.journal-body td {
+  min-width: 0;
+  max-width: none;
+  position: static !important;
+  font-size: 12px;
+  padding: 9px 7px;
+  overflow-wrap: anywhere;
+}
+.journal-body img {
+  max-width: 100%;
+  height: auto;
+}
+.journal-body .mermaid-block svg {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+.journal-body .math-scroll {
+  overflow: visible;
+}
+.journal-body .katex-display > .katex {
+  max-width: 100%;
+  white-space: normal;
+}
+.journal-body .code-block {
+  break-inside: avoid;
+}
+.journal-body .hljs-keyword {
+  color: #7950a0;
+}
+.journal-body .hljs-string,
+.journal-body .hljs-attr {
+  color: #427a52;
+}
+.journal-body .hljs-title {
+  color: #315fa3;
+}
+.journal-signature {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 42px;
+  padding-top: 25px;
+  border-top: 1px solid #d3dbe9;
+  color: #63718c;
+}
+.journal-signature > span {
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-right: auto;
+}
+.journal-signature > strong {
+  font:
+    24px SimSun,
+    serif;
+  color: #1b233a;
+  letter-spacing: 5px;
+}
+.journal-signature > b {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 39px;
+  height: 42px;
+  border: 1px solid #9e7b3e;
+  color: #9e7b3e;
+  font:
+    25px SimSun,
+    serif;
+  border-radius: 3px;
+  transform: rotate(-4deg);
+}
+@media (max-width: 480px) {
+  .knowledge-dialog {
+    padding: 32px 20px;
+  }
+  .knowledge-dialog h2 {
+    font-size: 23px;
+  }
+  .knowledge-pages figcaption {
+    gap: 16px;
+  }
+  .knowledge-pages figcaption > .primary {
+    font-size: 11px;
+    padding: 11px 16px;
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "reference": "shared/assets/avatars-youth/idle_gentle.png",
+  "assets": [
+    {
+      "id": "thinking_deep",
+      "prompt": "Edit the reference avatar. Keep the EXACT same youthful Togawa Sakiko identity, soft rounded teenage face, very large warm AMBER/GOLD eyes, pale silvery-blue hair, navy simple hair bows, navy school cardigan, white shirt collar and small ribbon bow. Keep the same close head-and-shoulders framing, head size, delicate anime painterly linework, gentle natural light, softness and genuine transparent background. Change ONLY expression/hand pose to thoughtful concentration: gaze slightly downward, quiet composed face, one hand gently resting under her chin. Same youthful facial proportions and school clothing. Do not make her adult, glamorous, sharp-jawed, gothic, elaborately embroidered, heavy-makeup, or blue-eyed. No new jewelry, speech, text, border or background. One character only, clean transparent alpha.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-14d8c747-ee2f-4fd0-9d8a-7b08bb39953a.png",
+      "path": "shared/assets/avatars-youth/thinking_deep.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2334321,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true
+    },
+    {
+      "id": "listening_attentive",
+      "prompt": "Edit reference avatar while preserving EXACT youthful Sakiko identity and drawing style. Same soft rounded teenage face, huge warm amber-gold eyes, pale silvery blue hair, simple navy hair bows, school cardigan with white collar and small navy ribbon. Same close face-and-shoulders framing and facial proportions. Change only expression/hand: attentive listening, gentle caring direct gaze, slight head tilt like original, one hand cupped lightly near her ear. The hand must be delicate and correctly drawn; no new costume/jewelry. Preserve painterly anime softness, natural light and transparent background. No grown-up/mature face, makeup, sharp jaw, gothic embroidery or blue eyes. No text, frame, speech bubble or background. One character only, genuine alpha.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-9abc221b-a62e-4485-a47c-5fe195670b15.png",
+      "path": "shared/assets/avatars-youth/listening_attentive.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2332212,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true
+    },
+    {
+      "id": "late_night_tea",
+      "prompt": "Edit the supplied HajiSaki avatar, preserving EXACT youthful Togawa Sakiko identity: rounded teenage cheeks, large golden amber eyes, silvery pale-blue flowing hair, simple navy side bows, navy school cardigan white collar small ribbon. Same very close head-and-shoulder portrait scale and gentle painterly anime style. Change only pose to quietly holding a small ivory bone-china cup at lower chest with both hands, very faint steam, soft warm caring gaze and restrained smile. Keep face youthful like reference, no mature body/face, no gothic dress, no elaborate jewelry or blue eyes. Accurate delicate hands with fingers sensibly gripping cup. Genuine transparent background; no text/frame or extra person. Soft natural neutral light with tiny tea warmth.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-160bbf9c-e8e7-49c4-a84c-fe9fb280c2d9.png",
+      "path": "shared/assets/avatars-youth/late_night_tea.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2419372,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true
+    },
+    {
+      "id": "reconnecting_anxious",
+      "prompt": "Edit this exact youthful Sakiko avatar. Preserve rounded teenage cheeks, large GOLDEN AMBER eyes, silvery-blue long hair, simple navy ribbon hair ties, navy school cardigan and white collar bow, exact original head size and face proportions, painterly anime softness. Change only expression and hand pose: gently concerned brows and tender reassuring eyes toward viewer, lips just parted, one small delicate hand extending toward viewer near the bottom of portrait as if re-establishing a lost connection. No crying or exaggerated distress. Youthful and calm, not mature, no gothic dress, no makeup/new jewelry, no blue eyes. Single close head and shoulders portrait with true transparent alpha, no text/border/background.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-adb40045-768c-4563-97da-21f2005a9405.png",
+      "path": "shared/assets/avatars-youth/reconnecting_anxious.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2299299,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true
+    },
+    {
+      "id": "sleepy_soft",
+      "prompt": "Edit the provided youthful Sakiko avatar, maintaining her EXACT facial identity, rounded teenage cheeks, big amber-gold eyes, pale silvery blue long hair with simple navy ribbons, navy school cardigan, white collar and small bow, same tight head-and-shoulders crop, gentle natural light and painterly anime style. Only change expression/hand pose: softly sleepy at night, one eye half closed and the other gently closed as she lightly rubs its outer corner with one finger, very small tender closed-mouth smile; she is calm, not crying. Correct delicate hand, face stays youthful, do not change age or school outfit; no adult glamour, heavy makeup, gothic embroidery, new jewelry or blue eyes. Transparent alpha, no background/text/frame.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-d00f7eef-4efc-4993-a977-36b09e11011b.png",
+      "path": "shared/assets/avatars-youth/sleepy_soft.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2325365,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visually_inspected": true
+    }
+  ]
+}

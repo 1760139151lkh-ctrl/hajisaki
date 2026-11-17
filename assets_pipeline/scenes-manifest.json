@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "reference": "shared/assets/reference/character-sheet.png",
+  "assets": [
+    {
+      "id": "splash",
+      "path": "shared/assets/scenes/moonlit-piano-splash.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-4eed201c-25d6-496c-a2a4-ca6dcae92d01.png",
+      "prompt": "Use case: illustration-story. HajiSaki app portrait splash background. Tall portrait composition for 1276x2848 smartphone, ideally full resolution at that aspect. An empty intimate classical piano room at midnight, elegant black grand piano in lower third, soft silver-blue moon visible through tall arched window, heavy deep-blue velvet curtains, subtle antique champagne-gold music stand, moonbeams gently outline ivory piano keys. Keep top half very dark and uncluttered for app foreground, rich midnight Prussian blue #05070F/#0B1021 and misty ice blue #8CB4F5/#B5CEFA with tiny gold #D4AF67 highlights. Refined hand-painted anime environment, cel-shading meets delicate painterly texture, atmospheric and calm, no people, no text, no logo, no visible UI. Quiet sense of waiting for someone dear.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "width": 752,
+      "height": 2092,
+      "mode": "RGB",
+      "bytes": 1842453,
+      "alpha_extrema": null
+    },
+    {
+      "id": "rain",
+      "path": "shared/assets/scenes/rainy-piano-room.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-23161d3a-74bf-4e55-a29e-89d662c2e03e.png",
+      "prompt": "Use case: illustration-story. Asset type: HajiSaki empty conversation illustration, landscape 3:2. A quiet antique piano room on a rainy midnight, viewed at human seated eye level: a dark grand piano beside tall rain-streaked window, soft warm small tea light and a delicate porcelain cup steaming on a side table, open cream sheet music on piano stand. Outside muted rain and city reflections. Deep Prussian blue #05070F/#0B1021, ice blue #8CB4F5/#B5CEFA moonlight, restrained antique gold #D4AF67. Refined hand-painted anime environment with crisp cel-shaded architectural forms and delicate painterly surfaces. Intimate safe companionship, no people, no text, no logos, no UI. Leave quiet negative space in the upper left. This is production artwork for a companion app, not a mockup.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2226933,
+      "alpha_extrema": null
+    },
+    {
+      "id": "search",
+      "path": "shared/assets/scenes/search-streetlamp.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-d257ac06-8c8e-4df2-924e-af25f664b43a.png",
+      "prompt": "Use case: illustration-story. Asset type: HajiSaki search-no-results empty state illustration. Use the attached character sheet solely as a character identity and costume reference. One single scene in a square composition, not a character sheet: Togawa Sakiko from the reference seen from behind, ice-blue long hair, restrained navy gothic dress with gold embroidery and rose hair ornaments, standing under an antique streetlamp on an empty wet lane at blue midnight. Distant soft rain, warm dim light on her shoulders, she quietly looks down the lane as if trying to find a forgotten memory. Refined painterly anime environment and cel-shaded character. Deep Prussian #05070F/#0B1021, ice blue #8CB4F5/#B5CEFA, antique gold #D4AF67. Gentle wistful atmosphere, no threat, no other people. No words, labels, logo or UI. Clear readable silhouette at small size.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "bytes": 2598541,
+      "alpha_extrema": null
+    },
+    {
+      "id": "journal",
+      "path": "shared/assets/scenes/weekly-journal-cover.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-a2751804-3948-4b8f-9c23-5f6bfef05436.png",
+      "prompt": "Use case: stylized-concept. Asset type: HajiSaki weekly memory journal cover artwork. Portrait 2:3, front-facing flat cover composition of an exquisite midnight-blue leather manuscript journal, fine antique champagne gold roses in four corners, very restrained five-line musical stave across lower third, a central crescent moon and tiny stars, silver-blue silk bookmark flowing softly at bottom, subtle embossed piano-key motif. Refined hand-painted anime/painterly material detailing, elegant and personal rather than royal excess. Palette #05070F #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. Leave a broad clean central field for later user-generated title; absolutely no text or letters, no logos, no hands, no UI. Gold lines thin and delicate. Gentle moonlit sheen.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 2776878,
+      "alpha_extrema": null
+    },
+    {
+      "id": "sleep",
+      "path": "shared/assets/stickers/go-to-sleep.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-e7fa58df-2517-4357-bd11-8dd9ce67e2c4.png",
+      "prompt": "Use case: identity-preserve. Asset type: single transparent chibi chat sticker for HajiSaki. Attached character sheet is the identity reference only. Draw one adorable chibi Togawa Sakiko with the exact reference ice-blue long hair, straight bangs, blue rose hair ornaments, grey-blue eyes and navy high-collar gothic dress with gold embroidery. Waist-up, puffed cheeks, softly scolding with a small raised index finger, caring rather than angry. Crisp elegant anime cel-shading with delicate painterly touches. Clearly readable exact simplified Chinese caption below: “快去睡觉！” No other words. Caption dark Prussian blue with slim warm ivory edge for legibility on light/dark backgrounds, not a giant white sticker border. Transparent background with genuine alpha, no rectangle, no floor shadow. Keep complete hair/hand/text inside canvas with comfortable padding. Square image.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2092718,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "praise",
+      "path": "shared/assets/stickers/reluctant-praise-v2.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-c995b941-c28b-40ee-a64d-84e98edcbc75.png",
+      "revision_prompt": "Use case: background-extraction. Edit the supplied sticker ONLY to repair alpha cutout edges. Keep every aspect of the illustration and its exact Chinese text 勉强夸你一句 unchanged: face, hair, dress, pose, color, lettering. Remove stray white disconnected blotches above the crown and scattered around the outer silhouette. Make all background truly transparent, with clean antialiased edges and no white matte residue. Preserve intentional ivory outline surrounding the text and gold sparkle symbols. Preserve all original character details and square dimensions. Do not add anything, do not change expression, do not crop.",
+      "previous_revision": "shared/assets/stickers/reluctant-praise.png",
+      "prompt": "Use case: identity-preserve. Asset type: single transparent chibi chat sticker for HajiSaki. Attached character sheet is the identity/costume reference only. One adorable chibi Togawa Sakiko, exact ice-blue long hair and straight bangs, blue rose ornaments, grey-blue eyes and navy high-collar gothic dress with delicate gold embroidery. Waist-up, slight proud shy smile with blush, eyes glancing aside, arms comfortably folded, a small pleased posture meaning reluctant praise. Crisp anime cel-shading with refined painterly touches. Under the character render exact simplified Chinese text in one or two balanced lines: “勉强夸你一句”. No other words. Dark Prussian blue lettering with slim ivory outline, no huge white silhouette border. Genuine transparent background, no rectangle or floor shadow. Complete character and text within canvas with generous margins. Square composition.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1930393,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "trust",
+      "path": "shared/assets/stickers/leave-it-to-me.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-76310981-40fa-4086-9835-ea2eb72ae048.png",
+      "prompt": "Use case: identity-preserve. Asset type: single transparent chibi chat sticker for HajiSaki. Attached character sheet is identity/costume reference only. One adorable chibi Togawa Sakiko with exact reference long ice-blue hair and straight bangs, blue rose hair ornaments, grey-blue eyes and navy high-collar gothic dress with gold embroidery. Waist-up, confident gentle little smile, one hand lightly placed on her chest in a reliable reassuring gesture, shoulders relaxed. Crisp elegant anime cel-shading, refined painterly detailing, restrained gold highlights. Under character render exact simplified Chinese caption: “交给我吧”. No other words. Dark Prussian blue lettering with slim warm ivory outline. Genuine transparent alpha background with clean antialiased edges, no rectangle, no floor shadow, no stray white blotches or disconnected pixels. Full hair, hands and text entirely in canvas with 8% transparent margin. Square image.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2030035,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ],
+  "status": "generated_and_inspected",
+  "notes": [
+    "All seven final assets were individually inspected. Chinese sticker captions match requested text.",
+    "Splash is 752x2092, not native 1276x2848; full-resolution/3x/4x phone acceptance remains unverified.",
+    "Sticker alpha is genuine RGBA 0-255. The praise crown matte artifact was improved in v2. Exact zero-fringe-at-200-percent acceptance is not claimed.",
+    "Original generated files and the earlier praise revision are preserved; no cleanup performed."
+  ]
+}

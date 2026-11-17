@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "identity_authority": "shared/assets/avatars-youth/idle_gentle.png",
+  "assets": [
+    {
+      "id": "character_sheet",
+      "prompt": "Create a production character reference sheet based strictly on the two provided reference artworks. Image 1 is the identity master: youthful Togawa Sakiko with soft rounded teenage face, very large warm golden amber eyes, pale silvery-blue long hair, loose bangs, simple navy ribbon side bows. Image 2 is the school clothing and body proportions reference: plain navy school cardigan with white shirt and small navy bow, navy pleated plaid school skirt, navy knee socks, ordinary flat brown school shoes. Never adult, glamorous, mature, gothic or ornate; no makeup, jewelry, corset or heels. One landscape sheet with a front bust portrait, a gentle three-quarter bust portrait, side head profile and a modest full-body standing view. Keep exactly the same face, youthful proportions, amber eyes and outfit across views, in soft delicate painterly anime style matching the original. Plain pale ivory background; no labels, words, UI, logo, watermark or extra characters. Clear fine linework and natural soft light; the original source portrait is the authority for identity.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-265dc5fa-6c7a-499d-b105-e907c41beea9.png",
+      "path": "shared/assets/reference-youth/character-sheet.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2378861,
+      "sha256": "28b0e25a1a10222b1847b4a6874427094ed69ca674e25bada50dc3192ad02f1f",
+      "visually_inspected": true
+    }
+  ]
+}

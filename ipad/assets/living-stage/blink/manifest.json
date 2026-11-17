@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "id": "window-stage-natural-blink-candidates",
+  "pathBase": "project-root",
+  "canvas": {"width": 1536, "height": 1024},
+  "coordinateOrigin": "top-left; rectangles are [x, y, width, height] in original source pixels, not screen points",
+  "status": "source-candidates-reviewed; native animation admission pending",
+  "fullFrameReplacementAllowed": false,
+  "approvedMotherFilesUnchanged": true,
+  "frames": [
+    {
+      "id": "day",
+      "openSource": "ipad/assets/living-stage/day-mother.png",
+      "closedCandidate": "ipad/assets/living-stage/blink/day-closed-v1.png",
+      "closedCandidateSha256": "05623ded16640ec6d3b1d3c65021353ff3ff321c6fd7b5a6ec4cfca5a0017f23",
+      "closedCandidateBytes": 2366703,
+      "dimensions": [1536, 1024],
+      "mode": "RGB",
+      "candidateEyeRects": [
+        {"eye": "viewer-left", "rect": [1100, 220, 44, 35]},
+        {"eye": "viewer-right", "rect": [1150, 194, 48, 40]}
+      ],
+      "visualReview": "Original and generated full-size images individually inspected. Both eyelids are fully closed with delicate lashes. Head tilt, face position, youthful identity and small mouth appear stable. Fine room detail regenerated outside eyes; never swap the full candidate into the stage.",
+      "differenceInspection": {
+        "method": "Read-only mean absolute per-channel RGB difference between original files; no raster edit or assertion runner.",
+        "wholeCanvasMean": 4.032,
+        "viewerLeftEyeMean": 25.468,
+        "viewerRightEyeMean": 24.143,
+        "mouthRegionMean": 1.324,
+        "units": "0-255 channel values",
+        "meaning": "Supports change localization only; does not certify pixel alignment, mask seams or blink quality."
+      }
+    },
+    {
+      "id": "night",
+      "openSource": "ipad/assets/living-stage/night-mother.png",
+      "closedCandidate": "ipad/assets/living-stage/blink/night-closed-v1.png",
+      "closedCandidateSha256": "79d7bbad1c387cea3b15ee40e61f15a67afffe464a43879ad9b7f7cb31dd4d21",
+      "closedCandidateBytes": 2186547,
+      "dimensions": [1536, 1024],
+      "mode": "RGB",
+      "candidateEyeRects": [
+        {"eye": "viewer-left", "rect": [1118, 209, 37, 30]},
+        {"eye": "viewer-right", "rect": [1170, 187, 35, 28]}
+      ],
+      "visualReview": "Original and generated full-size images individually inspected. Both eyelids naturally closed, original neutral small mouth retained; pose and visible support stay recognizable. Background and fine texture are re-rendered, so the full frame is not a safe animation replacement.",
+      "differenceInspection": {
+        "method": "Read-only mean absolute per-channel RGB difference between original files; no raster edit or assertion runner.",
+        "wholeCanvasMean": 4.830,
+        "viewerLeftEyeMean": 28.978,
+        "viewerRightEyeMean": 40.379,
+        "mouthRegionMean": 1.492,
+        "units": "0-255 channel values",
+        "meaning": "Supports change localization only; does not certify pixel alignment, mask seams or blink quality."
+      }
+    }
+  ],
+  "nativeIntegrationProposal": {
+    "base": "Keep the approved mother/background/contact composition permanently in place. Candidate is a separate overlay masked to the two small eye regions only; do not include the mouth, nose, head outline or hair silhouette.",
+    "geometry": "Use the original 1536x1024 canvas and the exact existing stage crop/scale for the overlay. Do not independently resize, translate, stretch or warp the eyes or face. Convert y to height-y-heightOfRect only when an API uses a bottom-left image origin.",
+    "mask": "Begin with the two listed rectangles as conservative inspection bounds. Feather each outer boundary by about 2 source pixels and keep the entire original iris and generated closed lash inside the opaque interior. Adjust only after viewing the native composite at normal size and enlarged.",
+    "initialTimingProposalMs": {"close": 45, "closedHold": 55, "open": 70},
+    "timingStatus": "Proposal for actual native viewing, not a measured or approved motion specification. Avoid long crossfades that leave both an iris and closed lash visible.",
+    "lifecycle": "Do not begin random blinking until the closed image is ready. Reset to the unchanged open source when hidden/inactive, in low power or reduce motion, or while transitioning day/night. Never let a late day result overlay the night face.",
+    "acceptanceStillRequired": "Observe several complete blinks in both daylight and night at normal speed; inspect closed-state iris coverage, seams, skin tone, eyelid placement and absence of mouth/head/body motion. Review reduction/stop/resume and rapid daylight changes. Static source inspection cannot establish these outcomes."
+  },
+  "imageGeneration": {
+    "tool": "built-in image_gen",
+    "perFramePrompts": ["day-closed-v1.provenance.json", "night-closed-v1.provenance.json"],
+    "postprocessing": "none; all generated candidates copied byte-for-byte",
+    "originalsRetained": true
+  },
+  "nativeRuntimeReviewed": false,
+  "zeroWhiteEdgeVerified": false,
+  "zeroFaceJumpVerified": false
+}

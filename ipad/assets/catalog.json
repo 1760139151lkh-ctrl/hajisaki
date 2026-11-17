@@ -1,0 +1,420 @@
+{
+  "schemaVersion": 1,
+  "pathBase": "project-root",
+  "identityAuthority": "shared/assets/avatars-youth/idle_gentle.png",
+  "livingStageManifest": "ipad/assets/living-stage/manifest.json",
+  "note": "Reviewed whole raster assets. Twelve portrait states are not twelve aligned full-body layer sets. Unlabelled PNGs are not verified P3.",
+  "assets": [
+    {
+      "id": "idle_gentle",
+      "path": "shared/assets/avatars-youth/idle_gentle.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2309543,
+      "sha256": "50ed57c7cb690ac52eb49190762f878a2b8e8db5eb75d5d3d3f220e771d86974",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "listening_attentive",
+      "path": "shared/assets/avatars-youth/listening_attentive.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2332212,
+      "sha256": "77a33deffb9a2d74e1ffb6e3fa24b860c4a9922d1b8921189337cc00ab268880",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "thinking_deep",
+      "path": "shared/assets/avatars-youth/thinking_deep.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2334321,
+      "sha256": "68912fecaab8c45aaea0642cb5d8583375977dc2ad13d90af12700390358ffc7",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "coding_focused",
+      "path": "shared/assets/avatars-youth/coding_focused.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2356306,
+      "sha256": "89a69bbc69e7462a8aab2a05a6281217779a15c442451ea057a4bba0aa09732c",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "tsundere_chide",
+      "path": "shared/assets/avatars-youth/tsundere_chide.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2260358,
+      "sha256": "ee78bb431e63c40a48c3850dc8216f0f263709fc1fe17f41aae385234d6ab147",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "late_night_tea",
+      "path": "shared/assets/avatars-youth/late_night_tea.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2419372,
+      "sha256": "ceeb87eeabaa21408d70f86fb830735541683771b3d8bc6f62a8149c8b6159cc",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "happy_achieved",
+      "path": "shared/assets/avatars-youth/happy_achieved.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2278190,
+      "sha256": "39d2be70cc7495a2f1c2088067d65f26cf6173dc91cf87394d68da46610b7ef4",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "reconnecting_anxious",
+      "path": "shared/assets/avatars-youth/reconnecting_anxious.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2299299,
+      "sha256": "99bf6f47e809efdd14d55da748b05bc4aec71a6a7816ecdc291b2af70eeab948",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "sleepy_soft",
+      "path": "shared/assets/avatars-youth/sleepy_soft.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2325365,
+      "sha256": "6b5406f029e01cae4cbab9240b8e4cd327b23546c266d02653a24ea845c6aed3",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "proud_smug",
+      "path": "shared/assets/avatars-youth/proud_smug.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2320054,
+      "sha256": "54b927102c7481feb575b4a7b1b417caf9097884a4e59396598466d7ebcaea29",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "icon_document",
+      "path": "shared/assets/icons/document.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1184900,
+      "sha256": "66104a281622fe0d796a27ec6dc3d3a2e27af806f5707d0d46be3a0106c27831",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "icon_archive",
+      "path": "shared/assets/icons/archive.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1662349,
+      "sha256": "a651dc347025557a528ca8f783d58ff9a5552bafce5db0b2272fe31630a1f325",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "icon_code",
+      "path": "shared/assets/icons/code.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1842402,
+      "sha256": "b2cdc95452140174fc97d0d43824f1ddf78f85b7708d2a899b770ea20e6bf0f9",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "icon_bookmark",
+      "path": "shared/assets/icons/bookmark.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1187208,
+      "sha256": "b315d1267c6b51ede813f09080f00a8c8ea107794ec343792ba663d69d6634ca",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "icon_microphone",
+      "path": "shared/assets/icons/microphone.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 934243,
+      "sha256": "6462e4bcbc91b38e01d7b316c1bf5fe3b0ed22fde17c90f9ec4104855f64ee1e",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "moonlit_piano_splash",
+      "path": "shared/assets/scenes/moonlit-piano-splash.png",
+      "width": 752,
+      "height": 2092,
+      "mode": "RGB",
+      "bytes": 1842453,
+      "sha256": "357d67924282dadf9ed38ff57f170565a5f983d660dd294c34894ca70f1833d4",
+      "alphaExtrema": null,
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "rainy_piano_room",
+      "path": "shared/assets/scenes/rainy-piano-room.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2226933,
+      "sha256": "d65fdceb8e01ea72df470e96c220b85edd004d16b3730978829a08fd0c890b20",
+      "alphaExtrema": null,
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "search_streetlamp",
+      "path": "shared/assets/scenes/search-no-results-youth.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "bytes": 2580840,
+      "sha256": "1cb94702a036606c75a22e999538faccb46ea8634d9defdd0bc60ecc1c4942a7",
+      "alphaExtrema": null,
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "weekly_journal_cover",
+      "path": "shared/assets/scenes/weekly-journal-cover.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB",
+      "bytes": 2776878,
+      "sha256": "ef6b3abeddb733e3c8ac9f953ffabc247652a890c6ba0171c3f84fbb74038538",
+      "alphaExtrema": null,
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "day_room",
+      "path": "shared/assets/scenes-user/day-room.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2459089,
+      "sha256": "8d8ca2d001893c16106ab797ec4a8a8c1e6576115a5a4c76ff1dd519eff4e2cd",
+      "alphaExtrema": null,
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "night_room",
+      "path": "shared/assets/scenes-user/night-room.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2277809,
+      "sha256": "c56541389158a7f28539062ae2174da997b4cd4301e022eab9202e34d31ab5c1",
+      "alphaExtrema": null,
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "sticker_sleep",
+      "path": "shared/assets/stickers-youth/go-to-sleep.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2037068,
+      "sha256": "2f30e927b9b321a0d25bf8d892b83e3aa823846fcfa13b7f88899d9061133b74",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "sticker_praise",
+      "path": "shared/assets/stickers-youth/reluctant-praise-v2.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1917925,
+      "sha256": "f8f0f10c6e5a7d56caabad10476085d38ce0252ab78f12aec884d21ff5029fd2",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "sticker_trust",
+      "path": "shared/assets/stickers-youth/leave-it-to-me.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1923943,
+      "sha256": "c9ece6c3231ce83b3a22edeac07a0a5b210dd2b5c47d2993cdf221026e36b58e",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "character_sheet",
+      "path": "shared/assets/reference-youth/character-sheet.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2378861,
+      "sha256": "28b0e25a1a10222b1847b4a6874427094ed69ca674e25bada50dc3192ad02f1f",
+      "alphaExtrema": null,
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "blink_closed",
+      "path": "ipad/assets/expressions/blink_closed-v2.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2303417,
+      "sha256": "b83fc23ad3edec27ba7f0b512c2ca79b466fbe97a04993ce17da28019dd06c0e",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    },
+    {
+      "id": "concerned_blush",
+      "path": "ipad/assets/expressions/concerned_blush.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2235251,
+      "sha256": "0aba1e7ac90a7d446979c573e86afef42033606a11e13f1030a90d3a5a1cdcff",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "iccProfilePresent": false,
+      "sourceImageViewed": true,
+      "integratedIPadReview": false
+    }
+  ]
+}

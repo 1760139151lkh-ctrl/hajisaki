@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "Flashcard": {
+      "additionalProperties": false,
+      "properties": {
+        "front": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Front",
+          "type": "string"
+        },
+        "back": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Back",
+          "type": "string"
+        }
+      },
+      "required": [
+        "front",
+        "back"
+      ],
+      "title": "Flashcard",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "kind": {
+      "enum": [
+        "flashcards",
+        "poll"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "cards": {
+      "items": {
+        "$ref": "#/$defs/Flashcard"
+      },
+      "maxItems": 20,
+      "title": "Cards",
+      "type": "array"
+    },
+    "question": {
+      "default": "",
+      "maxLength": 2000,
+      "title": "Question",
+      "type": "string"
+    },
+    "options": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 12,
+      "title": "Options",
+      "type": "array"
+    }
+  },
+  "required": [
+    "kind",
+    "title"
+  ],
+  "title": "CardDefinition",
+  "type": "object"
+}

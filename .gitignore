@@ -1,0 +1,53 @@
+.venv/
+runtime/
+__pycache__/
+*.pyc
+studio/node_modules/
+studio/dist/
+phone/harmony/.hvigor/
+phone/harmony/oh_modules/
+phone/harmony/local.properties
+phone/harmony/**/build/
+relay/runtime/
+speech/runtime/
+*.p12
+*.p7b
+*.jks
+*.keystore
+.env
+tooling/downloads/
+tooling/command-line-tools/
+tooling/openharmony-sdk/
+
+# Local automation, downloaded tools, and model caches
+.automation/
+node_modules/
+tooling/android-downloads/
+tooling/android-sdk/
+tooling/cloudflared/
+tooling/diagnostics/
+tooling/discovery/
+recall/models/
+
+# Generated frontend bundles and private device bootstrap data
+studio/dist-android/
+studio/inspection/
+mobile-bootstrap.json
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Local inspection records can contain conversation and device data
+tooling/evidence/
+ipad/evidence/
+speech/evidence/
+docs/evidence/
+
+# Installers are published as private GitHub Release assets
+releases/*.apk
+releases/*.hap
+
+# Editor and operating-system state
+.DS_Store
+Thumbs.db

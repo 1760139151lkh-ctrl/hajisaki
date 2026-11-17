@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "id": "concerned_blush",
+  "path": "ipad/assets/expressions/concerned_blush.png",
+  "tool": "built-in image_gen",
+  "operation": "identity-preserve facial-expression edit",
+  "prompt": "Use case: identity-preserve. Asset type: HajiSaki iPad companion expression, concerned_blush. Input image 1 is the exact edit target and authoritative youthful Sakiko identity. Change ONLY her facial expression to slight embarrassed caring concern: very subtle gently worried inner eyebrows, soft attentive golden eyes, a tiny restrained hesitant closed mouth, and a light delicate blush. Preserve her youthful rounded face, exact golden irises, silvery pale blue long hair, navy school cardigan, white collar, dark bows with gold stitching, head tilt, framing, canvas proportions, painterly anime linework, lighting, shoulder crop, all hair strands and transparent outer silhouette as closely as possible. Keep the same close-up composition and head scale so this image can be displayed in the same avatar slot. No grown-up or mature redesign; no extra hands, props, ornaments, jewellery, text, background, border or watermark. Output one square transparent PNG, ideally 1254 by 1254 pixels. The only intended change is the gently embarrassed concerned facial expression.",
+  "reference": "shared/assets/avatars-youth/idle_gentle.png",
+  "reference_sha256": "50ed57c7cb690ac52eb49190762f878a2b8e8db5eb75d5d3d3f220e771d86974",
+  "generated_source": "C:/Users/17601/.codex/generated_images/01a1dfe1-cd71-7003-ab68-cadf6bcbb36f/exec-d943e2ab-764e-4b0b-9ae1-f95e850cb2df.png",
+  "file": {
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "bytes": 2235251,
+    "sha256": "0aba1e7ac90a7d446979c573e86afef42033606a11e13f1030a90d3a5a1cdcff",
+    "icc_profile": null,
+    "copy_identical_to_generated_source": true,
+    "postprocessing": "none"
+  },
+  "visual_review": {
+    "inspected_original_reference": true,
+    "inspected_generated_result": true,
+    "inspected_saved_workspace_file": true,
+    "identity": "Youthful rounded face, gold irises, pale silver-blue hair, navy uniform and bows retained; no adult redesign, extra hands or ornaments.",
+    "expression": "Slightly raised worried inner eyebrows, restrained blush and small hesitant closed mouth communicate embarrassed care.",
+    "alignment": "Same square canvas, head tilt, face scale and shoulder crop appear closely aligned. Pixel-identical non-face regions and animation registration have not been established.",
+    "limitations": [
+      "Single flattened RGBA expression, not a separated face/eye/hair rig.",
+      "No Display P3 ICC profile; P3 color or true-device color accuracy not established.",
+      "No 200-percent iPad screen or halo-free compositing acceptance claim.",
+      "Actual in-app transition quality must be checked after integration.",
+      "Visible detached pale/cyan edge specks remain around the hair silhouette; corrective generated v2 did not improve this and is not selected."
+    ]
+  },
+  "transport_note": "Generated original and saved workspace output were visibly inspected. Some repeated image displays rendered black despite byte-identical image data; the display anomaly is unresolved and did not trigger file editing.",
+  "selected_path": "ipad/assets/expressions/concerned_blush.png",
+  "corrective_attempts": [
+    {
+      "path": "ipad/assets/expressions/concerned_blush-v2.png",
+      "tool": "built-in image_gen",
+      "operation": "transparent silhouette cleanup",
+      "prompt": "Use case: background-extraction. Edit image 1, the already approved HajiSaki concerned_blush expression. Change ONLY the alpha cutout edge: completely remove disconnected white, pale cyan, and electric blue matte flecks outside the intentional hair silhouette, especially around the crown, outer hair curves, and transparent gaps between hair strands. The exterior must be truly fully transparent with a clean natural antialiased hair silhouette, no stray detached bright pixels or halo. Preserve exactly the current facial expression, youthful rounded face, golden eyes, blush, mouth, every intentional hair strand, pale silver-blue hair color, navy uniform and bows, head tilt, face position and scale, framing, lighting, painterly linework, and square 1254x1254 canvas. Do not add anything, redesign, repaint or soften the face, move the character, crop differently, change the clothes, fill transparent areas, or add a background. Deliver one transparent PNG. This is a precise transparent silhouette cleanup only.",
+      "reference": "ipad/assets/expressions/concerned_blush.png",
+      "generated_source": "C:/Users/17601/.codex/generated_images/01a1dfe1-cd71-7003-ab68-cadf6bcbb36f/exec-6e01ad29-2a20-46b7-935d-4dc81fc6e143.png",
+      "file": {
+        "width": 1254,
+        "height": 1254,
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "bytes": 2263414,
+        "sha256": "f4f7c7796c57b69775ab7c3a65e8736963bd25c5c2f67ae16d74a7db8ebfe862",
+        "copy_identical_to_generated_source": true,
+        "postprocessing": "none"
+      },
+      "selected": false,
+      "visual_review": "Original generated output visibly inspected: face identity and expression remain, but detached pale/cyan edge specks are not removed and larger pale patches appear along left hair/bow. No clear edge improvement; original remains selected with edge cleanup unresolved.",
+      "transport_note": "Saved PNG bytes were read back and confirmed equal to generated image data. Some repeated displays rendered black despite identical Base64; no file alteration performed to work around that display issue."
+    }
+  ]
+}

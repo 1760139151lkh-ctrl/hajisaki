@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "id": "hajisaki-ipad-window-stage",
+  "identity": "Youthful Sakiko: amber-gold eyes, pale silvery-blue hair, soft face, navy school cardigan and simple bows.",
+  "sourceProject": "在场",
+  "canvas": {
+    "width": 1536,
+    "height": 1024
+  },
+  "composition": {
+    "foreground": "mother masked by max(luminance(figureMask), luminance(contactMask))",
+    "background": "Matching empty-room source; all layers share the same canvas transform.",
+    "maskMeaning": "White selects the source mother, black selects transparency; preserve continuous grayscale, do not threshold.",
+    "contact": "Receiver material and contact shadows are included from the mother. Seated figure and receiver remain fixed together.",
+    "focalPoint": [
+      0.735,
+      0.49
+    ],
+    "independentActorTravel": 0,
+    "availableAnimation": "Native ambient light only; no independent face, eye, hair, shawl or skeleton layers.",
+    "colorSpace": "Source PNG files are untagged. Runtime treats them as sRGB; Display P3 artwork is not claimed."
+  },
+  "scenes": [
+    {
+      "id": "day",
+      "mother": "day-mother.png",
+      "background": "day-background.png",
+      "figureMask": "day-figure-mask.png",
+      "contactMask": "day-contact-mask.png",
+      "sourceManifest": "sakiko-chat-apricot-literary-v1.scene.json",
+      "seat": [
+        0.8138020833333334,
+        0.603515625
+      ],
+      "ground": [
+        0.6354166666666666,
+        0.908203125
+      ],
+      "bodyBounds": [
+        0.5748697916666666,
+        0.111328125,
+        0.87890625,
+        0.9091796875
+      ],
+      "sources": {
+        "day-mother.png": "sakiko-chat-apricot-literary-v1-mother.png",
+        "day-background.png": "literary-room-clear-day-v1.png",
+        "day-figure-mask.png": "sakiko-chat-apricot-literary-v1-mask.png",
+        "day-contact-mask.png": "sakiko-chat-apricot-literary-v1-contact-mask.png"
+      }
+    },
+    {
+      "id": "night",
+      "mother": "night-mother.png",
+      "background": "night-background.png",
+      "figureMask": "night-figure-mask.png",
+      "contactMask": "night-contact-mask.png",
+      "sourceManifest": "sakiko-chat-dry-night-literary-v1.scene.json",
+      "seat": [
+        0.7916666666666666,
+        0.5703125
+      ],
+      "ground": [
+        0.6380208333333334,
+        0.8935546875
+      ],
+      "bodyBounds": [
+        0.5826822916666666,
+        0.107421875,
+        0.8834635416666666,
+        0.8935546875
+      ],
+      "sources": {
+        "night-mother.png": "sakiko-chat-dry-night-literary-mother-v1.png",
+        "night-background.png": "literary-room-dry-night-v1.png",
+        "night-figure-mask.png": "sakiko-chat-dry-night-literary-figure-mask-v1.png",
+        "night-contact-mask.png": "sakiko-chat-dry-night-literary-contact-mask-v1.png"
+      }
+    }
+  ],
+  "review": {
+    "sourceImagesViewedIndividually": true,
+    "sourceMasksViewedIndividually": true,
+    "integratedIPadRuntimeReviewed": false,
+    "faceAnimationAvailable": false,
+    "p3ArtworkVerified": false,
+    "pixelEdits": "none; copied byte-for-byte"
+  },
+  "sourceDirectory": "C:\\Users\\17601\\Documents\\ChatGPT\\在场\\前端视觉创新设计\\分类总库\\01-程序素材\\运行素材\\companion\\scenes",
+  "files": [
+    {
+      "path": "day-mother.png",
+      "source": "sakiko-chat-apricot-literary-v1-mother.png",
+      "bytes": 2459089,
+      "sha256": "8d8ca2d001893c16106ab797ec4a8a8c1e6576115a5a4c76ff1dd519eff4e2cd",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "copiedUnchanged": true
+    },
+    {
+      "path": "day-background.png",
+      "source": "literary-room-clear-day-v1.png",
+      "bytes": 2524961,
+      "sha256": "f9a1a6a33c682a27dd2a8bf40ff361e0c9ceed52bbc7bd811db70694bef8664c",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "copiedUnchanged": true
+    },
+    {
+      "path": "day-figure-mask.png",
+      "source": "sakiko-chat-apricot-literary-v1-mask.png",
+      "bytes": 470866,
+      "sha256": "976e6a52af3fd9fd8b8ef9a7a017cddb37fec6ebae961256c5b1134ad0cba59d",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "copiedUnchanged": true
+    },
+    {
+      "path": "day-contact-mask.png",
+      "source": "sakiko-chat-apricot-literary-v1-contact-mask.png",
+      "bytes": 348393,
+      "sha256": "9ee1264c492186058e9069b3ab5b86679690a0349363bcf970fc241251a2e159",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "copiedUnchanged": true
+    },
+    {
+      "path": "night-mother.png",
+      "source": "sakiko-chat-dry-night-literary-mother-v1.png",
+      "bytes": 2277809,
+      "sha256": "c56541389158a7f28539062ae2174da997b4cd4301e022eab9202e34d31ab5c1",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "copiedUnchanged": true
+    },
+    {
+      "path": "night-background.png",
+      "source": "literary-room-dry-night-v1.png",
+      "bytes": 2249307,
+      "sha256": "edad31b1ce0c7f21be59d939cc54a0d6230b31d6fe380d0d553af515032fd0f4",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "copiedUnchanged": true
+    },
+    {
+      "path": "night-figure-mask.png",
+      "source": "sakiko-chat-dry-night-literary-figure-mask-v1.png",
+      "bytes": 468116,
+      "sha256": "e0d20ccc2327b95867319151a5c9fdd52b69008c718fdd5ddaff01a3f6259cea",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "copiedUnchanged": true
+    },
+    {
+      "path": "night-contact-mask.png",
+      "source": "sakiko-chat-dry-night-literary-contact-mask-v1.png",
+      "bytes": 288855,
+      "sha256": "830db3da88d90f283f6e867cfe56b1389cd6a2a4152b50de1532266f0f4224f6",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "copiedUnchanged": true
+    }
+  ]
+}

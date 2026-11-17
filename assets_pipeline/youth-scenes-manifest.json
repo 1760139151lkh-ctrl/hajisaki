@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "reference": "shared/assets/avatars-youth/idle_gentle.png",
+  "status": "generated_and_individually_inspected",
+  "notes": ["All final assets preserve the selected youthful portrait identity; the mature gothic character treatment is not used.", "All final images are 1254x1254 unchanged built-in image_gen outputs. Sticker alpha channels contain both 0 and 255.", "Chinese captions were visually checked. Praise v2 improves obvious crown and caption matte speckles; 200-percent zero-fringe acceptance is not claimed.", "All earlier assets are retained; no files deleted."],
+  "assets": [
+    {
+      "id": "sleep",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha_extrema": [0, 255],
+      "bytes": 2037068,
+      "path": "shared/assets/stickers-youth/go-to-sleep.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-f328da52-c2b2-485f-ad4e-6ad2b8ff1f27.png",
+      "prompt": "Use case: identity-preserve. Asset type: one transparent chibi sticker for a private companion app. Use ONLY the supplied youthful portrait as the character identity and outfit reference. Preserve her very large amber-gold eyes, small youthful rounded face and soft cheek proportions, silvery-light-blue hair with loose bangs and two simple navy bows with restrained gold stitching; simple navy school cardigan and white rounded collar with small navy neck bow. Adapt to cute chibi proportions, fully clothed, wholesome schoolgirl energy, no gothic dress, no rose jewelry, no mature facial makeup, no adult fashion. Waist-up character softly puffing cheeks, gently holding up one index finger telling a friend to sleep. One exact readable Simplified Chinese caption below her: 快去睡觉！ No additional text. Crisp delicate anime watercolor/cel shading matching reference, soft warm blush, navy lettering with thin cream outline. Genuine transparent alpha background, no white rectangle, no floor shadow, no floating white debris. Complete character and text with 8 percent transparent margins. Square composition.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "inspection": "Chinese caption 快去睡觉！ is correct; youthful face, amber eyes and school cardigan match reference."
+    },
+    {
+      "id": "praise",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha_extrema": [0, 255],
+      "bytes": 1917925,
+      "path": "shared/assets/stickers-youth/reluctant-praise-v2.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-f4409534-70d7-4134-8018-f53d9c87581d.png",
+      "previous_revision": "shared/assets/stickers-youth/reluctant-praise.png",
+      "revision_prompt": "Use case: background-extraction. Repair ONLY the transparent background cutout of this supplied chibi sticker. Preserve the exact youthful face, large amber-gold eyes, silvery-blue hair, navy bows, school cardigan, folded-arm pose, smile and exact Chinese caption 勉强夸你一句, along with deliberate cream text outline. Remove all disconnected white matte speckles above her hair crown and below lettering; remove white matte residue outside the silhouette. Clean transparent alpha with smooth hair edges. Do not crop, resize or change the artwork, do not change face or typography, add nothing. Keep the background fully transparent.",
+      "prompt": "Use case: identity-preserve. Asset type: single transparent chibi chat sticker. Use ONLY the supplied youthful portrait as character identity/outfit reference. Same very large amber-gold eyes, rounded youthful small face, silver-light-blue loose hair and bangs, simple navy bows with fine gold stitching, simple navy school cardigan, white round collar and small navy neck bow. Fully clothed cute chibi schoolgirl, no old gothic dress, no mature makeup or jewelry. Waist-up, arms loosely folded, head tilted a little, shy proud smile with warm blush, glancing aside as if reluctantly giving praise. Gentle and endearing, not haughty adult. Match delicate soft anime painterly style from reference. Exact readable Chinese caption beneath: 勉强夸你一句. No additional words. Navy text with thin cream outline, genuine alpha transparent background, no rectangle or floor shadow, no stray white fragments. Square with complete hair/hands/text and 8 percent padding.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "inspection": "Chinese caption 勉强夸你一句 is correct; youthful chibi with amber eyes and cardigan. Version 2 improves crown matte speckles and was visually rechecked."
+    },
+    {
+      "id": "trust",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha_extrema": [0, 255],
+      "bytes": 1923943,
+      "path": "shared/assets/stickers-youth/leave-it-to-me.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-3644f4cb-3490-4566-bff8-f4f5e6de9994.png",
+      "prompt": "Use case: identity-preserve. Asset type: one transparent chibi chat sticker. Use ONLY the supplied youthful portrait as identity/outfit reference: oversized amber-gold eyes, youthful small rounded face, silver-light-blue hair with soft loose bangs, two simple navy bows with fine gold stitching, plain navy school cardigan, white round shirt collar and small navy neck bow. No gothic dress, rose jewelry, mature makeup or adult facial/body proportions. Cute wholesome schoolgirl chibi, waist-up, a gentle confident reassuring smile, one small hand lightly on her chest promising to help. Delicate soft anime painterly/cel style exactly matching reference, warm blush. Exact readable Simplified Chinese caption below: 交给我吧. No other words. Navy text thin cream outline. Transparent alpha background, clean antialiased hair edges, no white matte debris, no shadows. Full character, complete text, 8 percent transparent padding, square.",
+      "requested_transparency": true,
+      "visually_inspected": true,
+      "inspection": "Chinese caption 交给我吧 is correct; youthful chibi, reference amber eyes, simple bows and school cardigan."
+    },
+    {
+      "id": "search",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "bytes": 2580840,
+      "path": "shared/assets/scenes/search-no-results-youth.png",
+      "source": "C:/Users/17601/.codex/generated_images/01a1dfb1-b2a9-7e43-8f88-201cc38c9527/exec-adc09a3c-2ab9-4b0b-b4aa-04c17d5a7c53.png",
+      "prompt": "Use case: identity-preserve. Asset type: search-no-results illustration for HajiSaki app. Use ONLY the attached youthful portrait as the character identity/outfit reference. A single square story scene: this youthful schoolgirl seen from behind and slight side profile, looking down a quiet moonlit lane under a warm antique streetlamp. She has silver-light-blue long hair, simple navy bows, soft youthful face and large amber eyes visible only slightly in profile, plain navy school cardigan with white collar, simple knee-length navy pleated school skirt, socks and ordinary shoes, fully clothed. No adult gothic gown, corset, rose jewelry, heels, mature makeup or mature proportions. Small figure in lower-left third, puddles and soft rain in blue distance, warm tiny lamp reflection, emotionally gentle and hopeful, empty street, no other people, no text, no UI. Delicate anime illustration matching reference art style, pale soft lines, restrained Prussian blue and misty ice blue with warm pale gold. Preserve young tender presence. Leave spacious calm background.",
+      "requested_transparency": false,
+      "visually_inspected": true,
+      "inspection": "Youthful school outfit and plain bows replace old gothic gown; wet lane and lamp remain; no text."
+    }
+  ]
+}

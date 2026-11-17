@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "blink_closed",
+  "tool": "built-in image_gen",
+  "prompt": "Use case: identity-preserve. Asset type: closed-eye blink expression variant for HajiSaki iPad companion; edit target and identity master is the supplied image. Change ONLY the two eye interiors and eyelids to a completely closed, relaxed natural blink. Preserve exactly the original square canvas, pixel dimensions, head scale, head tilt, face position, nose, tiny soft smile, rounded youthful teenage face, bangs and every hair strand silhouette, silvery pale-blue hair, two simple navy bows with fine gold stitching, navy school cardigan, white collar, neck bow, lighting and transparent edges. Eyelids have delicate natural curved eyelashes and no visible gold iris while closed. No winking, no sleeping hand, no new pose, no makeup, no adult face, no mature styling. Keep the original artwork in every other area as unchanged as possible so this image can align with the reference for a subtle blink. Single image with real transparent alpha, no text, border or background.",
+  "editTarget": "shared/assets/avatars-youth/idle_gentle.png",
+  "source": "C:/Users/17601/.codex/generated_images/01a1dfe1-6019-7a72-b6bf-9ea76d3f70eb/exec-f668dc41-d8c5-44ec-ac3b-2f78c41290a1.png",
+  "path": "ipad/assets/expressions/blink_closed.png",
+  "visualInspection": "Output personally inspected at full image size. Youthful face, silvery-blue hair, closed relaxed eyelids, navy uniform and original tilt are retained. Some crown/cutout boundary specks remain visible against the transparency viewer; no zero-fringe claim.",
+  "animationAdmission": "Independent expression only; exact spatial and temporal alignment to idle is not verified. Do not switch this full-frame image as an eye patch over the seated-stage character.",
+  "p3Verified": false,
+  "alignmentVerified": false,
+  "integratedRuntimeVerified": false,
+  "width": 1254,
+  "height": 1254,
+  "mode": "RGBA",
+  "bytes": 2225615,
+  "sha256": "6320e39a30894928d4b2db2a578500f1ffaf1efef39be5741bcbb543d4a46e83",
+  "alphaExtrema": [
+    0,
+    255
+  ]
+}

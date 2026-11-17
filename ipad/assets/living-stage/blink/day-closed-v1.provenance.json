@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "day-closed-v1",
+  "tool": "built-in image_gen",
+  "prompt": "Use case: precise-object-edit. Asset type: one closed-eyelid blink frame for an already existing native iPad companion scene. Edit target: the supplied full scene, exactly 1536 x 1024 pixels. Change ONLY the young girl's two open eyes into a completely closed, relaxed natural blink: lower the eyelids naturally with delicate eyelash curves, no iris visible. The eyes occupy a tiny region around x1110-1188, y201-247 in the original 1536x1024 canvas. Everything outside the eye interiors/eyelids MUST remain the same: same exact pixel canvas/camera/crop, face shape/position/angle, eyebrows, nose, existing small mouth/smile, hair and bows, school uniform, hands in lap, full body, legs/shoes, seated support, room, cushion, rug, window, landscape, lamp, sun lighting and original illustration brushwork. Do not redraw the face, move the head, change age, alter smile, add blush or shift any objects. This is a blink lasting a fraction of a second, not a new emotional pose or sleeping scene. Keep all background and figure edges opaque and unchanged. Output ONE full opaque 1536x1024 landscape PNG, no label, no border, no cropped eye sheet.",
+  "reference": "ipad/assets/living-stage/day-mother.png",
+  "referenceSha256": "8d8ca2d001893c16106ab797ec4a8a8c1e6576115a5a4c76ff1dd519eff4e2cd",
+  "generatedSource": "C:/Users/17601/.codex/generated_images/01a1dfe1-6019-7a72-b6bf-9ea76d3f70eb/exec-357e3ea6-47d3-4e91-b31b-b6cdfd29ffc7.png",
+  "path": "ipad/assets/living-stage/blink/day-closed-v1.png",
+  "purpose": "Natural closed-eyelid source candidate; original approved scene remains authoritative.",
+  "visualReview": {
+    "viewedOriginal": true,
+    "viewedGeneratedFullCanvas": true,
+    "observation": "Both eyelids closed naturally; same seated youthful face, head tilt, hair, uniform and room composition visible. Some global fine detail is regenerated, so do not replace the full scene in animation.",
+    "runtimeApproved": false,
+    "fullFrameSwapApproved": false
+  },
+  "postprocessing": "none; copied original output unchanged",
+  "file": {
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGB",
+    "bytes": 2366703,
+    "sha256": "05623ded16640ec6d3b1d3c65021353ff3ff321c6fd7b5a6ec4cfca5a0017f23",
+    "iccProfilePresent": false,
+    "copyIdentical": true
+  }
+}

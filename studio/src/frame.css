@@ -1,0 +1,50 @@
+:root {
+  --bg: #05070f;
+  --surface: #0b1021;
+  --raised: #10172a;
+  --ink: #edf1fa;
+  --muted: #98a4c0;
+  --dim: #6d7a96;
+  --blue: #8cb4f5;
+  --light-blue: #b5cefa;
+  --gold: #d4af67;
+  --border: #283047;
+  --soft-border: #1b2338;
+  color-scheme: dark;
+  color: var(--ink);
+  background: transparent;
+  font-family: system-ui, "Microsoft YaHei", sans-serif;
+}
+:root[data-theme="day"] {
+  --bg: #f6f7fb;
+  --surface: #eef2fa;
+  --raised: #fff;
+  --ink: #1b233a;
+  --muted: #63718c;
+  --dim: #78829b;
+  --blue: #406aa9;
+  --light-blue: #2e5792;
+  --gold: #9e7b3e;
+  --border: #d3dbe9;
+  --soft-border: #dfe5ef;
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 12px 16px;
+  min-width: 0;
+  overflow-x: hidden;
+}
+article {
+  font-size: 16px;
+  line-height: 1.9;
+}
+button {
+  font: inherit;
+}
+a {
+  color: var(--blue);
+}

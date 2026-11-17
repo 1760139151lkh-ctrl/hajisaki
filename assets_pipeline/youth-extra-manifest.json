@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "style": "canonical youthful Sakiko, user-approved idle reference",
+  "assets": [
+    {
+      "id": "coding_focused",
+      "file": "shared/assets/avatars-youth/coding_focused.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-9cb9828c-3651-4f5f-bbd9-af939d452a60.png",
+      "prompt": "Use case: identity-preserve. Edit target and exact identity reference: the supplied youthful Sakiko portrait. Create one coding_focused emotion avatar. Keep EXACT SAME character age, soft rounded teenage face, large amber/golden eyes, pale silvery-blue hair, simple navy hair ribbons, navy school cardigan, white collar, small navy gold-stitch neck bow, soft youthful anime painting style, facial proportions and tight head-and-shoulders portrait framing. Change only expression to quiet focused concentration looking slightly downward toward an unseen screen, attentive eyebrows and a small neutral mouth. Add delicate thin-frame navy headphones with small earcups, tastefully fitted over hair. No glasses, no computer visible. Preserve pale complexion, gentle lighting and transparent background. Do not mature the face, no sharper chin, no adult makeup, no gothic gown, no blue eyes, no text or added border. Output one transparent square PNG portrait.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/avatars-youth/idle_gentle.png",
+      "visual_review": "Individually inspected full output. Youthful rounded face, amber/gold eyes, silvery-blue hair, navy school outfit and tight bust framing retained; expression matches requested state. No maturity or blue-eye drift observed.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2356306,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "tsundere_chide",
+      "file": "shared/assets/avatars-youth/tsundere_chide.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-01480583-3824-4b00-8bb0-2b888aa426f3.png",
+      "prompt": "Use case: identity-preserve. Edit target and exact identity reference: supplied youthful Sakiko portrait. Make the tsundere_chide emotion avatar. Preserve EXACT same age and soft round teenage facial proportions, same large amber/golden eyes, same pale silvery-blue hair and bangs, same simple navy side bows, navy school cardigan, white collar, small dark bow with gold stitching, same gentle anime painting and tightly framed head-and-shoulders composition. Change only expression: cheeks mildly puffed in a tiny affectionate pout, lips softly pursed, brows slightly knit in concerned admonishment about staying awake too late, golden eyes warm rather than angry. Very restrained pink cheeks, not makeup. Keep head tilt almost identical. No hands or new objects. No mature face or proportions, no adult makeup, no gothic outfit, no blue eyes. No text, symbols, border or background; genuinely transparent square PNG.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/avatars-youth/idle_gentle.png",
+      "visual_review": "Individually inspected full output. Youthful rounded face, amber/gold eyes, silvery-blue hair, navy school outfit and tight bust framing retained; expression matches requested state. No maturity or blue-eye drift observed.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2260358,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "happy_achieved",
+      "file": "shared/assets/avatars-youth/happy_achieved.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-14d0a3de-eb6e-4d4d-aefb-c4ffd89cbc2b.png",
+      "prompt": "Use case: identity-preserve. Edit target and exact identity reference: supplied youthful Sakiko portrait. Create happy_achieved emotion avatar: after solving a difficult problem, an open bright relaxed smile, gently lifted cheeks, luminous happy amber eyes still visibly open, eyebrows relaxed with relief. Keep EXACT SAME soft round teenage face and youthful proportions, eye shape and golden color, silvery pale blue hair and bangs, simple navy side bows, navy school cardigan, white collar and small navy bow with gold stitch, tight head-and-shoulders framing and same subtle head tilt. Same soft finely painted anime texture and lighting. Expression should feel naturally delighted, not exaggerated, no open shouting mouth, no tears. No hand, object, symbols or extra ornament. No adult makeup, mature face, gothic costume, blue eyes. Genuinely transparent background, one square PNG, no text or border.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/avatars-youth/idle_gentle.png",
+      "visual_review": "Individually inspected full output. Youthful rounded face, amber/gold eyes, silvery-blue hair, navy school outfit and tight bust framing retained; expression matches requested state. No maturity or blue-eye drift observed.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2278190,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "proud_smug",
+      "file": "shared/assets/avatars-youth/proud_smug.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-b36e045a-52a3-4136-914c-214eb7e06ed3.png",
+      "prompt": "Use case: identity-preserve. Edit target and exact identity reference: supplied youthful Sakiko portrait. Create proud_smug emotion avatar, a tiny reserved proud smile after taking good care of a difficult task: gently raised chin by just a few degrees, small closed-mouth smile with one corner subtly lifted, golden eyes quietly confident and amused. Warm and youthful, never condescending or seductive. Keep EXACT SAME soft round teenage face, large amber/golden eyes, silvery pale blue hair and bangs, simple navy side ribbons, navy school cardigan white collar and small navy gold-stitched bow, identical portrait scale and head-and-shoulders framing, softly painted anime style and lighting. No hands or new accessories. Do not change age, eye color, face proportions, outfit or hairstyle. No mature makeup or gothic clothing. Transparent square PNG, no lettering, symbols, border or background.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/avatars-youth/idle_gentle.png",
+      "visual_review": "Individually inspected full output. Youthful rounded face, amber/gold eyes, silvery-blue hair, navy school outfit and tight bust framing retained; expression matches requested state. No maturity or blue-eye drift observed.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2320054,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ]
+}

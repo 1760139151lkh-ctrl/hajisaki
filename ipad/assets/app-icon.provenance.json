@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "hajisaki-ipad-app-icon",
+  "path": "ipad/assets/app-icon.png",
+  "role": "opaque app icon master",
+  "tool": "built-in image_gen",
+  "prompt": "Use case: identity-preserve. Asset type: native iPadOS app icon for HajiSaki, opaque 1024 x 1024 square artwork. Image 1 is the authoritative character reference. Preserve this EXACT youthful anime girl identity: soft rounded teenage face, very large warm amber-gold eyes, pale silvery-blue hair with loose bangs, simple navy ribbon side bows, plain navy school cardigan and white collar. Create a clear close head-and-shoulders portrait icon, her gentle slight head tilt and reserved small smile toward the viewer. Face large enough to remain unmistakable at 60pt; eyes are the focal point. Keep all hair and bows inside an approximately 8 percent safe inset from each edge; shoulders can naturally reach the lower edge. Use a simple continuous opaque deep midnight Prussian-blue background, subtly lighter behind her hair, with restrained ice-blue and warm-gold lighting. Delicate painterly anime linework consistent with the reference but a clean bold silhouette readable at small size. No extra objects, text, letters, logo, badge, border, drawn rounded rectangle, frame, watermark, glitter or busy texture. Absolutely no adult or mature redesign, sharp grown-up jaw, makeup, ornate gothic clothes, jewelry, or blue eyes. Full opaque square all the way to every edge and corner; Apple applies its own icon mask, do not pre-round or leave transparent corners. Output one 1024 by 1024 PNG if supported.",
+  "reference": "shared/assets/avatars-youth/idle_gentle.png",
+  "referenceSha256": "50ed57c7cb690ac52eb49190762f878a2b8e8db5eb75d5d3d3f220e771d86974",
+  "generatedSource": "C:/Users/17601/.codex/generated_images/01a1dfe1-6019-7a72-b6bf-9ea76d3f70eb/exec-18fe6ced-0e0d-44eb-843a-57c24e8844b8.png",
+  "visualReview": {
+    "viewedOriginalOutput": true,
+    "identity": "Youthful rounded face, large golden-amber eyes, silvery-blue hair, navy bows and school cardigan retained. No mature redesign, text, extra objects or drawn icon frame.",
+    "composition": "Large face centered on a full deep navy square. All corners opaque; Apple should apply the system mask. Clean hair-to-background boundary in the generated opaque master.",
+    "selectedForPackaging": true,
+    "smallSpringboardIconReviewed": false,
+    "postprocessing": "none; original output copied unchanged"
+  },
+  "packaging": {
+    "requiredSize": [
+      1024,
+      1024
+    ],
+    "derivative": "If master is not 1024 square, create the standard 1024-square app-icon derivative through Apple sips on the build Mac, preserving the approved master. This is packaging resizing, not a new art edit.",
+    "p3Verified": false
+  },
+  "file": {
+    "width": 1254,
+    "height": 1254,
+    "mode": "RGB",
+    "bytes": 2218376,
+    "sha256": "ae8737545dd67b250c667772f2cbd4eb88759f2d160bd0ef343705cac3606d17",
+    "alphaExtrema": null,
+    "iccProfilePresent": false,
+    "copyIdentical": true
+  }
+}

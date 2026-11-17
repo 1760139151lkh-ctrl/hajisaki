@@ -1,0 +1,62 @@
+{
+  "assets": [
+    {
+      "id": "send-felt-c6",
+      "file": "audio/send-felt-c6.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "frames": 33600,
+      "seconds": 0.7,
+      "peak": 0.13056285101084825,
+      "bytes": 67244,
+      "source": "original procedural synthesis"
+    },
+    {
+      "id": "reply-major-nine",
+      "file": "audio/reply-major-nine.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "frames": 64800,
+      "seconds": 1.35,
+      "peak": 0.246342303941142,
+      "bytes": 129644,
+      "source": "original procedural synthesis"
+    },
+    {
+      "id": "bookmark-chime",
+      "file": "audio/bookmark-chime.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "frames": 50400,
+      "seconds": 1.05,
+      "peak": 0.13577858405690518,
+      "bytes": 100844,
+      "source": "original procedural synthesis"
+    },
+    {
+      "id": "effort-watch-click",
+      "file": "audio/effort-watch-click.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "frames": 2160,
+      "seconds": 0.045,
+      "peak": 0.0764531105786281,
+      "bytes": 4364,
+      "source": "original procedural synthesis"
+    },
+    {
+      "id": "piano-room-rain",
+      "file": "audio/piano-room-rain.wav",
+      "sample_rate": 48000,
+      "channels": 1,
+      "frames": 1440000,
+      "seconds": 30.0,
+      "peak": 0.05593381966985489,
+      "bytes": 2880044,
+      "source": "original procedural synthesis"
+    }
+  ],
+  "default_volume": 0.35,
+  "default_enabled": false,
+  "notes": "Original soft harmonic cues, not recordings of an acoustic felt piano. No device sound/haptic timing claim."
+}

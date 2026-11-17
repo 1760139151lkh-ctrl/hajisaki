@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "source_project": "在场",
+  "selection": "User requested youthful Sakiko, rooted in existing project artwork. Originals copied byte-for-byte. Amber/gold eyes, silvery blue hair, rounded youthful face, navy school cardigan and bow take precedence over earlier charter eye/color costume wording.",
+  "assets": [
+    {
+      "id": "idle_gentle",
+      "source": "C:/Users/17601/Documents/ChatGPT/在场/前端视觉创新设计/分类总库/01-程序素材/运行素材/companion/portraits/sakiko-selected-soft-youth-edit-v3-20261025.png",
+      "path": "shared/assets/avatars-youth/idle_gentle.png",
+      "kind": "avatar",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2309543,
+      "sha256": "50ed57c7cb690ac52eb49190762f878a2b8e8db5eb75d5d3d3f220e771d86974",
+      "visual_inspection": "individually inspected original full image"
+    },
+    {
+      "id": "day_room",
+      "source": "C:/Users/17601/Documents/ChatGPT/在场/前端视觉创新设计/分类总库/01-程序素材/运行素材/companion/scenes/sakiko-chat-apricot-literary-v1-mother.png",
+      "path": "shared/assets/scenes-user/day-room.png",
+      "kind": "scene",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2459089,
+      "sha256": "8d8ca2d001893c16106ab797ec4a8a8c1e6576115a5a4c76ff1dd519eff4e2cd",
+      "visual_inspection": "individually inspected original full image"
+    },
+    {
+      "id": "night_room",
+      "source": "C:/Users/17601/Documents/ChatGPT/在场/前端视觉创新设计/分类总库/01-程序素材/运行素材/companion/scenes/sakiko-chat-dry-night-literary-mother-v1.png",
+      "path": "shared/assets/scenes-user/night-room.png",
+      "kind": "scene",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2277809,
+      "sha256": "c56541389158a7f28539062ae2174da997b4cd4301e022eab9202e34d31ab5c1",
+      "visual_inspection": "individually inspected original full image"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+.workbook-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.sheet-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.sheet-toolbar label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  min-width: 160px;
+}
+.sheet-toolbar select { min-width: 160px; }
+.sheet-count, .sheet-pagination { font-size: 12px; color: var(--muted); }
+.sheet-scroll {
+  container-type: inline-size;
+  min-height: 100px;
+  min-width: 0;
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: #1b233a;
+}
+.sheet-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+  font: 13px/1.8 "Microsoft YaHei", sans-serif;
+}
+.sheet-table th, .sheet-table td {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  padding: 12px 16px;
+  text-align: left;
+  vertical-align: top;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #fff;
+  border-bottom: 1px solid #dfe5f0;
+  border-right: 1px solid #e6ebf4;
+}
+.sheet-table thead th { position: sticky; top: 0; z-index: 2; background: #1b233a; color: #fff; }
+.sheet-table :is(th, td):nth-child(2) { position: sticky; left: 44px; z-index: 1; width: 140px; min-width: 140px; max-width: 140px; box-shadow: 1px 0 #dfe5f0; }
+.sheet-table thead th:nth-child(2) { z-index: 3; }
+.sheet-table .sheet-row-number {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  padding: 12px 6px;
+  color: #64748b;
+  background: #f3f6fc;
+  text-align: center;
+  font-size: 11px;
+  font-weight: normal;
+}
+.sheet-table thead .sheet-row-number { z-index: 4; background: #1b233a; color: #c4d5f0; }
+.sheet-column-name { display: block; font: 10px/1.4 "Cascadia Code", monospace; opacity: 0.65; margin-bottom: 5px; }
+.sheet-pagination { display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto; gap: 8px; }
+.sheet-pagination button { min-height: 36px; }
+.export-status { flex: 0 0 auto; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.export-status:empty { display: none; }
+.export-status button { margin-left: 10px; }
+.cell-truncated { display: block; margin-top: 8px; color: #875632; font-weight: normal; }
+.archive-summary { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+.archive-entries { list-style: none; margin: 0; padding: 0; }
+.archive-entries li { display: flex; gap: 20px; justify-content: space-between; padding: 18px 0; border-bottom: 1px solid var(--border); }
+.archive-entries span { min-width: 0; overflow-wrap: anywhere; line-height: 1.7; }
+.archive-entries small { color: var(--muted); white-space: nowrap; padding-top: 3px; }
+@media (max-width: 600px) {
+  .sheet-table th, .sheet-table td { width: max(108px, calc(100cqw - 132px)); min-width: max(108px, calc(100cqw - 132px)); max-width: max(108px, calc(100cqw - 132px)); padding: 10px 12px; }
+  .sheet-table :is(th, td):nth-child(2) { left: 36px; width: 96px; min-width: 96px; max-width: 96px; }
+  .sheet-table .sheet-row-number { width: 36px; min-width: 36px; max-width: 36px; }
+  .sheet-pagination { flex-wrap: wrap; }
+  .sheet-pagination span { font-size: 11px; }
+}

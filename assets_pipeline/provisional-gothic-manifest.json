@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "tool": "built-in image_gen",
+  "status": "provisional_pending_user_reference",
+  "style_decision": "Paused after user requested youthful Sakiko styling and use of 在场 project references. Existing character assets are not final approved art.",
+  "reference": "shared/assets/reference/character-sheet.png",
+  "reference_prompt": "Use case: stylized-concept. Asset type: HajiSaki personal companion app character reference sheet, the master identity lock for all later illustrations. Draw Togawa Sakiko (丰川祥子) from BanG Dream!/Ave Mujica: long ice-blue hair with her characteristic two low blue side tails and clean straight bangs, pale grey-blue eyes, refined aristocratic face, dignified reserved demeanor with a gentle private warmth. One consistent character in a front head-and-shoulders portrait, three-quarter head-and-shoulders portrait, side profile, and full-body outfit view, arranged cleanly on a single landscape character sheet. Fully clothed dark Prussian-blue high-collar gothic piano dress with restrained antique champagne-gold embroidery and white shirt collar, tiny rose and crescent details. Cel-shaded anime mixed with refined painterly texture; precise elegant facial proportions, controlled moonlight highlights. Color palette #05070F #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. Flat very light cool grey sheet background to show silhouettes. No title, labels, logos, watermark or extra people. Keep face, hair and outfit absolutely consistent in all views. Sharp high-resolution production concept art, not a screenshot or UI.",
+  "reference_source": "Generated images are saved to C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47 as C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-abae1401-ea76-4252-ac43-b2529d7e9c80.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+  "assets": [
+    {
+      "id": "character-sheet",
+      "path": "shared/assets/reference/character-sheet.png",
+      "prompt": "Use case: stylized-concept. Asset type: HajiSaki personal companion app character reference sheet, the master identity lock for all later illustrations. Draw Togawa Sakiko (丰川祥子) from BanG Dream!/Ave Mujica: long ice-blue hair with her characteristic two low blue side tails and clean straight bangs, pale grey-blue eyes, refined aristocratic face, dignified reserved demeanor with a gentle private warmth. One consistent character in a front head-and-shoulders portrait, three-quarter head-and-shoulders portrait, side profile, and full-body outfit view, arranged cleanly on a single landscape character sheet. Fully clothed dark Prussian-blue high-collar gothic piano dress with restrained antique champagne-gold embroidery and white shirt collar, tiny rose and crescent details. Cel-shaded anime mixed with refined painterly texture; precise elegant facial proportions, controlled moonlight highlights. Color palette #05070F #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. Flat very light cool grey sheet background to show silhouettes. No title, labels, logos, watermark or extra people. Keep face, hair and outfit absolutely consistent in all views. Sharp high-resolution production concept art, not a screenshot or UI.",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGB",
+      "bytes": 2570037,
+      "alpha_extrema": null,
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "idle_gentle",
+      "prompt": "Use case: identity-preserve. Asset: single square transparent head-and-shoulders companion avatar for HajiSaki. Reference image is the identity lock, NOT a layout to copy: render exactly ONE Togawa Sakiko, with same ice blue hair, grey-blue eyes, navy gothic high collar outfit, gold embroidery, rose side ribbons and small crescent brooch. Cel-shaded refined painterly anime matching master. Expression idle_gentle: very soft restrained smile, relaxed mouth, looking gently at the viewer with dignified calm and private warmth. Framing centered bust, whole head and hair silhouette within frame, face large and readable, no border or circular mask, no background, no text, no watermark. Soft cool moonlight with subtle warm highlights. Preserve identity, clothing, proportions and palette from reference. Genuine transparent alpha.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-7cd94b4d-6083-4dff-babb-e29a781d3075.png",
+      "path": "shared/assets/avatars/idle_gentle.png",
+      "inspected": true,
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2267738,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "listening_attentive",
+      "prompt": "Use case: identity-preserve. Produce ONE square transparent HajiSaki avatar. Reference is master identity and style only, not a collage to repeat. Same Togawa Sakiko face, long ice-blue hair, grey-blue eyes, straight bangs, navy rose hair ribbons, high collar navy/gold gothic dress, crescent jewelry. Expression listening_attentive: listening closely with a subtle caring gaze and slight head tilt, one delicately drawn hand lifted near her ear; relaxed gently closed lips. Head and upper chest centered, all hair and hand within frame with a little clear margin at top and sides. Refined cel-shaded painterly anime, soft moonlight, stable scale and proportions. No text, background, frame, watermark or other person. Transparent alpha.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-5aced60f-38ce-424c-9dbc-ccc3246c91df.png",
+      "path": "shared/assets/avatars/listening_attentive.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2308903,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "thinking_deep",
+      "prompt": "Use case: identity-preserve. ONE square transparent HajiSaki avatar, not a sheet. Match reference Togawa Sakiko identity exactly: ice blue hair, grey blue eyes, straight bangs, navy rose ribbons and blue/gold high collar gothic clothing. Expression thinking_deep: thoughtful concentration, slightly lowered gaze, relaxed brow, one hand gently supports her chin, composed aristocratic intelligence, no sadness. Centered bust at same scale as reference avatar, accurate anatomy and delicate hand, complete head silhouette with transparent margin, no props except hand, no text/border/background. Refined painterly cel anime, soft moonlight and subtle warmth. Transparent alpha, crisp clean edges.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-80ba61a8-3c68-49ae-9301-358e5053a55a.png",
+      "path": "shared/assets/avatars/thinking_deep.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2309163,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "coding_focused",
+      "prompt": "Use case: identity-preserve. Render ONE transparent square HajiSaki companion avatar, not collage. Maintain exact Togawa Sakiko identity from master and idle avatar: long ice-blue hair with straight bangs and low side tails, grey-blue eyes, navy rose ribbons, white high collar, navy gold embroidered gothic piano dress and crescent jewelry. coding_focused expression: wearing elegant thin-frame dark blue headphones, focused slightly downwards toward unseen monitor, alert eyes and concentrated mouth, poised and capable. Head and shoulders centered, same scale as idle avatar. Complete head and headphones within bounds, small transparent margin. Refined cel shading with painterly texture and soft monitor-blue light, no visible screen or text, no border/background/watermark. Real transparent alpha.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-331cb9b7-3713-44a6-9f67-2a67ed523d2c.png",
+      "path": "shared/assets/avatars/coding_focused.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2386732,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "tsundere_chide",
+      "prompt": "Use case: identity-preserve. Render a SINGLE square transparent companion bust avatar using the exact same Togawa Sakiko as reference master and idle avatar, same face/ice-blue hair/grey-blue eyes/navy rose hair ties/gold embroidered high-collar navy gothic dress. Expression tsundere_chide: small mildly puffed cheeks, a restrained disapproving pout, tiny blush, gently knitted brows, eyes looking toward viewer; she worries the close companion is staying up late, tender concern beneath aristocratic sternness. Keep subtle and believable, not angry or exaggerated. Same framing and face size, soft cool moonlight, refined painterly cel anime. Transparent background, no speech bubble/text/border/watermark, no objects or extra people.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-a3b7d6a7-30cf-4d4c-8904-0190cc8212d7.png",
+      "path": "shared/assets/avatars/tsundere_chide.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2240617,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "late_night_tea",
+      "prompt": "Use case: identity-preserve. ONE square transparent bust portrait of the exact Togawa Sakiko character in references, identity and gothic navy/gold embroidered attire locked. Her long ice-blue hair, grey-blue eyes, rose ribbons and crescent brooch match. Expression late_night_tea: quiet affectionate soft gaze toward viewer, holding a delicate ivory bone-china teacup with a tiny antique gold rim in both hands at chest level; faint wisp of warm steam. Dignified tender late-night companionship. Same face scale as avatar, include hands and cup fully, anatomically correct fingers. Refined painterly cel-shaded anime, cool moonlit hair and subtle warm tea glow. Transparent alpha, no scene, text, border or watermark.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-9b3bd3dd-033f-43bf-8542-2e5e2169311a.png",
+      "path": "shared/assets/avatars/late_night_tea.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2353855,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "happy_achieved",
+      "prompt": "Use case: identity-preserve. Single square transparent bust avatar for HajiSaki of exact same Togawa Sakiko in reference images; maintain face, ice-blue hair, grey-blue eyes, straight fringe, navy rose ties and ornate navy/gold gothic high collar outfit. happy_achieved expression: open-hearted bright yet refined smile after solving a difficult problem together, softened brows, bright eyes, slight natural rosy cheeks, shoulders relaxed. A small visible smile with slightly parted lips, no over-exaggerated mouth. Same large head/shoulder framing and moonlit painterly cel anime treatment. No background, frame, speech, words, watermark or extra person. Clean transparent alpha.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-ea10ffea-686d-4776-a56a-3d9dad7d0184.png",
+      "path": "shared/assets/avatars/happy_achieved.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2301625,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "reconnecting_anxious",
+      "prompt": "Use case: identity-preserve. ONE single square transparent HajiSaki bust portrait, exact same character identity as references: Togawa Sakiko, ice-blue long hair/grey-blue eyes/straight bangs/navy rose ribbons/high collar navy gold gothic dress/crescent brooch. reconnecting_anxious expression: very subtle worried furrow, caring eyes looking at viewer, lips slightly parted as if gently reassuring, one hand reaching forward a little toward the viewer; no panic, tears or dramatic anguish. Same large face scale and gentle moonlight, refined painterly cel-shaded anime. Hand fully visible with accurate fingers, transparent alpha, no background, UI, speech bubble, words, frame or watermark.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-237453b6-61cc-4f21-9784-cc6bf05be754.png",
+      "path": "shared/assets/avatars/reconnecting_anxious.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2333015,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    },
+    {
+      "id": "sleepy_soft",
+      "prompt": "Use case: identity-preserve. ONE square transparent HajiSaki companion bust portrait, preserve identical Togawa Sakiko face, ice-blue hair, grey-blue eyes, navy rose hair ribbons and navy/gold embroidered gothic high collar outfit from supplied references. sleepy_soft expression: late at 3am, quietly sleepy and tender, one eye half closed and the other relaxed, gently rubbing the outer corner of one eye with the side of one finger, small soft closed-mouth smile still keeping company. No crying, no distress. Anatomically delicate hand, same head scale as idle reference, head silhouette entirely inside frame. Painterly cel-shaded elegant anime, soft cool moonlight. Transparent alpha, no background/text/frame/watermark.",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb0-39cf-71b0-9575-28e4b83cda47\\exec-75850714-7622-4681-be5b-011664ff6200.png",
+      "path": "shared/assets/avatars/sleepy_soft.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 2304897,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "visual_inspection": "inspected individually, provisional styling"
+    }
+  ],
+  "not_generated": [
+    "proud_smug"
+  ]
+}

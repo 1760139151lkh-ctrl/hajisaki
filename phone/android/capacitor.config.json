@@ -1,0 +1,13 @@
+{
+  "appId": "com.hajisaki.android",
+  "appName": "哈基祥",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#05070F",
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "CapacitorHttp": { "enabled": true }
+  }
+}

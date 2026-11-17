@@ -1,0 +1,29 @@
+{
+  "snapshot_date": "2026-11-17",
+  "artifacts": [
+    {
+      "artifact": "hajisaki-android.apk",
+      "source_path": "releases/hajisaki-android.apk",
+      "bytes": 44886529,
+      "sha256": "e30275f89f3f3b9f037ffc0f542dd162f9b68e3155f460b9b3ae85b187eefaee"
+    },
+    {
+      "artifact": "HajiSaki-iPad-0.1.0-build7-03ba2d3c-unsigned.ipa",
+      "source_path": "ipad/outputs/install-build7/HajiSaki-iPad-0.1.0-build7-03ba2d3c-unsigned.ipa",
+      "bytes": 88020621,
+      "sha256": "03ba2d3c83f822ce6224a639f7f28fdd310721d23647cd66c7397706e13c3651"
+    },
+    {
+      "artifact": "hajisaki-openharmony-api26-unsigned.hap",
+      "source_path": "releases/hajisaki-openharmony-api26-unsigned.hap",
+      "bytes": 64279942,
+      "sha256": "e44503d9c88dcde4a112b7dc974c247b7d73922eb99231a4757dca47fc94f22f"
+    },
+    {
+      "artifact": "hajisaki-preview-api26-unsigned.hap",
+      "source_path": "releases/hajisaki-preview-api26-unsigned.hap",
+      "bytes": 64280782,
+      "sha256": "d260ba677b61050b33e768bcd820bc92c526538975e3567f3f900a5b4e5af9a9"
+    }
+  ]
+}

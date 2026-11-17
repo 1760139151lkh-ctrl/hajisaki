@@ -1,0 +1,602 @@
+{
+  "schemaVersion": 1,
+  "canvas": [
+    1536,
+    1024
+  ],
+  "coordinateOrigin": "top-left source pixels",
+  "colorSpace": "Generated PNGs currently untagged; interpreted as sRGB input, not proof of Display P3 artwork.",
+  "sprites": [
+    {
+      "theme": "night",
+      "posture": "thinking",
+      "file": "night-thinking-v2.png",
+      "closedFile": "night-thinking-closed-v1.png",
+      "eyeRects": [
+        [
+          1118,
+          212,
+          42,
+          34
+        ],
+        [
+          1168,
+          188,
+          40,
+          34
+        ]
+      ],
+      "steamOrigin": null,
+      "characterBounds": [
+        860,
+        88,
+        560,
+        875
+      ],
+      "generatedOutput": "exec-d52c7dec-533e-4838-871e-4e611b665604.png",
+      "generation": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: identity-preserve. Asset type: a precisely registered transparent full-body pose layer for a native iPad companion stage. Edit target/reference image 1 is the approved night mother, the sole authority for this girl's identity, youthful face, proportions, clothes, lighting and camera. Produce ONE transparent PNG layer, same 1536x1024 landscape canvas and exactly the same character scale and placement as the reference: complete seated girl at the right, head near (1170,205), seated hips near (1215,580), shoes near (985,875), full character bounds approximately x=895..1365 and y=110..916. Do NOT center, zoom, crop or move her. Remove the whole room, furniture, seat, blanket, cushions, floor and scenery to actual alpha transparency; include only the complete girl, clothes, hair, hands and shoes. Change only her arms and expression to a restrained deep-thinking pose: one elbow naturally supported on her other forearm, delicate fingertips lightly supporting her chin, eyes quietly focused a little toward the viewer's left, eyebrows calm. Keep her youthful small face, amber-gold eyes, pale silver-blue hair with warm edge light, navy cardigan, ivory blouse and ribbon, plaid skirt, knee socks and brown loafers. Keep her seated hips, legs and shoes in the original position and preserve the original head outline and head tilt as closely as possible. Soft polished anime illustration, high detail, no makeup, no mature/adult redesign, no glamour, no enlarged chest, no text, no labels, no watermark. Hair edges must retain natural partial alpha, no white matte or checkerboard baked in. Empty left area must remain transparent, with the original full canvas registration.",
+        "refinementPrompt": "Use case: background-extraction. Edit target image 1 is the generated thinking-pose layer. Supporting image 2 is the approved night mother for identity/registration only. Make ONE precisely registered transparent PNG layer on the same 1536x1024 canvas. Change ONLY the alpha cutout quality: remove the diffuse brown/cream haze, halo, glow and every stray background pixel outside the girl's actual silhouette, including the large blurry light cloud behind her head and legs. Outside the character must be exactly alpha 0. The interior of her skin, hair, cardigan, skirt, socks and shoes must be fully opaque, alpha 255, with natural partial-alpha antialiasing only on the narrow true hair/clothing boundary. Keep every part of the thinking girl exactly as in image 1: same face, chin-resting hand, other arm, youthful amber eyes, original size, head position, hip/leg/shoe position, lighting, detailed textures and original empty-canvas registration. Do not recenter, crop, zoom, repaint her face, add furniture, add background, add drop shadows or introduce any new light effect. No white edge, no matte, no checkerboard, no text.",
+        "sourceMother": "../night-mother.png",
+        "postprocessing": "none; copied byte-for-byte",
+        "sourceOutputFile": "exec-d52c7dec-533e-4838-871e-4e611b665604.png"
+      },
+      "review": {
+        "fullBodyIndividuallyViewed": true,
+        "alphaDataInspected": true,
+        "nativeCompositeReviewed": true,
+        "nativeMotionReviewed": true,
+        "nativeScope": "full seated figure",
+        "motionObserved": [
+          "blink"
+        ],
+        "nativeFrameEvidence": "ipad/evidence/build4-night-thinking-closed.png"
+      },
+      "bytes": 1067900,
+      "sha256": "f7db4009ffe794bd0c62231e730a3cb9fb0646661ae379635684639931cab3f1",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "iccBytes": 0,
+      "closedOffset": [
+        0,
+        0
+      ],
+      "closedBytes": 1082909,
+      "closedSha256": "3cf011c4660c7def5397a26bc860e86c8f0cc9e95f0dee1a6e148b776c77a1df",
+      "closedGeneration": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: precise-object-edit, identity-preserve. This transparent NIGHT thinking/chin-resting pose is the edit target. Produce ONE perfectly registered blink frame, same 1536x1024 canvas. Change ONLY both eyelids to a brief natural full closure, delicate closed lash curves and absolutely no visible iris. Preserve eyebrows, youthful facial identity, head tilt and position, nose, small neutral mouth, all hair, chin-resting fingers, other arm, clothes, seated hips, legs/shoes and transparent silhouette exactly. Never recenter, zoom or crop. No background, glow additions, text, watermark or new objects. The native renderer will mask to two small eye regions, so the closed lash placement must match the open eyes precisely.",
+        "sourceOutputFile": "exec-8695f265-103a-4967-9c8d-f6d5ffbf7201.png",
+        "postprocessing": "none; copied byte-for-byte"
+      },
+      "closedCandidateViewed": true,
+      "closedNativeReviewed": true
+    },
+    {
+      "theme": "day",
+      "posture": "thinking",
+      "file": "day-thinking-v1.png",
+      "closedFile": "day-thinking-closed-v1.png",
+      "eyeRects": [
+        [
+          1100,
+          220,
+          44,
+          35
+        ],
+        [
+          1150,
+          194,
+          48,
+          40
+        ]
+      ],
+      "steamOrigin": null,
+      "characterBounds": [
+        860,
+        88,
+        560,
+        875
+      ],
+      "generatedOutput": "exec-c81140ac-398a-4fdf-9fcd-4ff510d1c784.png",
+      "generation": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: identity-preserve. Asset: ONE transparent, full seated-character daytime thinking pose for a native iPad stage. Image 1 is the approved DAY mother, the edit target and sole authority for her youthful identity, facial features, proportions, daylight color and canvas registration. Image 2 is a NIGHT thinking-pose guide for arm placement only. Output a transparent PNG on the exact same 1536x1024 canvas as image 1. Do not recenter, zoom, crop, or change her head/hips/legs/shoes registration. Keep the complete seated girl in the right part of the canvas, original head around (1160,215), hips around (1220,610), shoes around (975,905). Change only the arms to a natural, thoughtful chin-resting gesture as in image 2, one forearm supporting the other elbow; calm focused youthful amber eyes, small neutral mouth. Maintain image 1's pale silver-blue hair, navy cardigan and simple ribbon/blouse, plaid skirt, knee socks, loafers and soft clear daylight. Remove every room/furniture/cushion/floor/background pixel to real alpha transparency. Character interior should be opaque, with clean natural partial alpha only at true hair/clothing edges. No haze, glow, drop shadow, white matte or baked checkerboard. No adult redesign, makeup, glamour, chest emphasis, new objects, text, watermark or UI. Preserve both youthful face and full original seated footprint, changing only the thinking gesture.",
+        "sourceMother": "../day-mother.png",
+        "postprocessing": "none; copied byte-for-byte",
+        "sourceOutputFile": "exec-c81140ac-398a-4fdf-9fcd-4ff510d1c784.png"
+      },
+      "review": {
+        "fullBodyIndividuallyViewed": true,
+        "alphaDataInspected": true,
+        "nativeCompositeReviewed": true,
+        "nativeMotionReviewed": true,
+        "nativeScope": "full seated figure",
+        "motionObserved": [
+          "blink"
+        ],
+        "nativeFrameEvidence": "ipad/evidence/build4-day-thinking-closed.png"
+      },
+      "bytes": 1076948,
+      "sha256": "b4db1cf59844275e17151347e4702d7c2e8f4a4c6f9fb5e1a2a52fe1749b4406",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "iccBytes": 0,
+      "closedOffset": [
+        32,
+        0
+      ],
+      "closedBytes": 1111872,
+      "closedSha256": "50a87352a8b7f7512fceb30d0b6320fee5bccd4c7b00839f6bd9a5f99fff341e",
+      "closedGeneration": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: precise-object-edit, identity-preserve. Edit target is this transparent DAY thinking/chin-resting pose. Create ONE matching blink frame, exact same 1536x1024 canvas registration. Close ONLY both eyelids naturally and completely, with fine lash lines and no visible iris. Keep every non-eye feature unchanged: youthful face and small mouth, eyebrows, nose, original head outline/tilt/position, hair, chin-supporting hand and other arm, daylight colors, uniform, skirt, legs and shoes. Preserve genuine alpha transparency and the exact full body scale/placement. No recentering, zoom, crop, backdrop, glow additions, new objects, text or watermark. Only the two masked eye patches will be used by the native renderer.",
+        "sourceOutputFile": "exec-05745682-5374-4b2a-93b7-e783e4abd081.png",
+        "postprocessing": "none; copied byte-for-byte"
+      },
+      "closedCandidateViewed": true,
+      "closedNativeReviewed": true
+    },
+    {
+      "theme": "night",
+      "posture": "reading",
+      "file": "night-reading-v1.png",
+      "closedFile": "night-reading-closed-v1.png",
+      "eyeRects": [
+        [
+          1120,
+          238,
+          42,
+          34
+        ],
+        [
+          1165,
+          216,
+          40,
+          34
+        ]
+      ],
+      "steamOrigin": null,
+      "characterBounds": [
+        860,
+        88,
+        560,
+        875
+      ],
+      "generatedOutput": "exec-1b9e34e5-e737-47d2-bd0f-cee84bcba1ba.png",
+      "generation": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: identity-preserve. Asset: one transparent full seated-character reading pose for the iPad companion. Edit target image 1 is the approved NIGHT mother and authority for youthful face, amber eyes, pale silver-blue hair, navy cardigan uniform, proportions, light and registration. Use the exact same 1536x1024 landscape canvas. Keep her head outline, seated hips, legs, socks and shoes in their original pixel positions; do not recenter, zoom, crop or alter the original seated footprint at x roughly 895..1365, y 110..916. Change her arms to hold a small open ivory music notebook naturally over her lap, with delicate hands supporting the lower corners. She gently lowers her gaze to the open pages, chin slightly lowered; quiet attention, small neutral mouth, no smile toward camera. Pages have subtle musical staff marks, not readable text. Keep her face youthful and source-faithful; no mature redesign or makeup. Remove the entire room, furniture, floor, blanket and background to real alpha transparency, leaving ONLY the complete girl and the notebook. Opaque subject interior, clean antialiased hair edges. No halo, haze, glow, drop shadow, white matte, baked checkerboard, extra limbs, new jewelry, caption, watermark or UI.",
+        "sourceMother": "../night-mother.png",
+        "postprocessing": "none; copied byte-for-byte",
+        "sourceOutputFile": "exec-1b9e34e5-e737-47d2-bd0f-cee84bcba1ba.png"
+      },
+      "review": {
+        "fullBodyIndividuallyViewed": true,
+        "alphaDataInspected": true,
+        "nativeCompositeReviewed": true,
+        "nativeMotionReviewed": true,
+        "nativeScope": "full seated figure",
+        "motionObserved": [
+          "blink"
+        ],
+        "nativeFrameEvidence": "ipad/evidence/build4-reading-frame-47.png"
+      },
+      "bytes": 1039640,
+      "sha256": "c63099d9667dccb722d815ea6a16bbd8bbc082371001691e8f46d70a4bcfee8e",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "iccBytes": 0,
+      "closedOffset": [
+        0,
+        0
+      ],
+      "closedBytes": 1185315,
+      "closedSha256": "0f2d9c6dd1d282c6f0eebd77c5dbbdda23c538bb5f7ba5d3a918b026a23b9e82",
+      "closedGeneration": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: precise-object-edit, identity-preserve. Edit target is the transparent NIGHT reading-a-music-notebook character. Create ONE matching closed-eyelid blink frame. Same full 1536x1024 canvas and exact subject registration; do not move, recenter, zoom or resize anything. Close ONLY both eyes gently and fully, fine natural lash arcs, no visible amber iris. Keep the downward head tilt, eyebrows, youthful face, nose, mouth, hair silhouette, notebook, hands, uniform, all body/leg/shoe positions, lighting and actual transparent alpha unchanged. No new background, halo, objects, text or watermark. Renderer will use only the two corresponding eye patches, so their positions must stay aligned to the current eyes.",
+        "sourceOutputFile": "exec-701d0a11-0fce-4a0d-9856-59fbc4b95ae6.png",
+        "postprocessing": "none; copied byte-for-byte"
+      },
+      "closedCandidateViewed": true,
+      "closedNativeReviewed": true
+    },
+    {
+      "theme": "day",
+      "posture": "reading",
+      "file": "day-reading-v1.png",
+      "closedFile": "day-reading-closed-v1.png",
+      "eyeRects": [
+        [
+          1106,
+          238,
+          44,
+          35
+        ],
+        [
+          1158,
+          216,
+          42,
+          34
+        ]
+      ],
+      "steamOrigin": null,
+      "characterBounds": [
+        860,
+        88,
+        560,
+        875
+      ],
+      "generatedOutput": "exec-0ae75224-d092-4454-b554-20bb456f0f61.png",
+      "generation": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: identity-preserve. ONE transparent full-body daytime reading-pose layer. Image 1 is the approved DAY mother, edit target and sole identity/daylight/registration authority. Image 2 supplies ONLY the small open music notebook, hand pose and lowered reading gaze. Keep image 1's complete youthful girl at precisely the same 1536x1024 canvas coordinates, size, original seated hips, legs and shoes; head outline and hair silhouette as close as possible. Change her hands to hold a small ivory music notebook over her lap, gently lower her chin and eyes toward the pages, serene attentive expression, neutral small mouth. Preserve soft youthful face, amber-gold eyes, silver-blue hair, original navy cardigan/blouse/ribbon/plaid uniform and clear soft daylight from image 1. Remove ALL scenery/furniture/seat/cushions/floor to genuine alpha 0; retain ONLY the girl and notebook with opaque subject interior and true antialiased hair edges. Never recenter, zoom or crop. No haze, halo, glow, drop shadow, white matte, checkerboard, adult redesign, makeup, glamour, extra limbs, captions, watermarks or UI.",
+        "sourceMother": "../day-mother.png",
+        "postprocessing": "none; copied byte-for-byte",
+        "sourceOutputFile": "exec-0ae75224-d092-4454-b554-20bb456f0f61.png"
+      },
+      "review": {
+        "fullBodyIndividuallyViewed": true,
+        "alphaDataInspected": true,
+        "nativeCompositeReviewed": true,
+        "nativeMotionReviewed": true,
+        "nativeScope": "full seated figure",
+        "motionObserved": [
+          "blink"
+        ],
+        "nativeFrameEvidence": "ipad/evidence/build4-day-reading-closed.png"
+      },
+      "bytes": 1149981,
+      "sha256": "be4be8ad2aa5285918f846635084cf8c56a3ff62b5c103c1acc5ef30fe35e591",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "iccBytes": 0,
+      "closedOffset": [
+        0,
+        0
+      ],
+      "closedBytes": 1210325,
+      "closedSha256": "21c5cc789b786c2736f51236aab8d89aa2b3850f8d3eab9859b7e1869d3963a6",
+      "closedGeneration": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: precise-object-edit, identity-preserve. Create ONE closed-eyelid blink frame for this exact transparent DAY reading pose. Keep the same complete 1536x1024 canvas and every original coordinate. Change ONLY the two eyes from the current lowered reading gaze to fully closed fine lash arcs, no iris visible. Preserve youthful face, original head outline/tilt/placement, brows, nose, mouth, hair, notebook, hands, cardigan, skirt, legs, shoes, daylight palette and transparent alpha contour unchanged. No moving, centering, zoom, crop, additional background, glow, objects, text or watermark. Native renderer extracts only the matching small eye regions.",
+        "sourceOutputFile": "exec-92175eb2-4e18-49bc-8894-d332aed3e7a4.png",
+        "postprocessing": "none; copied byte-for-byte"
+      },
+      "closedCandidateViewed": true,
+      "closedNativeReviewed": true
+    },
+    {
+      "theme": "night",
+      "posture": "tea",
+      "file": "night-tea-v1.png",
+      "closedFile": "night-tea-closed-v1.png",
+      "eyeRects": [
+        [
+          1118,
+          209,
+          42,
+          34
+        ],
+        [
+          1168,
+          186,
+          42,
+          34
+        ]
+      ],
+      "steamOrigin": [
+        1150,
+        366
+      ],
+      "characterBounds": [
+        860,
+        88,
+        560,
+        875
+      ],
+      "generatedOutput": "exec-0da3697b-6a86-4c23-a54d-a064d1250dea.png",
+      "generation": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: identity-preserve. ONE transparent full seated-character NIGHT tea-companion layer for a native iPad stage. Edit target image 1 is the approved night mother: lock her youthful soft small face, amber-gold eyes, pale silver-blue hair, original seated body scale, hip/leg/shoe positions, source warm edge light and complete 1536x1024 canvas registration. Do not center, crop or zoom. Give her a soft simple deep-navy knitted shawl over the original cardigan uniform, suitable for quietly staying up beside a friend; preserve modest youthful styling, no adult glamour. Her two natural hands cradle a small warm ivory porcelain teacup with subtle blue decoration and a matching small saucer just below chest level, around original canvas x=1145,y=435. She looks gently toward the viewer with restrained warmth, a very small relaxed smile and slightly softened eyelids. Keep original head placement and tilt, original plaid skirt, socks and brown loafers. Remove ALL room, seat, blanket, cushions, floor, scenery and all background to genuine alpha transparency; only the complete girl, shawl and cup/saucer remain. No baked steam: the app will animate tea wisps separately. Opaque subject interior with clean partial alpha on true hair edges only, no glow/halo/fog/drop shadow or white matte. No makeup, mature redesign, exaggerated chest, extra limbs, readable text, watermark or UI.",
+        "sourceMother": "../night-mother.png",
+        "postprocessing": "none; copied byte-for-byte",
+        "sourceOutputFile": "exec-0da3697b-6a86-4c23-a54d-a064d1250dea.png"
+      },
+      "review": {
+        "fullBodyIndividuallyViewed": true,
+        "alphaDataInspected": true,
+        "nativeCompositeReviewed": true,
+        "nativeMotionReviewed": true,
+        "nativeScope": "full seated figure",
+        "motionObserved": [
+          "blink",
+          "steam"
+        ],
+        "nativeFrameEvidence": "ipad/evidence/build4-tea-frame-67.png"
+      },
+      "bytes": 1131657,
+      "sha256": "c5156c3ac3fc5b3962cb5a9600dc60ecf41b4fc308494e74d56abab17c9139ed",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "iccBytes": 0,
+      "closedOffset": [
+        0,
+        0
+      ],
+      "closedBytes": 1131562,
+      "closedSha256": "65114b6d74cc8b6a7c422ce3db768a54c8524e77a50d315eddfbfeabd0f9eb51",
+      "closedGeneration": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: precise-object-edit, identity-preserve. Edit target is this transparent full-body NIGHT tea pose. Make ONE matching blink frame. Change ONLY her two eyelids: close both eyes naturally and completely, with delicate closed lash lines, no amber iris remaining. Preserve the exact 1536x1024 canvas, head outline/tilt/location, youthful face, eyebrows, nose, small mouth and smile, every hair strand, shawl, hands, cup, saucer, body, skirt, legs and shoes. All non-eye details must remain unchanged. Keep true transparent alpha around the complete registered figure. No steam, new glow, new background, white matte, extra objects, text or watermark. The app will use only two small masked eye regions from this frame, so eye placement must precisely match the target.",
+        "sourceOutputFile": "exec-dbd7830f-99ff-4d21-b333-2e31e77142e1.png",
+        "postprocessing": "none; copied byte-for-byte"
+      },
+      "closedCandidateViewed": true,
+      "closedNativeReviewed": true
+    },
+    {
+      "theme": "day",
+      "posture": "tea",
+      "file": "day-tea-v1.png",
+      "closedFile": "day-tea-closed-v1.png",
+      "eyeRects": [
+        [
+          1107,
+          220,
+          44,
+          35
+        ],
+        [
+          1158,
+          196,
+          44,
+          36
+        ]
+      ],
+      "steamOrigin": [
+        1138,
+        379
+      ],
+      "characterBounds": [
+        860,
+        88,
+        560,
+        875
+      ],
+      "generatedOutput": "exec-db16e31f-ca39-45e7-af8d-6ed4ee9f7faf.png",
+      "generation": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: identity-preserve. ONE transparent full seated-character DAY tea-companion layer. Image 1 is the approved DAY mother and edit target: preserve her youthful face, amber eyes, pale silvery-blue hair, original proportions, clear daylight, navy cardigan/blouse/ribbon/plaid skirt/socks/loafers and exact seated registration on the same 1536x1024 canvas. Image 2 guides only the natural two-hand teacup/saucer gesture. Keep the original head outline, tilt, hips, legs and shoes; never recenter, zoom or crop. She holds a small ivory porcelain blue-floral teacup and saucer around chest/lap height with calm delicate hands, very subtle warm smile and gently attentive eyes. Keep DAY uniform without a shawl. Remove all scenery, room, furniture, floor, cushions and backdrop to true alpha 0; retain only the entire girl plus cup/saucer, opaque inside with real antialiased hair edges. No painted steam: native app adds it. No haze, glow, halo, shadow cloud, white matte, checkerboard, adult face, makeup, glamour, exaggerated body, extra limbs, captions, watermark or UI.",
+        "sourceMother": "../day-mother.png",
+        "postprocessing": "none; copied byte-for-byte",
+        "sourceOutputFile": "exec-db16e31f-ca39-45e7-af8d-6ed4ee9f7faf.png"
+      },
+      "review": {
+        "fullBodyIndividuallyViewed": true,
+        "alphaDataInspected": true,
+        "nativeCompositeReviewed": true,
+        "nativeMotionReviewed": true,
+        "nativeScope": "full seated figure",
+        "motionObserved": [
+          "blink",
+          "steam"
+        ],
+        "nativeFrameEvidence": "ipad/evidence/build4-day-tea-closed.png"
+      },
+      "bytes": 1100793,
+      "sha256": "56e8a76beb2b8a0ff94b4ceec9a57e1774974498db65d1a470c2dbb8dad52a12",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "iccBytes": 0,
+      "closedOffset": [
+        0,
+        0
+      ],
+      "closedBytes": 1060744,
+      "closedSha256": "42b35ba4f48c343f11c443f93cef48d22f170a004263ea78fd3eb590ed79623b",
+      "closedGeneration": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: precise-object-edit, identity-preserve. Edit target: the attached transparent DAY tea-companion pose. Produce its ONE matching closed-eye blink frame on the exact same 1536x1024 canvas. Change ONLY the two eyelids: both fully and naturally closed, fine lash curves, no visible gold iris. Keep exact head tilt and placement, youthful identity, brows, nose, mouth and small smile, hair, uniform, hands, teacup/saucer, seated body, legs/shoes and all alpha edges unchanged. Preserve real transparent background and registration; no zoom, crop, repositioning, steam, backdrop, halo, new objects, text or watermark. The app extracts only the two corresponding eye patches, never replaces this full frame.",
+        "sourceOutputFile": "exec-a15cb5fc-fbec-4d0b-bdbc-1b9a920ac61b.png",
+        "postprocessing": "none; copied byte-for-byte"
+      },
+      "closedCandidateViewed": true,
+      "closedNativeReviewed": true
+    },
+    {
+      "theme": "night",
+      "posture": "watching",
+      "file": "night-watching-v1.png",
+      "closedFile": "night-watching-closed-v2.png",
+      "eyeRects": [
+        [
+          1103,
+          218,
+          36,
+          32
+        ],
+        [
+          1137,
+          200,
+          40,
+          34
+        ]
+      ],
+      "steamOrigin": null,
+      "characterBounds": [
+        860,
+        88,
+        560,
+        875
+      ],
+      "generatedOutput": "exec-a3bda08f-d665-4a0a-8657-dfc62e121391.png",
+      "generation": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: identity-preserve. ONE transparent full seated-character NIGHT attentive-canvas pose. Reference/edit target is the approved night mother. Maintain the exact 1536x1024 canvas, original character scale and registration, original youthful facial features and body proportions, amber-gold eyes, silvery-blue hair, navy uniform/cardigan/ribbon, plaid skirt, socks and loafers. Keep hips, legs, shoes and calm folded hands on lap in the original positions. Gently turn her eyes and head a few degrees toward the viewer's LEFT and DOWN, as if quietly watching a friend's pencil on a nearby desk, not facing the viewer. Subtle head inclination and attentive softened brows, tiny neutral mouth; do not turn to profile, do not change face age, do not enlarge head. Preserve original warm night rim light. Entire room, furniture, seat, floor, cushions, blanket and all background must become actual alpha transparency. Retain only the complete seated girl, opaque core and clean antialiased hair boundary. No notebook/cup/extra props, halo, haze, glowing cloud, drop shadow, white matte, checkerboard, makeup, adult redesign, glamour, text, watermark or UI. Never crop, zoom or recenter.",
+        "sourceMother": "../night-mother.png",
+        "postprocessing": "none; copied byte-for-byte",
+        "sourceOutputFile": "exec-a3bda08f-d665-4a0a-8657-dfc62e121391.png"
+      },
+      "review": {
+        "fullBodyIndividuallyViewed": true,
+        "alphaDataInspected": true,
+        "nativeCompositeReviewed": true,
+        "nativeMotionReviewed": true,
+        "nativeScope": "header face close-up",
+        "motionObserved": [
+          "blink"
+        ],
+        "nativeFrameEvidence": "ipad/evidence/build4-night-watching-closed.png"
+      },
+      "bytes": 1049888,
+      "sha256": "5c7097b312aab665b944dbdaeb340a75ca073f3aff494ef15a360a35c51a438c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "iccBytes": 0,
+      "closedOffset": [
+        0,
+        0
+      ],
+      "closedBytes": 1056386,
+      "closedSha256": "8e5a284f3d12051b0023865b572bd13bf92c8792b85f20d72aff4b3a21659bb1",
+      "closedGeneration": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: precise-object-edit, identity-preserve. Make ONE registered blink-source image for the attached NIGHT canvas-watching pose. Keep exact 1536x1024 canvas coordinates and the full figure's original position/scale. Change ONLY both eyelids to fully closed natural fine lashes, no iris, while preserving the viewer-left/down head turn, youthful face, brows/nose/mouth, hair, folded hands, clothes, body/legs/shoes and lighting. Crucial output format: genuine RGBA transparency, alpha exactly ZERO in the empty background everywhere outside the girl; no translucent black fill, brown haze or full-frame matte. Preserve opaque character core and natural narrow antialiased hair edges. Do not move, crop, center, zoom, repaint other features, add backdrop, extra glow, words or watermark. The native app uses only the two corresponding eye patches, with all other candidate pixels discarded.",
+        "sourceOutputFile": "exec-dc9faf05-2976-4978-a184-51466fb9ded8.png",
+        "postprocessing": "none; copied byte-for-byte"
+      },
+      "closedCandidateViewed": true,
+      "closedNativeReviewed": true,
+      "rejectedClosedCandidate": {
+        "path": "ipad/evidence/rejected-stage-assets/night-watching-closed-v1.png",
+        "reason": "Background alpha minimum 36; not admitted as a transparent candidate.",
+        "originalSha256": "665b62b27c5cd16f223bc8e3f45882e3a42de8dfe2995de270743cb32d1b0149"
+      }
+    },
+    {
+      "theme": "day",
+      "posture": "watching",
+      "file": "day-watching-v1.png",
+      "closedFile": "day-watching-closed-v1.png",
+      "eyeRects": [
+        [
+          1093,
+          233,
+          36,
+          32
+        ],
+        [
+          1134,
+          214,
+          40,
+          34
+        ]
+      ],
+      "steamOrigin": null,
+      "characterBounds": [
+        860,
+        88,
+        560,
+        875
+      ],
+      "generatedOutput": "exec-7254379d-66a5-474c-9c49-fe134c11849b.png",
+      "generation": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: identity-preserve. ONE transparent full seated-character DAY attentive-canvas layer on the same 1536x1024 canvas. Image 1 is the approved day mother: retain its youthful soft face, amber eyes, silver-blue hair, proportions, original navy uniform/cardigan/ribbon/plaid skirt/socks/shoes, clear daylight and precise original seated scale/registration. Image 2 guides ONLY the slight head and eye turn toward the viewer's LEFT and DOWN, watching a friend's pencil at a nearby desk. Keep hands quietly folded on lap and all hip/leg/shoe positions from image 1; do not recenter, zoom or crop. Calm attentive brows and tiny neutral mouth, no adult features or makeup. Remove ALL room, furniture, seat, cushions, blanket, floor and background to real alpha transparency, preserving only the complete seated girl with opaque interior and clean partially transparent true hair edges. No haze, glow, halo, shadow cloud, matte, checkerboard, props, text, watermark or UI.",
+        "sourceMother": "../day-mother.png",
+        "postprocessing": "none; copied byte-for-byte",
+        "sourceOutputFile": "exec-7254379d-66a5-474c-9c49-fe134c11849b.png"
+      },
+      "review": {
+        "fullBodyIndividuallyViewed": true,
+        "alphaDataInspected": true,
+        "nativeCompositeReviewed": true,
+        "nativeMotionReviewed": true,
+        "nativeScope": "header face close-up",
+        "motionObserved": [
+          "blink"
+        ],
+        "nativeFrameEvidence": "ipad/evidence/build4-day-watching-closed-fixed.png"
+      },
+      "bytes": 1083385,
+      "sha256": "525554f678663a248a77599e24be484493d6777f250628abccae4260d49d8036",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "iccBytes": 0,
+      "closedOffset": [
+        0,
+        0
+      ],
+      "closedBytes": 1164707,
+      "closedSha256": "fb0d94935807b9adc26848d044bbdff57ab92764bd83af89e9fd118c4948e204",
+      "closedGeneration": {
+        "tool": "built-in image_gen",
+        "prompt": "Use case: precise-object-edit, identity-preserve. Edit target is this transparent DAY canvas-watching character, slightly turned toward viewer-left/down. Produce ONE matching blink frame, exact same 1536x1024 canvas and all existing coordinates. Close ONLY the two eyelids naturally and fully, delicate closed lash arcs, no visible iris. Preserve youthful facial identity, brows, nose, small mouth, turned head outline/angle/location, hairstyle, folded hands, original uniform, seated hips/legs/shoes, daylight colors and transparent alpha contour. No shifting, recentering, crop, zoom, new backdrop, glow, props, text or watermark. The native renderer uses only two small corresponding eye masks; exact face registration matters.",
+        "sourceOutputFile": "exec-a68a9d2f-54a8-40d8-a658-565d9ad2aa97.png",
+        "postprocessing": "none; copied byte-for-byte"
+      },
+      "closedCandidateViewed": true,
+      "closedNativeReviewed": true
+    }
+  ],
+  "closedFrameUsage": "Only corresponding feathered eye patches after uniform full-canvas registration; never replace the complete pose with a closed candidate."
+}

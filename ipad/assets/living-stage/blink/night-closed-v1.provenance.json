@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "night_closed_v1",
+  "path": "ipad/assets/living-stage/blink/night-closed-v1.png",
+  "tool": "built-in image_gen",
+  "operation": "targeted closed-eyelid blink edit",
+  "prompt": "Use case: precise-object-edit / identity-preserve. Image 1 is the exact original night living-room scene and edit target. Create the CLOSED-EYES BLINK frame of the SAME seated youthful Sakiko. Change ONLY the two eye interiors and eyelid lines: her two open golden eyes become naturally fully closed relaxed eyelids for a brief blink, with no smiling expression change. The approximate eye region on the 1536x1024 canvas is x1118..1204,y185..236. Preserve everything outside the two eyes as exactly as possible: same face outline, eyebrows, nose, small neutral mouth, head tilt and position, pale silver-blue hair strands, youthful face proportions, navy cardigan, bow, hands, body, skirt, legs, shoes, seated support, window, room, lamp, all furniture, night landscape, lighting, color, composition and canvas. No moved head, no change to mouth, no smile, no added object, no new hairstyle, no cropping, no reframing, no text. Keep output exactly 1536x1024 pixels, full opaque RGB scene, not a transparent cutout. This will be used only as a constrained eye-region overlay for subtle natural blinking, so the eyes must align exactly with the original face.",
+  "reference": "ipad/assets/living-stage/night-mother.png",
+  "reference_sha256": "c56541389158a7f28539062ae2174da997b4cd4301e022eab9202e34d31ab5c1",
+  "generated_source": "C:/Users/17601/.codex/generated_images/01a1dfe1-cd71-7003-ab68-cadf6bcbb36f/exec-f2869c1e-cd43-461f-9cb8-e6c9f7ad93dd.png",
+  "file": {
+    "width": 1536,
+    "height": 1024,
+    "mode": "RGB",
+    "alpha": false,
+    "bytes": 2186547,
+    "sha256": "79d7bbad1c387cea3b15ee40e61f15a67afffe464a43879ad9b7f7cb31dd4d21",
+    "copy_identical_to_generated_source": true,
+    "postprocessing": "none"
+  },
+  "visual_review": {
+    "original_full_scene_inspected": true,
+    "generated_full_scene_inspected": true,
+    "saved_file_read_back": true,
+    "eyes": "Both golden eye interiors changed to natural fully closed relaxed eyelids, without an added smile.",
+    "identity": "Youthful face, head tilt, hair, small neutral mouth, uniform, seated pose/support and room composition remain visually consistent at full-image inspection.",
+    "drift": "The generator re-rendered texture/detail outside the eye regions. Do not replace the whole original scene with this frame.",
+    "suitability": "Candidate for constrained per-eye overlay only; original mother image should stay continuously visible outside the eye masks.",
+    "alignment": "Closed eyelid lines visually sit close to original eye locations. Approximate mask bounds below are starting geometry, not measured registration proof.",
+    "runtime_acceptance": "Mask seam, flash, blinking motion and final device rendering have not been checked."
+  },
+  "overlay_geometry": {
+    "coordinate_space": "original 1536x1024 pixel canvas, origin top-left",
+    "combined_eye_region": {
+      "x": 1118,
+      "y": 187,
+      "width": 87,
+      "height": 52
+    },
+    "viewer_left_eye": {
+      "x": 1118,
+      "y": 209,
+      "width": 37,
+      "height": 30
+    },
+    "viewer_right_eye": {
+      "x": 1170,
+      "y": 187,
+      "width": 35,
+      "height": 28
+    },
+    "recommendation": "Use independent feathered eye masks constrained to the eye interiors; avoid including the mouth/nose or wide background region."
+  },
+  "limitations": [
+    "Not a layer rig or full head animation.",
+    "No whole-scene pixel identity claim.",
+    "No P3 color-profile or 200-percent iPad acceptance claim.",
+    "Candidate selected for integration inspection; final blink-mask geometry may need adjustment."
+  ]
+}

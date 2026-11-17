@@ -1,0 +1,32 @@
+{
+  "name": "hajisaki-studio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.6.2",
+    "@types/markdown-it-footnote": "^3.0.4",
+    "abcjs": "^6.7.2",
+    "dompurify": "^3.2.7",
+    "echarts": "^6.1.0",
+    "hash-wasm": "^4.12.0",
+    "highlight.js": "^11.11.1",
+    "html-to-image": "^1.11.13",
+    "katex": "^0.19.1",
+    "markdown-it": "^14.1.0",
+    "markdown-it-footnote": "^4.0.0",
+    "mermaid": "^12.3.0",
+    "pdfjs-dist": "^6.5.438"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.7",
+    "@types/markdown-it": "^14.1.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7"
+  }
+}

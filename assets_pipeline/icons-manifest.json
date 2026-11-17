@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "id": "document",
+      "file": "shared/assets/icons/document.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-a66e836d-53c4-4d98-906c-21b515ed43e3.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI document icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict any character. An elegant rolled ivory parchment document scroll, partially opened, tied with an ice-blue satin ribbon and a small red-tea velvet wax seal stamped with a crescent moon. Small champagne-gold decorative scroll tips, tiny antique rose ornament. Crisp polished cel-shaded painterly anime gothic finish matching reference's blue-gold dress, gentle moonlit highlights. One centered isolated object, generous transparent margin, bold readable silhouette at 48px, restrained detail. Palette ivory #EDF1FA, blue #8CB4F5, navy #0B1021, antique gold #D4AF67, seal #C24864. No text, letters, background, floor, cast shadow outside object, watermark, badge, border or folder.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1184900,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "archive",
+      "file": "shared/assets/icons/archive.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-6bdf5b1f-7ff4-4c03-baee-df73ee968203.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI archive icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict a character. An exquisite antique octagonal music-box gift, dark Prussian blue lacquer box with restrained champagne-gold rose and crescent inlay, silver-ice-blue satin ribbon tied across lid into a neat bow. Lid closed, viewed in three-quarter perspective, a small brass wind-up key subtly visible at side to read as a music box. Crisp polished cel-shaded painterly anime gothic material matching reference, cool moonlit highlights. Single centered isolated object, generous transparent margin, simple bold readable silhouette at 48px, keep ornate detail restrained. Palette #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. No text, labels, numbers, background, floor, external shadow, watermark, badge, border, yellow folder or zipper.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1662349,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "code",
+      "file": "shared/assets/icons/code.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-ccf20a47-8b2c-4114-819e-d7aace4b8f1d.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI source-code project icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict any person. An elegant closed midnight-blue music score folio/book, slightly angled three-quarter view, bound in fine dark blue leather with champagne-gold metal corners and a small ice-blue ribbon bookmark. Cover combines precise gold circuit traces with five musical staff lines and a simple crescent seal; very subtle two geometric angle brackets suggest code without words. Crisp polished cel-shaded painterly anime gothic material matching reference, cool moonlit highlights, restrained detail, clear book/folio silhouette at 48px. One centered isolated object with generous transparent margin. Palette #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. No words, lettering, tiny fake text, background, floor, external shadow, watermark, badge, yellow folder.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1842402,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "bookmark",
+      "file": "shared/assets/icons/bookmark.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-a022b743-70af-4a16-9f4e-7a419488729f.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI bookmark/favorite icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict any person. An elegant antique champagne-gold crescent moon brooch cradling a single luminous five-point icy-blue sapphire star, a small blue rose at the lower junction, restrained fine filigree and one small pear-shaped pearl drop. Refined personal keepsake, not an emblem on a button. Crisp polished cel-shaded painterly anime gothic material matching reference, soft moonlit metal and glass highlights. One centered isolated object, large clear crescent/star silhouette readable at 48px, generous transparent margin. Palette #8CB4F5 #B5CEFA #D4AF67 #EDF1FA, tiny navy accents. No text, labels, background, floor, external shadow, watermark, badge border or square backing.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1187208,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "microphone",
+      "file": "shared/assets/icons/microphone.png",
+      "source": "C:\\Users\\17601\\.codex\\generated_images\\01a1dfb1-84b0-7df1-8a6c-08ed734751d1\\exec-04d8e898-42f7-4de1-bcba-2bf9f4651ea9.png",
+      "prompt": "Use case: stylized-concept. Asset type: one production UI voice/microphone icon, square, genuinely transparent PNG background. Reference image is STYLE AND COLOR only, do not depict any person. A classic vintage studio microphone on a short elegant desk stand, silver-blue enamel and restrained champagne-gold metal, front grill inspired subtly by alternating piano keys, tiny blue rose on the collar, a single crescent detail on round midnight-blue base. Readable iconic microphone silhouette with rounded rectangular head and U-shaped cradle. Crisp polished cel-shaded painterly anime gothic material matching reference, controlled cool moonlit highlights. Single centered isolated object, generous transparent margin, visually clear at 48px, restrained detail. Palette #0B1021 #8CB4F5 #B5CEFA #D4AF67 #EDF1FA. No text, labels, waveform, background, floor, external shadow, watermark, badge, square backing, cable.",
+      "tool": "built-in image_gen",
+      "reference": "shared/assets/reference/character-sheet.png",
+      "visual_review": "Original output inspected. Requested object and blue/gold painterly style present; final small-size UI acceptance pending integration.",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 934243,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ]
+}

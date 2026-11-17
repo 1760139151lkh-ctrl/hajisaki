@@ -1,0 +1,4 @@
+# Versions used for the verified project CPU inference runtime.
+numpy==2.5.4
+onnxruntime==1.32.0
+tokenizers==0.23.3

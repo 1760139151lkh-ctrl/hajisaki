@@ -1,0 +1,22 @@
+{
+  "model": "gemini-4-hydrogen-xhigh",
+  "effort": "xhigh",
+  "conversation_id": "44e4b331-a5c8-4eff-a4ac-b0cdf1967be8",
+  "interface": "existing authenticated Antigravity CLI, real Gemini model",
+  "official_gemini_cli": "Unused authentication trial recycled; research used the existing authenticated Antigravity CLI",
+  "status": "completed",
+  "source_context": "current-prompts.md",
+  "request": "consultation-request.md",
+  "raw_public_response": "gemini-hydrogen.md",
+  "runtime_core": "shared/persona/sakiko.md",
+  "voice_anchor": "shared/persona/reply-voice.md",
+  "background": "shared/persona/background.md",
+  "integration": "Core, five tone instructions, provider copy, fifteen tool descriptions; tool schemas preserved",
+  "review_adjustments": [
+    "Correct Our Notes URL",
+    "Use high-school girl rather than unverified exact age 16",
+    "Omit unverified coffee-aversion assertion",
+    "Permit natural warmth rather than artificially rare vulnerability",
+    "Respect user-enabled Turbo authorization"
+  ]
+}
