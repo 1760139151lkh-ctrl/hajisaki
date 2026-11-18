@@ -186,6 +186,15 @@ small { font-size: 12px; }
 .hearted-quote svg { flex: none; margin-top: 7px; color: var(--rose); }
 .hearted-section small { color: var(--dim); font-size: 12px; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dot-bloom { from { transform: scale(0); } to { transform: none; } }
+/* Pressed things give a little, like satin buttons. */
+.primary, .secondary, .letter-prompt, .starters button, .glass-button, .model-choice, .strength-options button, .sheet-list button, .work-notes summary {
+  transition: transform .14s var(--ease), background-color .2s ease, color .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.primary:active, .secondary:active, .glass-button:active, .strength-options button:active { transform: scale(.96); }
+.letter-prompt:active, .starters button:active, .model-choice:active, .sheet-list button:active, .work-notes summary:active { transform: scale(.985); }
+.icon-button:active, .message-actions button:active, .message-meta button:active, .nav-item:active { transform: scale(.9); }
+.icon-button, .message-actions button, .nav-item { transition: transform .14s var(--ease), background-color .2s ease, color .2s ease; }
 @keyframes beat { 0%, 70%, 100% { transform: scale(.72); opacity: .35; } 35% { transform: scale(1); opacity: 1; } }
 @keyframes sheet-up { from { transform: translateY(26px); opacity: .6; } to { transform: none; opacity: 1; } }
 @keyframes sway { 0%, 100% { transform: translateX(-50%) rotate(-2deg); } 50% { transform: translateX(-50%) rotate(2deg); } }
@@ -385,6 +394,7 @@ small { font-size: 12px; }
 .tab:hover { color: var(--ink); }
 .tab.selected { color: var(--rose); }
 .tab.selected::after {
+  animation: dot-bloom .35s cubic-bezier(.2, 1.5, .4, 1) both;
   content: "";
   position: absolute;
   left: 50%;

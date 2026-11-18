@@ -967,6 +967,7 @@ function showModelPicker() {
     if(level){selectedModel=level.wireId;effort=level.effort;}
     $('#model').innerHTML=`<span>${esc(family.name)}</span>${icon('chevron',14)}`;
     refreshEffort();dialog.close();
+    toast(family.name.includes("主机") ? "好，就照主机现在的安排来弹。" : `好，今天请「${family.name}」来弹。`);
   };
 }
 function showStrengthPicker() {
@@ -2297,11 +2298,11 @@ async function upload(file: File) {
   uploadAbort = false;
   const attachTo = page === "chat" ? conversation?.id : undefined;
   try {
-    uploadStatus(`正在核对「${file.name}」`, 0);
+    uploadStatus(`我先核对一下「${file.name}」`, 0);
     const hash = await hashFile(file, (p) =>
-      uploadStatus(`核对文件 · ${file.name}`, p),
+      uploadStatus(`我先核对一下「${file.name}」`, p),
     );
-    if (uploadAbort) throw new Error("已暂停。再次选择同一文件便可续传。");
+    if (uploadAbort) throw new Error("先停在这里。再选一次同一个文件，我会从断开的地方接着收。");
     const opened = await api<{
       id: string;
       offset: number;
@@ -2317,7 +2318,7 @@ async function upload(file: File) {
     if (!opened.complete) {
       let offset = opened.offset;
       while (offset < file.size) {
-        if (uploadAbort) throw new Error("已暂停。再次选择同一文件便可续传。");
+        if (uploadAbort) throw new Error("先停在这里。再选一次同一个文件，我会从断开的地方接着收。");
         const chunk = file.slice(
           offset,
           Math.min(file.size, offset + 4 * 1024 * 1024),
@@ -2332,7 +2333,7 @@ async function upload(file: File) {
           })
         ).json();
         offset = result.offset;
-        uploadStatus(`收好文件 · ${file.name}`, offset / file.size);
+        uploadStatus(`正在把「${file.name}」收进琴房`, offset / file.size);
       }
       artifact = await api<Artifact>(`/uploads/${opened.id}/complete`, {});
     }
