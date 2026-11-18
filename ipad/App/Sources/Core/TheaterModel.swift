@@ -146,6 +146,7 @@ final class TheaterModel: ObservableObject {
     private var transientConnectionNoticeRevision: UInt64?
     private static let logger = Logger(subsystem: "app.hajisaki.theater.ipad", category: "TheaterModel")
     private var applicationActive = true
+    private var leftWhileWriting: String?
     private var userDisconnected = UserDefaults.standard.bool(forKey: "hajisaki.connection.disconnected")
     private var authorizationNeedsReview = false
     private var connectionIntent = UUID()
@@ -299,6 +300,8 @@ final class TheaterModel: ObservableObject {
     func setApplicationActive(_ active: Bool) async {
         applicationActive = active
         if !active {
+            // If she is writing when you leave, she will say so when you come back to a finished reply.
+            leftWhileWriting = isGenerating ? selectedConversationID : nil
             cancelConnectionRecovery()
             connectionAttemptTask?.cancel()
             eventTask?.cancel(); eventTask = nil
@@ -309,6 +312,10 @@ final class TheaterModel: ObservableObject {
             return
         }
         await resumeConnectionIfNeeded()
+        if let letter = leftWhileWriting, letter == selectedConversationID, !isGenerating {
+            say(CompanionMood.openLine(draft: false, settings: settings))
+        }
+        leftWhileWriting = nil
     }
 
     func resumeConnectionIfNeeded() async {
