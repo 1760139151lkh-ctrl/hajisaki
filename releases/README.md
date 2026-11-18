@@ -1,5 +1,16 @@
 # 双端安装包与原生构建产物
 
+## 本机构建 · 公主的小客厅
+
+源码来自 `princess-redesign` 提交 `f9e6aeb`。本地为双端更新了构建号，并为 Android 包配置本次主机连接地址及已配对设备的地址迁移。
+
+| 产品 | 本机产物 | SHA-256 |
+| --- | --- | --- |
+| Android 1.0.3（4） | `releases/hajisaki-android.apk` | `bf914062d3482484b4840dbd468607b97c4bd0266647a662a382cc43ceb13b71` |
+| iPad 0.1.0（8） | `ipad/outputs/princess-install8/HajiSaki-iPad-0.1.0-build8-32ae4e6b-unsigned.ipa` | `32ae4e6bda536c6dda406610af52b73c6353528ab52eb3df36f9a57ce1f024a8` |
+
+Android 已核对发布签名，并在 Android 15 模拟器从 1.0.2 覆盖安装，验证原配对迁移、历史信笺加载及文件附入草稿。iPad 已完成 arm64 实机构建，并在 iPad Air 模拟器看到新版界面。模拟器配对尚未完成，实体 iPad 仍需 Apple 签名。两个下载的完整字节均与本地构建的 SHA-256 一致。
+
 ## 2026-11-17 上传快照
 
 最新安装包通过[私有 GitHub Release](https://github.com/1760139151lkh-ctrl/hajisaki/releases/tag/snapshot-2026-11-17)提供，不写入 Git 历史。

@@ -101,13 +101,20 @@ async def proxy(path:str,request:Request):
         result.headers.append('set-cookie',cookie.replace('SameSite=strict','SameSite=none')+'; Secure')
     return result
 
-@app.get('/download/{key}/hajisaki.apk')
-def download(key:str):
+@app.get('/download/{key}/{filename}')
+def download(key:str, filename:str):
     config=json.loads((DATA/'delivery.json').read_text(encoding='utf-8'))
     if not secrets.compare_digest(key,config['download_key']):raise HTTPException(404)
-    file=ROOT/'releases/hajisaki-android.apk'
+    if filename == 'hajisaki.apk':
+        file = ROOT/'releases/hajisaki-android.apk'
+        media_type = 'application/vnd.android.package-archive'
+    elif filename == 'HajiSaki-iPad-0.1.0-build8-32ae4e6b-unsigned.ipa':
+        file = ROOT/'ipad/outputs/princess-install8'/filename
+        media_type = 'application/octet-stream'
+    else:
+        raise HTTPException(404)
     if not file.is_file():raise HTTPException(503,'安装包正在准备。')
-    return FileResponse(file,media_type='application/vnd.android.package-archive',filename='hajisaki.apk',headers={'Cache-Control':'no-store','X-Robots-Tag':'noindex'})
+    return FileResponse(file,media_type=media_type,filename=filename,headers={'Cache-Control':'no-store','X-Robots-Tag':'noindex'})
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--port',type=int,default=8766);args=parser.parse_args()

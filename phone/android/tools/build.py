@@ -1,5 +1,6 @@
 """Build and self-sign the real Android APK with the project SDK and JDK."""
 from __future__ import annotations
+import argparse
 import hashlib
 import json
 import os
@@ -23,6 +24,10 @@ def run(args,cwd,env=None):
     if result.returncode:raise SystemExit(result.returncode)
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--bootstrap', type=Path, default=ROOT/'runtime/mobile/app-bootstrap.json')
+    parser.add_argument('--previous-origin', help='Prior address for this same paired host')
+    args = parser.parse_args()
     marker=STAGE/'.hajisaki-android-build'
     if STAGE.exists() and (not marker.is_file() or marker.read_text(encoding='utf-8')!=str(PROJECT)):
         raise ValueError('Android stage belongs to another project')
@@ -49,8 +54,12 @@ def main():
     if staged_web.exists():send2trash(str(staged_web.resolve()))
     shutil.copytree(PROJECT/'android',STAGE/'android',dirs_exist_ok=True,ignore=shutil.ignore_patterns('build','.gradle'))
     shutil.copytree(PROJECT/'node_modules',STAGE/'node_modules',dirs_exist_ok=True)
-    bootstrap=ROOT/'runtime/mobile/app-bootstrap.json'
-    if bootstrap.exists():shutil.copy2(bootstrap,STAGE/'android/app/src/main/assets/mobile-bootstrap.json')
+    bootstrap=args.bootstrap
+    if bootstrap.exists():
+        bootstrap_data = json.loads(bootstrap.read_text(encoding='utf-8'))
+        if args.previous_origin:
+            bootstrap_data['previousOrigin'] = args.previous_origin
+        (STAGE/'android/app/src/main/assets/mobile-bootstrap.json').write_text(json.dumps(bootstrap_data), encoding='utf-8')
     sdk=STAGE/'sdk'
     shutil.copytree(ROOT/'tooling/android-sdk',sdk,dirs_exist_ok=True)
     (STAGE/'android/local.properties').write_text('sdk.dir='+str(sdk.resolve()).replace('\\','/').replace(':','\\:')+'\n',encoding='utf-8')

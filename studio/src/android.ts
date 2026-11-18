@@ -2,7 +2,7 @@ import { Capacitor, CapacitorHttp, registerPlugin } from '@capacitor/core';
 import './android.css';
 
 interface Connection {origin:string;token:string;device:string}
-interface Bootstrap {origin:string;code:string}
+interface Bootstrap {origin:string;code:string;previousOrigin?:string}
 interface NativeConnection {
   load():Promise<{connection?:Connection;bootstrap:Bootstrap;instance:string}>;
   save(options:{connection:Connection}):Promise<void>;
@@ -21,13 +21,40 @@ export async function saveAndroidBlob(blob:Blob,name:string):Promise<void> {
   await native.saveFile({name,mime:blob.type || 'application/octet-stream',data});
 }
 export const saveAndroidPath=(path:string,name:string,mime:string)=>native.saveFile({path,name,mime});
+
+async function refreshPackagedOrigin(connection: Connection, bootstrap: Bootstrap): Promise<Connection> {
+  // An update may ship a new tunnel address for the same paired host.
+  const origin = bootstrap.origin;
+  if (!origin || origin === connection.origin || bootstrap.previousOrigin !== connection.origin) return connection;
+  try {
+    if (new URL(origin).protocol !== 'https:') return connection;
+    const response = await CapacitorHttp.get({
+      url: `${origin}/api/status`,
+      headers: { Authorization: `Bearer ${connection.token}`, 'X-Haji-Device': connection.device },
+      connectTimeout: 5000,
+      readTimeout: 5000,
+    });
+    if (response.status === 200 && response.data?.provider && response.data?.host) {
+      const updated = { ...connection, origin };
+      await native.save({ connection: updated });
+      return updated;
+    }
+  } catch {
+    // Keep the saved address when the bundled host cannot confirm this pairing.
+  }
+  return connection;
+}
+
 export async function initializeAndroid(pair:(token:string,device:string)=>void,force=false):Promise<void> {
   if(!isAndroidApp())return;
   if(!document.documentElement.dataset.theme)document.documentElement.dataset.theme='day';
   androidAppearance(document.documentElement.dataset.theme);
   const loaded=await native.load();
   if(loaded.connection && !force) {
-    localStorage.setItem('haji-api-origin',loaded.connection.origin);pair(loaded.connection.token,loaded.connection.device);return;
+    const connection = await refreshPackagedOrigin(loaded.connection, loaded.bootstrap);
+    localStorage.setItem('haji-api-origin', connection.origin);
+    pair(connection.token, connection.device);
+    return;
   }
   await new Promise<void>((resolve)=>{
     const screen=document.createElement('div');screen.className='android-connect';
