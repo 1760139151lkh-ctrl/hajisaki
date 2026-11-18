@@ -566,13 +566,14 @@ function renderConversationList(entering = false) {
           ? `<p>收进归档的信，会在这里安静地等你。</p><button class="text-button" id="clear-filter">看看全部信笺</button>`
           : narrowed
             ? `<p>这一册还空着。写一封放进来吧？</p><button class="text-button" id="clear-filter">看看全部信笺</button>`
-            : `<h2>第一封信，从今天开始。</h2><p>想到什么，就写给她吧。</p>`}</div>`;
+            : `<div class="first-meeting"><div class="cameo-frame">${bow(48)}<img class="empty-portrait" src="${art("idle_gentle")}" alt="祥子"></div><span class="script" aria-hidden="true">Nice to meet you</span><h2>初次见面。</h2><p>我是丰川祥子。<br>以后想说的话，都写信给我吧。</p><button class="text-button" id="first-letter">${icon("quill", 16)}写下第一封信</button></div>`}</div>`;
   const count = document.querySelector("#letter-count");
   if (count) count.textContent = String(conversations.filter((c) => !c.archived).length);
   document.querySelectorAll<HTMLButtonElement>("[data-group]").forEach((b) => {
     b.classList.toggle("selected", b.dataset.group === filter);
     b.setAttribute("aria-selected", String(b.dataset.group === filter));
   });
+  $("#first-letter")?.addEventListener("click", () => void newChat());
   $("#clear-filter")?.addEventListener("click", () => {
     filter = "全部";
     query = "";

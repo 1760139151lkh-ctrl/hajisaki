@@ -510,6 +510,12 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .empty .filigree { margin-bottom: 18px; }
 .empty h2 { margin-bottom: 6px; font: 500 19px/1.6 var(--font-serif); color: var(--ink); letter-spacing: 1.5px; }
 .empty .text-button { margin-top: 10px; }
+/* The very first time: she introduces herself. */
+.first-meeting { display: flex; flex-direction: column; align-items: center; }
+.first-meeting .empty-portrait { width: 96px; height: 96px; }
+.first-meeting .script { margin-top: 20px; font-size: 24px; line-height: 1; }
+.first-meeting h2 { margin-top: 4px; }
+.first-meeting p { line-height: 1.9; }
 .empty-scene {
   width: 148px;
   height: 196px;

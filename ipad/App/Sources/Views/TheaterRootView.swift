@@ -395,8 +395,11 @@ struct TheaterRootView: View {
                                     Text("正在取回信笺…").font(.theaterSerif(14)).foregroundStyle(palette.secondary)
                                 }
                             } else {
-                                Text("第一封信，从今天开始。").font(.theaterSerif(15)).foregroundStyle(palette.text)
-                                Text("想到什么，就写给她吧。").font(.system(size: 13)).foregroundStyle(palette.secondary)
+                                // The very first time: she introduces herself.
+                                ScriptLine(text: "Nice to meet you", size: 20)
+                                Text("初次见面。").font(.theaterSerif(16)).foregroundStyle(palette.text)
+                                Text("我是丰川祥子。以后想说的话，都写信给我吧。").font(.system(size: 13)).lineSpacing(3)
+                                    .foregroundStyle(palette.secondary).fixedSize(horizontal: false, vertical: true)
                             }
                         }.padding(.horizontal, 12).padding(.vertical, 18)
                     }
