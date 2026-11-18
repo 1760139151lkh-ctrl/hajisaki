@@ -292,7 +292,7 @@ struct ConversationStage: View {
                 }.padding(.horizontal, 16).frame(height: 48)
                     .letterCard(cornerRadius: 14)
                     .contentShape(Rectangle())
-            }.buttonStyle(.plain).accessibilityHint("放进草稿，不会自动寄出")
+            }.buttonStyle(SatinPressStyle()).accessibilityHint("放进草稿，不会自动寄出")
         }
     }
 

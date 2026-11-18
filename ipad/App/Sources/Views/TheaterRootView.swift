@@ -355,7 +355,7 @@ struct TheaterRootView: View {
                 }.padding(.leading, 14).padding(.trailing, 7).frame(height: 48)
                     .letterCard(cornerRadius: 16)
                     .contentShape(Rectangle())
-            }.buttonStyle(.plain).accessibilityLabel("写一封新的信").padding(.horizontal, 16).padding(.top, 16)
+            }.buttonStyle(SatinPressStyle()).accessibilityLabel("写一封新的信").padding(.horizontal, 16).padding(.top, 16)
             HStack(spacing: 7) {
                 TheaterGlyph(kind: .search).stroke(lineWidth: 1.3).frame(width: 15, height: 15)
                 TextField("寻找一段回忆", text: $model.searchText).font(.system(size: 14)).textInputAutocapitalization(.never)
@@ -465,7 +465,7 @@ struct TheaterRootView: View {
             }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 10).padding(.vertical, 10)
                 .background(selected ? palette.sunken : Color.clear, in: RoundedRectangle(cornerRadius: 12))
                 .contentShape(Rectangle())
-        }.buttonStyle(.plain)
+        }.buttonStyle(SatinPressStyle())
             .accessibilityAddTraits(selected ? .isSelected : [])
             .accessibilityValue(writing ? "她正在写回信" : unread ? "有新的回信" : "")
             .contextMenu {

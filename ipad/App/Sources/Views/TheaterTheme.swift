@@ -680,7 +680,18 @@ struct TheaterActionStyle: ButtonStyle {
             .background(filled ? AnyShapeStyle(palette.satin) : AnyShapeStyle(Color.clear), in: RoundedRectangle(cornerRadius: 14))
             .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(filled ? Color.clear : palette.goldLine, lineWidth: 1))
             .shadow(color: filled ? palette.shadow : Color.clear, radius: 6, x: 0, y: 2)
-            .opacity(configuration.isPressed ? 0.75 : isEnabled ? 1 : 0.45)
+            .opacity(configuration.isPressed ? 0.85 : isEnabled ? 1 : 0.45)
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+    }
+}
+
+/// Plain buttons that give a little when pressed, like satin: letter rows, the letter entry, starters.
+struct SatinPressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.985 : 1)
+            .opacity(configuration.isPressed ? 0.9 : 1)
             .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
     }
 }
