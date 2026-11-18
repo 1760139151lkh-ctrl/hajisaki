@@ -15,6 +15,8 @@ struct ConversationStage: View {
     let onOpenSource: (URL) -> Bool
     var pencilInteractionRevision = 0
     var onPreview: ((PencilPreview) -> Void)? = nil
+    /// Saki's current portrait, chosen by the root view from what is happening.
+    var portrait = "idle_gentle"
     @Environment(\.theaterPalette) private var palette
     @State private var followsLatest = true
     @State private var selectionMessage: ChatMessage?
@@ -28,23 +30,30 @@ struct ConversationStage: View {
     var body: some View {
         VStack(spacing: 0) {
             if let notice = model.notice {
-                HStack(alignment: .top, spacing: 8) {
-                    Text(notice).font(.system(size: 13)).foregroundStyle(palette.warning).frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
+                HStack(alignment: .top, spacing: 10) {
+                    Text(notice).font(.system(size: 13)).foregroundStyle(palette.text).lineSpacing(3)
+                        .frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
                     GlyphButton(label: "收起提示", glyph: .close) { model.notice = nil }
-                }.padding(.leading, 22).padding(.trailing, 10).background(palette.warning.opacity(0.05))
+                }.padding(.leading, 22).padding(.trailing, 10).background(palette.sunken)
             }
             if model.providerSimulated && model.isConnected {
-                Text("本地演练 · 回复不来自模型").font(.system(size: 12)).foregroundStyle(palette.gold)
+                HStack(spacing: 7) {
+                    TheaterGlyph(kind: .lamp).stroke(lineWidth: 1.2).frame(width: 14, height: 14)
+                    Text("本地演练 · 回复不来自模型").font(.system(size: 12))
+                }.foregroundStyle(palette.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 24).padding(.vertical, 9)
+                    .background(palette.sunken)
             }
             if !model.contextPins.isEmpty {
                 Button(action: onPins) {
                     HStack(spacing: 8) {
-                        Image("icon_bookmark").resizable().scaledToFit().frame(width: 22, height: 22)
+                        Image("icon_bookmark").resizable().scaledToFit().frame(width: 24, height: 24)
                         Text("固定的上下文 · \(model.contextPins.count)").font(.system(size: 12))
                         Spacer()
+                        TheaterGlyph(kind: .back).stroke(lineWidth: 1.1).rotationEffect(.degrees(180)).frame(width: 13, height: 13).foregroundStyle(palette.dim)
                     }.padding(.horizontal, 24).frame(minHeight: 44).contentShape(Rectangle())
                 }.buttonStyle(.plain).foregroundStyle(palette.secondary)
+                    .overlay(alignment: .bottom) { TheaterRule() }
             }
             ZStack(alignment: .bottom) {
                 Group {
@@ -67,9 +76,13 @@ struct ConversationStage: View {
             }
             if !followsLatest && !model.messages.isEmpty {
                 Button { followsLatest = true } label: {
-                    Text("回到最新").font(.system(size: 13, weight: .medium))
+                    HStack(spacing: 6) {
+                        TheaterGlyph(kind: .chevron).stroke(lineWidth: 1.4).frame(width: 14, height: 14)
+                        Text("回到最新").font(.system(size: 13, weight: .medium))
+                    }.foregroundStyle(palette.background).padding(.horizontal, 16).frame(height: 36)
+                        .background(palette.text, in: Capsule())
                         .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
-                }.buttonStyle(.plain).foregroundStyle(palette.blue).background(palette.raised)
+                }.buttonStyle(.plain).padding(.top, 4)
                     .accessibilityLabel("回到最新消息")
             }
             composer
@@ -124,50 +137,87 @@ struct ConversationStage: View {
             messageHeader(message).padding(.top, 32)
         case .activity:
             if model.settings.transparency != "companion", !events(for: message).isEmpty {
-                activity(for: message).padding(.top, 13)
+                letterMargin(activity(for: message).padding(.top, 13))
             }
         case .chunk(let chunk):
-            NativeMessageChunk(chunk: chunk, onSelectionChange: lockReading,
+            letterMargin(NativeMessageChunk(chunk: chunk, onSelectionChange: lockReading,
                                onLayoutChange: { messageLayoutRevision &+= 1 }, onOpenSource: onOpenSource,
                                taskState: model.messageTasks[message.id],
                                taskMutationPending: model.updatingTaskIDs.contains(message.id) || !model.isConnected,
                                onToggleTask: { item, checked in
                 guard let state = model.messageTasks[message.id] else { return }
                 Task { _ = await model.updateTask(item, checked: checked, in: state) }
-            }).padding(.top, 13)
+            }).padding(.top, 13))
         case .attachments:
-            messageAttachments(message).padding(.top, 13)
+            letterMargin(messageAttachments(message).padding(.top, 13))
         case .status:
-            messageStatus(message)
+            letterMargin(messageStatus(message))
                 .task(id: message.id + ":" + message.status) { await loadTasks(for: message) }
         }
     }
 
+    /// Saki's reply rows are plain paper, like the phone; kept as one hook for future margins.
+    private func letterMargin<Content: View>(_ content: Content) -> some View {
+        content
+    }
+
     private var emptyConversation: some View {
-        VStack(alignment: .leading, spacing: 21) {
-            Text(model.selectedConversation == nil ? "把这一页，留给我们。" : "新的乐章").font(.system(size: 28, weight: .regular, design: .serif)).tracking(0.5)
+        VStack(spacing: 10) {
+            ArchedPortrait(image: palette.isDark ? "night-room" : "day-room", width: 200, height: 264)
+                .padding(.bottom, 10)
+            FiligreeDivider(width: 132)
+            ScriptLine(text: "Only for you", size: 26)
+            Text(model.selectedConversation == nil ? "把这一页，留给我们。" : "这一刻，只听你说。")
+                .font(.theaterSerif(24)).tracking(2).multilineTextAlignment(.center)
+            Text(model.selectedConversation == nil ? CompanionMood.greeting() : "不用急着整理语言。想到哪里，就从哪里开始吧。")
+                .font(.system(size: 14)).lineSpacing(5).foregroundStyle(palette.secondary).multilineTextAlignment(.center)
             if model.selectedConversation == nil {
                 HStack(spacing: 12) {
-                    Button("写下新乐章") { Task { await model.createConversation(); composeFocused = true } }.buttonStyle(TheaterActionStyle())
+                    Button("写一封信") { Task { await model.createConversation(); composeFocused = true } }
+                        .buttonStyle(TheaterActionStyle(prominent: true))
                     if !model.isConnected { Button("连接电脑", action: onOpenConnection).buttonStyle(TheaterActionStyle()) }
-                }
+                }.padding(.top, 14)
+            } else {
+                VStack(spacing: 8) { starterButtons }.frame(maxWidth: 360).padding(.top, 18)
             }
-        }.padding(.top, 50).padding(.bottom, 35).frame(maxWidth: .infinity, alignment: .leading)
+        }.padding(.top, 48).padding(.bottom, 35).frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder private var starterButtons: some View {
+        ForEach(CompanionMood.starters(), id: \.0) { starter in
+            Button {
+                model.draft = starter.1
+                composeFocused = true
+            } label: {
+                HStack(spacing: 10) {
+                    Text(starter.0).font(.system(size: 14)).foregroundStyle(palette.text)
+                    Spacer(minLength: 0)
+                    TheaterGlyph(kind: .back).stroke(lineWidth: 1.2).rotationEffect(.degrees(180)).frame(width: 13, height: 13).foregroundStyle(palette.dim)
+                }.padding(.horizontal, 16).frame(height: 48)
+                    .letterCard(cornerRadius: 14)
+                    .contentShape(Rectangle())
+            }.buttonStyle(.plain).accessibilityHint("放进草稿，不会自动寄出")
+        }
     }
 
     private func messageHeader(_ message: ChatMessage) -> some View {
         HStack(spacing: 8) {
-                if !message.isUser {
-                    Image("profile_portrait").resizable().scaledToFill().frame(width: 27, height: 27).clipShape(Circle())
-                }
-                Text(message.isUser ? "你" : "祥子").font(.system(size: 12, weight: .semibold)).foregroundStyle(message.isUser ? palette.secondary : palette.gold)
-                Spacer(minLength: 0)
-                if message.status == "queued" || message.status == "pending" {
-                    Text("待寄出").font(.system(size: 11)).foregroundStyle(palette.secondary)
+                if message.isUser {
+                    Spacer(minLength: 0)
+                    if message.status == "queued" || message.status == "pending" {
+                        Text("正在寄出").font(.system(size: 12)).foregroundStyle(palette.rose)
+                    }
+                    Text(messageClock(message.createdAt)).font(.system(size: 12)).monospacedDigit().foregroundStyle(palette.dim)
+                } else {
+                    CameoPortrait(image: "idle_gentle", size: 28)
+                    Text("祥子").font(.theaterSerif(15)).tracking(1).foregroundStyle(palette.rose)
+                    TiaraMark(width: 13)
+                    Text(messageClock(message.createdAt)).font(.system(size: 12)).monospacedDigit().foregroundStyle(palette.dim)
+                    Spacer(minLength: 0)
                 }
                 Button { actionMessageID = message.id } label: {
-                    TheaterGlyph(kind: .more).stroke(style: StrokeStyle(lineWidth: 1.3, lineCap: .round)).frame(width: 19, height: 19)
-                        .frame(width: 44, height: 44).contentShape(Rectangle())
+                    TheaterGlyph(kind: .more).stroke(style: StrokeStyle(lineWidth: 1.6, lineCap: .round)).frame(width: 19, height: 19)
+                        .frame(width: 44, height: 44).foregroundStyle(palette.dim).contentShape(Rectangle())
                 }.buttonStyle(.plain).accessibilityLabel("这条消息的操作")
                 .popover(isPresented: Binding(get: { actionMessageID == message.id }, set: { if !$0 { actionMessageID = nil } })) {
                   TheaterPopup {
@@ -192,30 +242,46 @@ struct ConversationStage: View {
         .task(id: message.id + ":" + message.status) { await loadTasks(for: message) }
     }
 
+    /// Your words: a blush bubble on the right, hugging short lines and widening for rich ones.
     private func messageView(_ message: ChatMessage) -> some View {
-        VStack(alignment: .leading, spacing: 13) {
+        VStack(alignment: .trailing, spacing: 2) {
+            VStack(alignment: .leading, spacing: 10) {
+                if !message.content.isEmpty { userBody(message) }
+                if !message.attachments.isEmpty {
+                    messageAttachments(message)
+                }
+                messageStatus(message)
+            }
+            .padding(.horizontal, 16).padding(.vertical, 11)
+            .background(palette.bubble, in: UnevenRoundedRectangle(topLeadingRadius: 20, bottomLeadingRadius: 20, bottomTrailingRadius: 6, topTrailingRadius: 20))
+            .opacity(message.status == "queued" || message.status == "pending" ? 0.6 : 1)
             messageHeader(message)
-            if !message.content.isEmpty {
-                NativeMessageBody(text: message.content, messageID: message.id,
-                                  isStreaming: message.status == "streaming" || message.status == "running",
-                                  onSelectionChange: lockReading,
-                                  onLayoutChange: { messageLayoutRevision &+= 1 },
-                                  onOpenSource: onOpenSource,
-                                  taskState: model.messageTasks[message.id],
-                                  taskMutationPending: model.updatingTaskIDs.contains(message.id) || !model.isConnected,
-                                  onToggleTask: { item, checked in
-                                      guard let state = model.messageTasks[message.id] else { return }
-                                      Task { _ = await model.updateTask(item, checked: checked, in: state) }
-                                  })
-            }
-            if !message.attachments.isEmpty {
-                messageAttachments(message)
-            }
-            messageStatus(message)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(17)
-        .background(palette.selection.opacity(0.55), in: RoundedRectangle(cornerRadius: 15))
+        .frame(maxWidth: 560, alignment: .trailing)
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+
+    private func isPlainShort(_ text: String) -> Bool {
+        text.count <= 160 && !text.contains("\n") && text.rangeOfCharacter(from: CharacterSet(charactersIn: "`*_#[]|$<>~")) == nil
+    }
+
+    @ViewBuilder private func userBody(_ message: ChatMessage) -> some View {
+        if isPlainShort(message.content) {
+            Text(message.content).font(.body).lineSpacing(4).foregroundStyle(palette.bubbleText)
+                .textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+        } else {
+            NativeMessageBody(text: message.content, messageID: message.id,
+                              isStreaming: message.status == "streaming" || message.status == "running",
+                              onSelectionChange: lockReading,
+                              onLayoutChange: { messageLayoutRevision &+= 1 },
+                              onOpenSource: onOpenSource,
+                              taskState: model.messageTasks[message.id],
+                              taskMutationPending: model.updatingTaskIDs.contains(message.id) || !model.isConnected,
+                              onToggleTask: { item, checked in
+                                  guard let state = model.messageTasks[message.id] else { return }
+                                  Task { _ = await model.updateTask(item, checked: checked, in: state) }
+                              })
+        }
     }
 
     private func messageAttachments(_ message: ChatMessage) -> some View {
@@ -237,14 +303,15 @@ struct ConversationStage: View {
 
     @ViewBuilder private func messageStatus(_ message: ChatMessage) -> some View {
         if message.status == "failed" {
-            Text("这一段没能写完。已经写下的内容仍在。 ").font(.system(size: 12)).foregroundStyle(palette.warning).padding(.top, 13)
+            Text("这一段没能写完。已经写下的内容仍在。").font(.system(size: 12)).foregroundStyle(palette.warning).padding(.top, 13)
         } else if message.status == "stopped" {
-            Text("先停在这里。 ").font(.system(size: 12)).foregroundStyle(palette.secondary).padding(.top, 13)
+            Text("先停在这里。想继续时，再叫我。").font(.system(size: 12)).foregroundStyle(palette.secondary).padding(.top, 13)
         } else if !message.isUser && message.content.isEmpty && ["queued", "running", "streaming"].contains(message.status) {
-            HStack(spacing: 8) {
-                ProgressView().controlSize(.small)
-                Text("稍等，我在看。 ").font(.system(size: 13)).foregroundStyle(palette.secondary)
-            }.frame(minHeight: 27).padding(.top, 13)
+            HStack(spacing: 9) {
+                TypingHearts()
+                Text("正在写回信").font(.system(size: 13)).foregroundStyle(palette.dim)
+            }.frame(minHeight: 30).padding(.top, 10)
+                .accessibilityElement(children: .combine)
         }
     }
 
@@ -306,33 +373,35 @@ struct ConversationStage: View {
     private var composer: some View {
         VStack(alignment: .leading, spacing: 10) {
             if model.pendingCount > 0 {
-                HStack {
-                    Text("\(model.pendingCount) 条消息待寄出").font(.system(size: 12)).foregroundStyle(palette.secondary)
+                HStack(spacing: 8) {
+                    Text("\(model.pendingCount) 封信待寄出，我会替你收好").font(.system(size: 12)).foregroundStyle(palette.secondary)
                     Spacer()
                     Button(model.isConnected ? "重新寄出" : "连接电脑") {
                         if model.isConnected { Task { await model.retryPending() } } else { onOpenConnection() }
-                    }.font(.system(size: 12, weight: .medium))
-                }
+                    }.font(.system(size: 12, weight: .medium)).foregroundStyle(palette.rose)
+                }.padding(.horizontal, 14).frame(minHeight: 36)
+                    .background(palette.sunken, in: RoundedRectangle(cornerRadius: 10))
             }
             if !model.pendingAttachments.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 7) {
                         ForEach(model.pendingAttachments) { artifact in
                             HStack(spacing: 6) {
-                                Image(artifactImageName(artifact)).resizable().scaledToFit().frame(width: 23, height: 23)
+                                Image(artifactImageName(artifact)).resizable().scaledToFit().frame(width: 24, height: 24)
                                 Text(artifact.name).font(.system(size: 12)).lineLimit(1).frame(maxWidth: 180)
-                                GlyphButton(label: "移除附件 \(artifact.name)", glyph: .close) { model.removeAttachment(id: artifact.id) }.frame(width: 28, height: 30)
-                            }.padding(.leading, 8).background(palette.selection, in: RoundedRectangle(cornerRadius: 9))
+                                GlyphButton(label: "移除附件 \(artifact.name)", glyph: .close) { model.removeAttachment(id: artifact.id) }.frame(width: 30, height: 32)
+                            }.padding(.leading, 9).background(palette.raised, in: RoundedRectangle(cornerRadius: 10))
+                                .overlay(RoundedRectangle(cornerRadius: 10).stroke(palette.line, lineWidth: 0.7))
                         }
                     }
                 }
             }
-            if let progress = model.transferProgress { ProgressView(value: progress).tint(palette.gold) }
-            VStack(spacing: 6) {
-                TextField("写给祥子", text: $model.draft, prompt: Text("写给祥子…").foregroundColor(palette.secondary), axis: .vertical)
+            if let progress = model.transferProgress { ProgressView(value: progress).tint(palette.rose) }
+            VStack(spacing: 4) {
+                TextField("写给祥子", text: $model.draft, prompt: Text("写给祥子…").foregroundColor(palette.dim), axis: .vertical)
                     .font(.system(size: 17)).lineSpacing(5).lineLimit(2...7).focused($composeFocused)
                     .autocorrectionDisabled().textInputAutocapitalization(.never)
-                    .padding(.horizontal, 15).padding(.top, 15).accessibilityLabel("写给祥子")
+                    .padding(.horizontal, 18).padding(.top, 15).accessibilityLabel("写给祥子")
                     .disabled(model.isBusy)
                 HStack(spacing: 2) {
                     GlyphButton(label: "添加附件", glyph: .attachment, action: onImport).disabled(model.isBusy)
@@ -343,35 +412,51 @@ struct ConversationStage: View {
                     modelMenu
                     Spacer(minLength: 0)
                     if model.isGenerating {
-                        GlyphButton(label: "停止回复", glyph: .stop, active: true) { Task { await model.stop() } }
+                        Button { Task { await model.stop() } } label: {
+                            TheaterGlyph(kind: .stop).stroke(style: StrokeStyle(lineWidth: 1.6, lineJoin: .round))
+                                .frame(width: 18, height: 18).frame(width: 40, height: 40)
+                                .foregroundStyle(palette.background).background(palette.text, in: Circle())
+                                .frame(width: 46, height: 46).contentShape(Circle())
+                        }.buttonStyle(.plain).accessibilityLabel("请她先停一停")
                     } else {
+                        let empty = model.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && model.pendingAttachments.isEmpty
                         Button {
                             followsLatest = true
                             TheaterAudio.shared.play(.send)
                             Task { await model.send() }
                         } label: {
-                            TheaterGlyph(kind: .send).stroke(style: StrokeStyle(lineWidth: 1.7, lineCap: .round, lineJoin: .round))
-                                .frame(width: 23, height: 23).frame(width: 38, height: 38)
-                                .foregroundStyle(palette.background).background(palette.blue, in: RoundedRectangle(cornerRadius: 12))
-                        }.buttonStyle(.plain).accessibilityLabel("发送")
+                            Group {
+                                if empty {
+                                    TheaterGlyph(kind: .send).stroke(style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round))
+                                        .frame(width: 18, height: 18).frame(width: 40, height: 40)
+                                        .foregroundStyle(palette.dim).background(palette.sunken, in: Circle())
+                                } else {
+                                    WaxHeart(size: 40)
+                                }
+                            }.frame(width: 46, height: 46).contentShape(Circle())
+                        }.buttonStyle(.plain).accessibilityLabel("封好，寄给祥子")
                             .keyboardShortcut(.return, modifiers: .command)
-                            .disabled(model.isBusy || (model.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && model.pendingAttachments.isEmpty))
-                            .opacity(model.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && model.pendingAttachments.isEmpty ? 0.4 : 1)
+                            .disabled(model.isBusy || empty)
                     }
                 }.padding(.horizontal, 7).padding(.bottom, 7)
-            }.background(palette.raised, in: RoundedRectangle(cornerRadius: 19))
-                .overlay(RoundedRectangle(cornerRadius: 19).stroke(palette.line, lineWidth: 0.5))
-        }.frame(maxWidth: 680).padding(.horizontal, 22).padding(.top, 9).padding(.bottom, 19).frame(maxWidth: .infinity)
+            }.background(palette.raised, in: RoundedRectangle(cornerRadius: 24))
+                .overlay(RoundedRectangle(cornerRadius: 24).strokeBorder(composeFocused ? palette.rose.opacity(0.6) : palette.goldLine, lineWidth: 1))
+                .shadow(color: palette.shadow, radius: 8, x: 0, y: 2)
+                .animation(.easeOut(duration: 0.18), value: composeFocused)
+        }.frame(maxWidth: 680).padding(.horizontal, 22).padding(.top, 8).padding(.bottom, 16).frame(maxWidth: .infinity)
     }
 
     private var modelMenu: some View {
         Button(action: onModels) {
             HStack(spacing: 5) {
                 Text(model.models.first(where: { $0.id == model.selectedModelID })?.name ?? "模型与思考")
-                    .font(.system(size: 11)).lineLimit(1)
-                TheaterGlyph(kind: .chevron).stroke(lineWidth: 1).frame(width: 13, height: 13)
-            }.foregroundStyle(palette.secondary).frame(minHeight: 44).padding(.horizontal, 5).contentShape(Rectangle())
+                    .font(.system(size: 12)).lineLimit(1)
+                Text("·").foregroundStyle(palette.dim)
+                Text(effortLabel(model.selectedEffort)).font(.system(size: 12)).lineLimit(1)
+                TheaterGlyph(kind: .chevron).stroke(lineWidth: 1.1).frame(width: 13, height: 13)
+            }.foregroundStyle(palette.secondary).padding(.horizontal, 10).frame(minHeight: 44).contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityLabel("模型、思考深度与透视度")
+            .accessibilityValue(effortLabel(model.selectedEffort))
     }
 }
 
@@ -387,8 +472,8 @@ private struct PublicSummaryView: View {
         VStack(alignment: .leading, spacing: 8) {
             Button { expanded.toggle() } label: {
                 HStack(spacing: 6) {
-                    TheaterGlyph(kind: .chevron).stroke(lineWidth: 1).frame(width: 14, height: 14).rotationEffect(.degrees(expanded ? 180 : 0))
-                    Text("思考摘记").font(.system(size: 12))
+                    Text("她的思考摘记").font(.system(size: 12))
+                    TheaterGlyph(kind: .chevron).stroke(lineWidth: 1).frame(width: 13, height: 13).rotationEffect(.degrees(expanded ? 180 : 0))
                 }.foregroundStyle(palette.secondary)
             }.buttonStyle(.plain)
             if expanded { Text(text).font(.system(size: 13)).lineSpacing(4).textSelection(.enabled).foregroundStyle(palette.secondary) }
@@ -403,15 +488,18 @@ struct ArtifactRow: View {
     var body: some View {
         Button(action: onOpen) {
             HStack(spacing: 10) {
-                Image(artifactImageName(artifact)).resizable().scaledToFit().frame(width: 36, height: 36)
+                Image(artifactImageName(artifact)).resizable().scaledToFit().frame(width: 40, height: 40)
+                    .padding(3).background(palette.sunken, in: RoundedRectangle(cornerRadius: 10))
                     .pencilPreview(title: artifact.name, text: "\(artifact.mime) · \(formatFileSize(artifact.size))")
                 VStack(alignment: .leading, spacing: 4) {
                     Text(artifact.name).font(.system(size: 13, weight: .medium)).lineLimit(2).multilineTextAlignment(.leading)
                     Text(formatFileSize(artifact.size)).font(.system(size: 11)).foregroundStyle(palette.secondary)
                 }
                 Spacer(minLength: 0)
-                TheaterGlyph(kind: .back).stroke(lineWidth: 1).rotationEffect(.degrees(180)).frame(width: 15, height: 15)
-            }.padding(11).background(palette.selection, in: RoundedRectangle(cornerRadius: 12)).contentShape(Rectangle())
+                TheaterGlyph(kind: .back).stroke(lineWidth: 1.1).rotationEffect(.degrees(180)).frame(width: 14, height: 14).foregroundStyle(palette.dim)
+            }.padding(10).background(palette.raised, in: RoundedRectangle(cornerRadius: 14))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(palette.line, lineWidth: 0.7))
+                .contentShape(Rectangle())
         }.buttonStyle(.plain)
     }
 }
@@ -423,7 +511,7 @@ struct ToolDetailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(event.layer == "L4" ? "审阅画面" : "这一步的记录").font(.system(size: 15, weight: .medium))
+                Text(event.layer == "L4" ? "审阅画面" : "这一步的记录").font(.theaterSerif(16))
                 Spacer()
                 GlyphButton(label: "关闭记录", glyph: .close, action: onClose)
             }.padding(.horizontal, 16).padding(.top, 8)

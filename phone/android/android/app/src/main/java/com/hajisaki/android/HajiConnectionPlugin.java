@@ -70,7 +70,7 @@ public class HajiConnectionPlugin extends Plugin {
         boolean day="day".equals(call.getString("theme"));
         getActivity().runOnUiThread(()->{
             android.view.Window window=getActivity().getWindow();
-            int color=android.graphics.Color.parseColor(day?"#F6F7FB":"#05070F");
+            int color=android.graphics.Color.parseColor(day?"#FBF4F1":"#17131F");
             window.setStatusBarColor(color);window.setNavigationBarColor(color);
             window.setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(color));
             window.getDecorView().setBackgroundColor(color);

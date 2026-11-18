@@ -79,7 +79,7 @@ private final class LivingStageSurfaceView: UIView {
         super.init(frame: frame)
         clipsToBounds = true
         isUserInteractionEnabled = false
-        backgroundColor = UIColor(red: 0.04, green: 0.06, blue: 0.11, alpha: 1)
+        backgroundColor = UIColor(displayP3Red: 0x17 / 255.0, green: 0x13 / 255.0, blue: 0x1F / 255.0, alpha: 1)
         roomLayer.contentsGravity = .resize
         figureLayer.contentsGravity = .resize
         blinkLayer.contentsGravity = .resize
@@ -105,9 +105,12 @@ private final class LivingStageSurfaceView: UIView {
     func configure(night: Bool, posture: StagePosture, closeUp: Bool, animate: Bool) {
         allowsAmbientMotion = animate
         CATransaction.begin(); CATransaction.setDisableActions(true)
-        layer.cornerRadius = closeUp ? 13 : 0
-        layer.borderWidth = closeUp ? 0.5 : 0
-        layer.borderColor = UIColor(displayP3Red: 214.0 / 255, green: 178.0 / 255, blue: 105.0 / 255, alpha: 0.35).cgColor
+        layer.cornerRadius = closeUp ? 16 : 0
+        layer.borderWidth = closeUp ? 0.8 : 0
+        layer.borderColor = (night ? UIColor(displayP3Red: 0xE3 / 255.0, green: 0xC4 / 255.0, blue: 0x8E / 255.0, alpha: 0.42)
+                                   : UIColor(displayP3Red: 0xA8 / 255.0, green: 0x84 / 255.0, blue: 0x4C / 255.0, alpha: 0.42)).cgColor
+        backgroundColor = night ? UIColor(displayP3Red: 0x17 / 255.0, green: 0x13 / 255.0, blue: 0x1F / 255.0, alpha: 1)
+                                : UIColor(displayP3Red: 0xF5 / 255.0, green: 0xE8 / 255.0, blue: 0xE6 / 255.0, alpha: 1)
         CATransaction.commit()
         if self.closeUp != closeUp { self.closeUp = closeUp; setNeedsLayout() }
         let key = StageArtworkKey(night: night, posture: posture)

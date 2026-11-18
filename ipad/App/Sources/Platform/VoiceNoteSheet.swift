@@ -14,10 +14,16 @@ struct VoiceNoteSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(spacing: 20) {
+                        VStack(spacing: 10) {
+                            CameoPortrait(image: "listening_attentive", size: 76)
+                                .padding(5).background(palette.selection, in: Circle())
+                            Text(capture.isRecording ? "我在听，慢慢说。" : "想说的话，说给我听吧。")
+                                .font(.theaterSerif(16)).foregroundStyle(palette.secondary)
+                        }
                         Text(capture.durationLabel)
                             .font(.system(size: 48, weight: .light, design: .serif)).monospacedDigit()
                             .accessibilityLabel("录音时长 \(capture.durationLabel)")
-                        VoiceLevelView(levels: capture.levels, color: palette.blue)
+                        VoiceLevelView(levels: capture.levels, color: capture.isRecording ? palette.rose : palette.blue)
                             .frame(height: 64).accessibilityHidden(true)
                         HStack(spacing: 14) {
                             if capture.isRecording {
@@ -39,7 +45,7 @@ struct VoiceNoteSheet: View {
                                 .disabled(capture.isBusy)
                             }
                         }
-                        if capture.isBusy { ProgressView().tint(palette.blue) }
+                        if capture.isBusy { ProgressView().tint(palette.rose) }
                         if let notice = capture.notice {
                             Text(notice).font(.footnote).foregroundStyle(palette.warning)
                                 .multilineTextAlignment(.center)

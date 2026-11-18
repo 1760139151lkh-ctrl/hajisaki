@@ -1,32 +1,44 @@
 :root {
-  --bg: #05070f;
-  --surface: #0b1021;
-  --raised: #10172a;
-  --ink: #edf1fa;
-  --muted: #98a4c0;
-  --dim: #6d7a96;
-  --blue: #8cb4f5;
-  --light-blue: #b5cefa;
-  --gold: #d4af67;
-  --border: #283047;
-  --soft-border: #1b2338;
+  /* 月下 — keep in sync with style.css and the iPad TheaterPalette */
+  --bg: #17131f;
+  --raised: #211b2b;
+  --surface: #211b2b;
+  --letter: #211b2b;
+  --sunken: #2b2337;
+  --ink: #f3e9e4;
+  --muted: #bbadb7;
+  --dim: #8e8098;
+  --blue: #b6c4f1;
+  --light-blue: #b6c4f1;
+  --rose: #eda3b9;
+  --gold: #e3c48e;
+  --gold-line: rgba(227, 196, 142, 0.38);
+  --border: rgba(243, 233, 228, 0.15);
+  --soft-border: rgba(243, 233, 228, 0.08);
+  --danger: #f28fa5;
   color-scheme: dark;
   color: var(--ink);
   background: transparent;
-  font-family: system-ui, "Microsoft YaHei", sans-serif;
+  font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 :root[data-theme="day"] {
-  --bg: #f6f7fb;
-  --surface: #eef2fa;
-  --raised: #fff;
-  --ink: #1b233a;
-  --muted: #63718c;
-  --dim: #78829b;
-  --blue: #406aa9;
-  --light-blue: #2e5792;
-  --gold: #9e7b3e;
-  --border: #d3dbe9;
-  --soft-border: #dfe5ef;
+  /* 春日 */
+  --bg: #fbf4f1;
+  --raised: #fffcfa;
+  --surface: #fffcfa;
+  --letter: #fffcfa;
+  --sunken: #f5e8e6;
+  --ink: #2e2638;
+  --muted: #6c5f75;
+  --dim: #8d7f93;
+  --blue: #4f68ae;
+  --light-blue: #4f68ae;
+  --rose: #b8506f;
+  --gold: #a8844c;
+  --gold-line: rgba(168, 132, 76, 0.42);
+  --border: rgba(46, 38, 56, 0.15);
+  --soft-border: rgba(46, 38, 56, 0.08);
+  --danger: #b6405c;
   color-scheme: light;
 }
 * {

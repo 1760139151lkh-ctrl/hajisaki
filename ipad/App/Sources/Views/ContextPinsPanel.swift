@@ -11,7 +11,11 @@ struct ContextPinsPanel: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     if model.contextPins.isEmpty {
-                        Text("还没有固定的内容。").foregroundStyle(palette.secondary)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Image("icon_bookmark").resizable().scaledToFit().frame(width: 64, height: 64)
+                            Text("还没有固定的内容。").font(.theaterSerif(16))
+                            Text("想让她一直记着的段落或原件，可以钉在这里。").font(.system(size: 13)).foregroundStyle(palette.secondary)
+                        }
                     }
                     ForEach(model.contextPins) { pin in
                         VStack(alignment: .leading, spacing: 12) {
@@ -33,7 +37,7 @@ struct ContextPinsPanel: View {
                                         .foregroundStyle(palette.text).multilineTextAlignment(.leading)
                                 }
                             }
-                            TheaterRule()
+                            StitchRule()
                         }
                     }
                     if !model.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {

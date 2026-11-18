@@ -72,7 +72,7 @@ export async function openKnowledgeExport(
   source.dataset.export = "true";
   source.dataset.theme = "day";
   source.setAttribute("aria-hidden", "true");
-  source.innerHTML = `<header class="journal-heading"><span>HAJISAKI · 知识手账</span><h1>${escape(options.title)}</h1><div class="journal-staff" aria-hidden="true">♮</div></header><article class="reading-content journal-body">${markdown(options.text, { taskStates: options.taskStates, readonlyTasks: true })}</article><footer class="journal-signature"><span>把这一页，留给以后的你。</span><strong>祥子</strong><b>祥</b></footer>`;
+  source.innerHTML = `<header class="journal-heading"><span>A page to keep</span><h1>${escape(options.title)}</h1><div class="journal-staff" aria-hidden="true">♮</div></header><article class="reading-content journal-body">${markdown(options.text, { taskStates: options.taskStates, readonlyTasks: true })}</article><footer class="journal-signature"><span>把这一页，留给以后的你。</span><strong>Sakiko</strong><b>祥</b></footer>`;
   source.style.position = "relative";
   source.style.left = "0";
   source.style.top = "0";
