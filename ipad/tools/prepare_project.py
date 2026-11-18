@@ -60,7 +60,7 @@ def prepare() -> None:
     info = {
         "CFBundleDisplayName": "哈基祥", "CFBundleName": "HajiSaki",
         "CFBundleExecutable": "$(EXECUTABLE_NAME)", "CFBundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER)",
-        "CFBundlePackageType": "APPL", "CFBundleShortVersionString": "0.1.0", "CFBundleVersion": "7",
+        "CFBundlePackageType": "APPL", "CFBundleShortVersionString": "0.1.0", "CFBundleVersion": "8",
         "LSRequiresIPhoneOS": True, "UILaunchScreen": {"UIColorName": "LaunchBackground"},
         "UIStatusBarStyle": "UIStatusBarStyleLightContent", "UIViewControllerBasedStatusBarAppearance": True,
         "UIApplicationSceneManifest": {"UIApplicationSupportsMultipleScenes": True},

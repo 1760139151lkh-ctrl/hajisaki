@@ -14,6 +14,7 @@ struct ScratchpadView: View {
     var paperSize = CGSize(width: 900, height: 1200)
     var initialColor: UIColor? = nil
     @StateObject private var session = InkSession()
+    @Environment(\.theaterPalette) private var palette
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -23,7 +24,7 @@ struct ScratchpadView: View {
                 HStack(spacing: 12) {
                     ForEach(InkTool.allCases) { tool in
                         Button(tool.title) { session.select(tool) }
-                            .foregroundStyle(session.tool == tool ? Color(red: 0.34, green: 0.52, blue: 0.80) : .primary)
+                            .foregroundStyle(session.tool == tool ? palette.rose : palette.text)
                             .accessibilityAddTraits(session.tool == tool ? .isSelected : [])
                     }
                     Menu("墨色") {
@@ -61,17 +62,17 @@ struct ScratchpadView: View {
                     Text(error).font(.footnote)
                     Spacer()
                     Button("重试") { session.retry() }
-                }.foregroundStyle(Color(red: 0.77, green: 0.29, blue: 0.40)).padding(12)
+                }.foregroundStyle(palette.warning).padding(12)
             }
             if session.hasInk {
                 HStack {
                     Spacer()
-                    Button("递给祥子看这段") {
+                    Button {
                         if let url = session.exportPNG() { onShare(url) }
+                    } label: {
+                        Text("递给祥子看这段")
                     }
-                    .font(.system(size: 15, weight: .medium))
-                    .padding(.horizontal, 20).padding(.vertical, 11)
-                    .background(Color(red: 0.84, green: 0.70, blue: 0.41).opacity(0.14), in: Capsule())
+                    .buttonStyle(TheaterActionStyle(prominent: true))
                     Spacer()
                 }.padding(12)
             }
@@ -87,9 +88,9 @@ struct ScratchpadView: View {
 
     private var watchPalette: some View {
         ZStack {
-            Circle().fill(Color(red: 0.05, green: 0.09, blue: 0.17))
-            Circle().stroke(Color(red: 0.84, green: 0.70, blue: 0.41), lineWidth: 1)
-            Circle().stroke(Color(red: 0.84, green: 0.70, blue: 0.41).opacity(0.35), lineWidth: 0.5).padding(9)
+            Circle().fill(TheaterPalette.p3(0x211B2B))
+            Circle().stroke(TheaterPalette.p3(0xE3C48E), lineWidth: 1)
+            Circle().stroke(TheaterPalette.p3(0xE3C48E).opacity(0.42), lineWidth: 0.6).padding(9)
             switch session.paletteKind {
             case .tools:
                 paletteButton("书写", x: 0, y: -72) { session.select(.pen) }
@@ -113,14 +114,14 @@ struct ScratchpadView: View {
                 paletteButton("高光", x: -69, y: -22) { session.select(.marker) }
             }
             Button("收起") { session.palettePoint = nil }
-                .font(.system(size: 12)).foregroundStyle(Color(red: 0.84, green: 0.70, blue: 0.41))
+                .font(.system(size: 12)).foregroundStyle(TheaterPalette.p3(0xE3C48E))
                 .frame(width: 48, height: 48)
         }.frame(width: 232, height: 232).shadow(color: .black.opacity(0.25), radius: 16, y: 8)
     }
 
     private func paletteButton(_ label: String, x: CGFloat, y: CGFloat, action: @escaping () -> Void) -> some View {
         Button(label) { action(); session.palettePoint = nil }
-            .font(.system(size: 13, weight: .medium)).foregroundStyle(Color(red: 0.93, green: 0.95, blue: 0.99))
+            .font(.system(size: 13, weight: .medium)).foregroundStyle(TheaterPalette.p3(0xF3E9E4))
             .frame(width: 56, height: 48).contentShape(Rectangle()).offset(x: x, y: y)
     }
 }

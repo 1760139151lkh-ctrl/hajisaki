@@ -30,7 +30,7 @@
   border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
-  color: #1b233a;
+  color: #2e2a3f;
 }
 .sheet-table {
   border-collapse: separate;
@@ -50,11 +50,11 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   background: #fff;
-  border-bottom: 1px solid #dfe5f0;
-  border-right: 1px solid #e6ebf4;
+  border-bottom: 1px solid #eadccd;
+  border-right: 1px solid #f2e7dc;
 }
-.sheet-table thead th { position: sticky; top: 0; z-index: 2; background: #1b233a; color: #fff; }
-.sheet-table :is(th, td):nth-child(2) { position: sticky; left: 44px; z-index: 1; width: 140px; min-width: 140px; max-width: 140px; box-shadow: 1px 0 #dfe5f0; }
+.sheet-table thead th { position: sticky; top: 0; z-index: 2; background: #2e2a3f; color: #fff; }
+.sheet-table :is(th, td):nth-child(2) { position: sticky; left: 44px; z-index: 1; width: 140px; min-width: 140px; max-width: 140px; box-shadow: 1px 0 #eadccd; }
 .sheet-table thead th:nth-child(2) { z-index: 3; }
 .sheet-table .sheet-row-number {
   position: sticky;
@@ -64,13 +64,13 @@
   min-width: 44px;
   max-width: 44px;
   padding: 12px 6px;
-  color: #64748b;
-  background: #f3f6fc;
+  color: #6b6476;
+  background: #f5ece2;
   text-align: center;
   font-size: 11px;
   font-weight: normal;
 }
-.sheet-table thead .sheet-row-number { z-index: 4; background: #1b233a; color: #c4d5f0; }
+.sheet-table thead .sheet-row-number { z-index: 4; background: #2e2a3f; color: #f2d9c4; }
 .sheet-column-name { display: block; font: 10px/1.4 "Cascadia Code", monospace; opacity: 0.65; margin-bottom: 5px; }
 .sheet-pagination { display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto; gap: 8px; }
 .sheet-pagination button { min-height: 36px; }

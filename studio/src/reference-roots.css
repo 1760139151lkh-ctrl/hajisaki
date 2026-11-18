@@ -8,7 +8,7 @@
   color: var(--ink);
   box-shadow: var(--shadow);
 }
-.reference-roots-dialog::backdrop { background: #0009; }
+.reference-roots-dialog::backdrop { background: rgba(20, 16, 30, .5); }
 .reference-roots-dialog h2 { margin: 0 44px 14px 0; font-size: 23px; font-weight: 500; }
 .reference-root-note, .reference-root-status { color: var(--muted); font-size: 14px; line-height: 1.8; }
 .reference-root-status:empty { display: none; }
@@ -21,4 +21,4 @@
 .reference-root-form[hidden] { display: none; }
 .reference-root-form label { display: block; margin: 12px 0; color: var(--muted); font-size: 13px; }
 .reference-root-form input { width: 100%; min-height: 44px; margin-top: 7px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; color: var(--ink); background: var(--raised); }
-.reference-root-form button { min-height: 44px; padding: 10px 20px; margin-top: 6px; border: 0; border-radius: 22px; color: var(--bg); background: var(--blue); }
+.reference-root-form button { min-height: 44px; padding: 10px 20px; margin-top: 6px; border: 0; border-radius: 22px; color: var(--on-accent); background: var(--primary-bg); }

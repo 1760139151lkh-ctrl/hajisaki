@@ -61,11 +61,17 @@ struct TheaterRootView: View {
     @State private var showMainActions = false
     @State private var afterMainActions: (() -> Void)?
     @State private var teaPreference: Bool? = nil
+    @State private var moodMoment: String?
 
     private var palette: TheaterPalette {
         TheaterPalette(isDark: model.settings.theme == "night" || (model.settings.theme == "auto" && systemScheme == .dark))
     }
     private var isWide: Bool { width >= 1024 }
+    /// Saki's current face: thinking while she writes, relieved after a reply, sleepy at dawn.
+    private var mood: String {
+        CompanionMood.portrait(generating: model.isGenerating, group: model.selectedConversation?.group,
+                               connected: model.isConnected, paired: !model.deviceID.isEmpty, moment: moodMoment)
+    }
     private var preferredScheme: ColorScheme? {
         model.settings.theme == "night" ? .dark : model.settings.theme == "day" ? .light : nil
     }
@@ -92,7 +98,8 @@ struct TheaterRootView: View {
                                       onTool: { event in toolDetail = event; openInspector(.document) },
                                       onOpenSource: openSource,
                                       pencilInteractionRevision: pencil.interactionRevision,
-                                      onPreview: { pencil.showPreview($0) })
+                                      onPreview: { pencil.showPreview($0) },
+                                      portrait: mood)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
                 if geometry.size.width >= 1024 && showInspector {
                     Rectangle().fill(palette.line).frame(width: 0.5)
@@ -108,7 +115,7 @@ struct TheaterRootView: View {
             }
         }
         .environment(\.theaterPalette, palette)
-        .tint(palette.blue)
+        .tint(palette.rose)
         .preferredColorScheme(preferredScheme)
         .onChange(of: model.draft) { old, new in
             if old != new && !new.isEmpty { teaPreference = nil }
@@ -121,7 +128,7 @@ struct TheaterRootView: View {
         }) { selected in
             sheetContent(selected)
                 .environment(\.theaterPalette, palette)
-                .tint(palette.blue)
+                .tint(palette.rose)
                 .preferredColorScheme(preferredScheme)
                 .presentationBackground(palette.background)
         }
@@ -139,7 +146,10 @@ struct TheaterRootView: View {
                                        palette: palette, onCommand: performPencilCommand, onCapture: attachPencilCapture))
         .onChange(of: pencil.notice) { _, notice in if let notice { model.notice = notice } }
         .overlay {
-            if dropHighlighted { RoundedRectangle(cornerRadius: 18).stroke(palette.blue, lineWidth: 2).padding(7).allowsHitTesting(false) }
+            if dropHighlighted {
+                RoundedRectangle(cornerRadius: 22).stroke(palette.rose, style: StrokeStyle(lineWidth: 2, dash: [7, 5])).padding(7)
+                    .allowsHitTesting(false)
+            }
         }
         .onDrop(of: [UTType.fileURL.identifier, UTType.pdf.identifier, UTType.image.identifier, UTType.text.identifier], isTargeted: $dropHighlighted, perform: receiveDrop)
         .onOpenURL { url in
@@ -159,6 +169,7 @@ struct TheaterRootView: View {
                let previous = old.first(where: { $0.id == last.id }),
                previous.status != "completed" && previous.status != "stopped" {
                 audio.play(.reply)
+                celebrateReply()
             }
         }
         .onChange(of: model.selectedConversation) { _, _ in indexCurrentConversation() }
@@ -177,6 +188,14 @@ struct TheaterRootView: View {
         .onChange(of: ambienceEnabled) { _, _ in configureAudio() }
         .onChange(of: model.selectedEffort) { old, value in
             if old != value && model.isReadyForNavigation { audio.play(.effort) }
+        }
+    }
+
+    private func celebrateReply() {
+        moodMoment = "happy_achieved"
+        Task {
+            try? await Task.sleep(for: .seconds(2.4))
+            if moodMoment == "happy_achieved" { moodMoment = nil }
         }
     }
 
@@ -213,11 +232,19 @@ struct TheaterRootView: View {
     private var topBar: some View {
         HStack(spacing: 6) {
             GlyphButton(label: showSidebar && isWide ? "收起名录" : "打开名录", glyph: .sidebar, active: showSidebar && isWide) { toggleSidebar() }
-            VStack(alignment: .leading, spacing: 3) {
-                Text(model.selectedConversation?.title ?? "哈基祥").font(.system(size: 17, weight: .medium, design: .serif)).lineLimit(1)
-                if model.selectedConversation != nil {
-                    Text(model.selectedConversation?.group ?? "").font(.system(size: 11)).foregroundStyle(palette.secondary).lineLimit(1)
-                }
+            CameoPortrait(image: mood, size: 34, online: (isWide && showSidebar) ? nil : model.isConnected).padding(.horizontal, 4)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(model.selectedConversation?.title ?? "哈基祥").font(.theaterSerif(17)).tracking(0.5).lineLimit(1)
+                HStack(spacing: 5) {
+                    if model.isGenerating {
+                        HeartMark(size: 8)
+                        Text("正在写回信…")
+                    } else if model.selectedConversation != nil {
+                        Text(model.isConnected ? "祥子 · 在你身边" : "琴房的灯暂时熄了 · 草稿会替你留着")
+                    } else {
+                        Text(model.isConnected ? "琴房灯亮着" : model.connectionLabel)
+                    }
+                }.font(.system(size: 12)).foregroundStyle(model.isGenerating ? palette.rose : palette.dim).lineLimit(1)
             }.frame(maxWidth: .infinity, alignment: .leading)
             GlyphButton(label: "搜索记忆与对话", glyph: .search) { sheet = .search }
             GlyphButton(label: "打开共创台", glyph: .book, active: showInspector && isWide) {
@@ -227,8 +254,8 @@ struct TheaterRootView: View {
                 if pencil.captureArmed { pencil.cancelCapture() } else { pencil.presentRing() }
             }
             Button { showMainActions.toggle() } label: {
-                TheaterGlyph(kind: .more).stroke(style: StrokeStyle(lineWidth: 1.6, lineCap: .round)).frame(width: 23, height: 23)
-                    .frame(width: 44, height: 44).contentShape(Rectangle())
+                TheaterGlyph(kind: .more).stroke(style: StrokeStyle(lineWidth: 1.8, lineCap: .round)).frame(width: 22, height: 22)
+                    .frame(width: 44, height: 44).foregroundStyle(palette.secondary).contentShape(Rectangle())
             }.buttonStyle(.plain).accessibilityLabel("更多操作")
             .popover(isPresented: $showMainActions) {
                 TheaterPopup {
@@ -257,66 +284,85 @@ struct TheaterRootView: View {
                         action?()
                     }
             }
-        }.padding(.horizontal, 10).frame(height: 68)
+        }.padding(.horizontal, 10).frame(height: 68).background(palette.background)
     }
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 11) {
-                Image("profile_portrait").resizable().scaledToFill().frame(width: 42, height: 42).clipShape(Circle())
-                    .overlay(Circle().stroke(palette.gold.opacity(0.4), lineWidth: 0.5))
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("哈基祥").font(.system(size: 20, weight: .medium, design: .serif))
-                    Text("H A J I S A K I").font(.system(size: 8, weight: .medium)).foregroundStyle(palette.gold)
-                }
+            HStack(spacing: 10) {
+                SakiSeal(size: 30)
+                Text("哈基祥").font(.theaterSerif(20)).tracking(2).lineLimit(1)
                 Spacer(minLength: 0)
-                GlyphButton(label: "新的乐章", glyph: .plus) { Task { await model.createConversation(); if !isWide { sheet = nil } } }
-            }.padding(.horizontal, 17).padding(.top, 22).padding(.bottom, 25)
+                GlyphButton(label: "琴房设置", glyph: .settings) { sheet = .settings }
+            }.padding(.leading, 20).padding(.trailing, 8).padding(.top, 16).padding(.bottom, 14)
+            TimelineView(.everyMinute) { context in
+                VStack(alignment: .leading, spacing: 4) {
+                    ScriptLine(text: CompanionMood.salutation(context.date), size: 26)
+                    Text(CompanionMood.greeting(context.date)).font(.theaterSerif(16)).lineSpacing(4)
+                        .foregroundStyle(palette.text).fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 7) {
+                        Text(CompanionMood.dateLine(context.date))
+                        Circle().fill(model.isConnected ? palette.online : palette.dim).frame(width: 5, height: 5)
+                    }.font(.system(size: 12)).foregroundStyle(palette.dim).padding(.top, 4)
+                }
+            }.padding(.horizontal, 20)
+            Button { Task { await model.createConversation(); if !isWide { sheet = nil } } } label: {
+                HStack(spacing: 8) {
+                    Text("写信给祥子…").font(.system(size: 14)).foregroundStyle(palette.dim)
+                    Spacer(minLength: 0)
+                    WaxHeart(size: 32)
+                }.padding(.leading, 14).padding(.trailing, 7).frame(height: 48)
+                    .letterCard(cornerRadius: 16)
+                    .contentShape(Rectangle())
+            }.buttonStyle(.plain).accessibilityLabel("写一封新的信").padding(.horizontal, 16).padding(.top, 16)
             HStack(spacing: 7) {
-                TheaterGlyph(kind: .search).stroke(lineWidth: 1.3).frame(width: 18, height: 18)
-                TextField("搜索对话", text: $model.searchText).font(.system(size: 14)).textInputAutocapitalization(.never)
+                TheaterGlyph(kind: .search).stroke(lineWidth: 1.3).frame(width: 15, height: 15)
+                TextField("寻找一段回忆", text: $model.searchText).font(.system(size: 14)).textInputAutocapitalization(.never)
+                    .foregroundStyle(palette.text)
                 if !model.searchText.isEmpty { GlyphButton(label: "清除搜索", glyph: .close) { model.searchText = "" }.frame(width: 30, height: 30) }
-            }.foregroundStyle(palette.secondary).padding(.horizontal, 10).frame(height: 43)
-                .background(palette.background.opacity(0.65), in: RoundedRectangle(cornerRadius: 11)).padding(.horizontal, 16)
+            }.foregroundStyle(palette.dim).padding(.horizontal, 12).frame(height: 38)
+                .background(palette.sunken, in: RoundedRectangle(cornerRadius: 10))
+                .padding(.horizontal, 16).padding(.top, 18)
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 4) {
+                HStack(spacing: 18) {
                     groupButton("全部", value: "")
                     ForEach(groups, id: \.self) { group in groupButton(groupLabel(group), value: group) }
-                }.padding(.horizontal, 15)
-            }.padding(.top, 16).padding(.bottom, 15)
+                }.padding(.horizontal, 20)
+            }.padding(.top, 4)
+            TheaterRule().padding(.horizontal, 16)
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 5) {
+                LazyVStack(alignment: .leading, spacing: 2) {
                     if model.conversations.isEmpty {
-                        if !model.searchText.isEmpty || !model.selectedGroup.isEmpty {
-                            Text("没有找到这一页。")
-                                .font(.system(size: 14)).foregroundStyle(palette.secondary).padding(.vertical, 18)
-                            Button("清除筛选") { model.searchText = ""; model.selectedGroup = ""; Task { await model.search() } }
-                                .buttonStyle(TheaterActionStyle())
-                        } else {
-                            Button("写下新的乐章") { Task { await model.createConversation() } }.buttonStyle(TheaterActionStyle())
-                        }
+                        VStack(alignment: .leading, spacing: 10) {
+                            if !model.searchText.isEmpty || !model.selectedGroup.isEmpty {
+                                Text("还没找到这一段回忆。").font(.system(size: 14)).foregroundStyle(palette.secondary)
+                                Button("看看全部信笺") { model.searchText = ""; model.selectedGroup = ""; Task { await model.search() } }
+                                    .font(.system(size: 14)).foregroundStyle(palette.rose)
+                            } else {
+                                Text("第一封信，从今天开始。").font(.theaterSerif(15)).foregroundStyle(palette.text)
+                                Text("想到什么，就写给她吧。").font(.system(size: 13)).foregroundStyle(palette.secondary)
+                            }
+                        }.padding(.horizontal, 12).padding(.vertical, 18)
                     }
                     ForEach(model.conversations) { conversation in
                         conversationRow(conversation)
                     }
-                }.padding(.horizontal, 12).padding(.bottom, 20)
+                }.padding(.horizontal, 8).padding(.vertical, 8)
             }
-            TheaterRule().padding(.horizontal, 18)
-            VStack(spacing: 2) {
-                sideDestination("记忆星空", image: "icon_bookmark") { sheet = .memories }
-                sideDestination("共享文件柜", image: "icon_archive") { sheet = .media }
-            }.padding(.horizontal, 12).padding(.top, 11)
-            HStack(spacing: 9) {
-                Button { sheet = .connection } label: {
-                    HStack(spacing: 7) {
-                        Circle().fill(model.isConnected ? Color(red: 0.48, green: 0.72, blue: 0.62) : palette.secondary.opacity(0.55)).frame(width: 5, height: 5)
-                        Text(model.isConnected ? "琴房已连接" : model.connectionLabel).font(.system(size: 12)).lineLimit(1)
-                    }.foregroundStyle(palette.secondary).frame(minHeight: 42)
-                }.buttonStyle(.plain)
+            TheaterRule()
+            // Fits the 238 pt sidebar of an 11-inch iPad in landscape; only the status text may truncate.
+            HStack(spacing: 0) {
+                sideDestination("记忆", glyph: .sparkle) { sheet = .memories }
+                sideDestination("文件柜", glyph: .book) { sheet = .media }
                 Spacer(minLength: 0)
-                GlyphButton(label: "琴房设置", glyph: .settings) { sheet = .settings }
-            }.padding(.horizontal, 20).padding(.vertical, 10)
-        }.background(palette.sidebar).frame(maxHeight: .infinity)
+                Button { sheet = .connection } label: {
+                    HStack(spacing: 6) {
+                        Circle().fill(model.isConnected ? palette.online : palette.dim).frame(width: 6, height: 6)
+                        Text(model.isConnected ? "灯亮着" : model.connectionLabel).font(.system(size: 12)).lineLimit(1)
+                    }.foregroundStyle(palette.secondary).padding(.horizontal, 8).frame(minHeight: 40).contentShape(Rectangle())
+                }.buttonStyle(.plain).accessibilityLabel(model.isConnected ? "琴房灯亮着，查看连接" : "连接电脑")
+            }.padding(.horizontal, 10).padding(.vertical, 6)
+        }.background { palette.sidebar.ignoresSafeArea() }.frame(maxHeight: .infinity)
     }
 
     private var groups: [String] {
@@ -327,42 +373,44 @@ struct TheaterRootView: View {
         ["专属日常": "日常", "代码工坊": "工坊", "文献卷宗": "卷宗"][group] ?? group
     }
     private func groupButton(_ label: String, value: String) -> some View {
-        Button { model.selectedGroup = value; Task { await model.search() } } label: {
-            Text(label).font(.system(size: 12, weight: model.selectedGroup == value ? .semibold : .regular))
-                .foregroundStyle(model.selectedGroup == value ? palette.blue : palette.secondary)
-                .padding(.horizontal, 10).frame(height: 32)
-                .background(model.selectedGroup == value ? palette.selection : Color.clear, in: Capsule())
-        }.buttonStyle(.plain)
+        TheaterChip(title: label, selected: model.selectedGroup == value) {
+            model.selectedGroup = value; Task { await model.search() }
+        }
     }
     private func conversationRow(_ conversation: Conversation) -> some View {
-        Button {
+        let selected = model.selectedConversationID == conversation.id
+        return Button {
             Task { await model.selectConversation(conversation); if !isWide { sheet = nil } }
         } label: {
-            VStack(alignment: .leading, spacing: 7) {
-                HStack(spacing: 5) {
-                    if conversation.pinned { Image("icon_bookmark").resizable().scaledToFit().frame(width: 16, height: 16) }
-                    Text(conversation.title).font(.system(size: 14, weight: .medium)).lineLimit(2).multilineTextAlignment(.leading)
-                }
-                if let preview = conversation.preview, !preview.isEmpty {
-                    Text(readablePreview(preview)).font(.system(size: 11)).foregroundStyle(palette.secondary).lineLimit(2).multilineTextAlignment(.leading)
-                }
-            }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 13).padding(.vertical, 13)
-                .background(model.selectedConversationID == conversation.id ? palette.selection : Color.clear, in: RoundedRectangle(cornerRadius: 12))
+            HStack(alignment: .top, spacing: 11) {
+                MonogramRoundel(title: conversation.title, pinned: conversation.pinned, size: 40)
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(alignment: .center, spacing: 6) {
+                        Text(conversation.title).font(.theaterSerif(15)).lineLimit(1)
+                        Spacer(minLength: 4)
+                        Text(letterDate(conversation.updatedAt)).font(.system(size: 11)).foregroundStyle(palette.dim)
+                    }
+                    if let preview = conversation.preview, !preview.isEmpty {
+                        Text(readablePreview(preview)).font(.system(size: 12)).foregroundStyle(palette.secondary).lineLimit(2).multilineTextAlignment(.leading)
+                    }
+                }.padding(.top, 2)
+            }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 10).padding(.vertical, 10)
+                .background(selected ? palette.sunken : Color.clear, in: RoundedRectangle(cornerRadius: 12))
                 .contentShape(Rectangle())
         }.buttonStyle(.plain)
+            .accessibilityAddTraits(selected ? .isSelected : [])
             .contextMenu {
-                Button("重命名") { beginRename(conversation) }.disabled(!model.isConnected)
-                Button(conversation.pinned ? "取消置顶" : "置顶乐章") { Task { await model.togglePin(conversation) } }
+                Button("重新命名") { beginRename(conversation) }.disabled(!model.isConnected)
+                Button(conversation.pinned ? "不再置顶" : "放在心上（置顶）") { Task { await model.togglePin(conversation) } }
             }
     }
-    private func sideDestination(_ title: String, image: String, action: @escaping () -> Void) -> some View {
+    private func sideDestination(_ title: String, glyph: TheaterGlyphKind, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 10) {
-                Image(image).resizable().scaledToFit().frame(width: 24, height: 24)
-                Text(title).font(.system(size: 13))
-                Spacer()
-            }.padding(.horizontal, 10).frame(height: 44).contentShape(Rectangle())
-        }.buttonStyle(.plain).foregroundStyle(palette.secondary)
+            HStack(spacing: 7) {
+                TheaterGlyph(kind: glyph).stroke(style: StrokeStyle(lineWidth: 1.3, lineCap: .round, lineJoin: .round)).frame(width: 15, height: 15)
+                Text(title).font(.system(size: 13)).lineLimit(1).fixedSize()
+            }.foregroundStyle(palette.secondary).padding(.horizontal, 8).frame(height: 40).contentShape(Rectangle())
+        }.buttonStyle(.plain)
     }
 
     private func readablePreview(_ value: String) -> String {
@@ -413,13 +461,11 @@ struct TheaterRootView: View {
 
     private var inspector: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 5) {
+            HStack(spacing: 18) {
                 ForEach(InspectorMode.allCases, id: \.self) { mode in
-                    Button { previewRequestID = UUID(); openingArtifact = nil; animate { inspectorMode = mode } } label: {
-                        Text(mode.rawValue).font(.system(size: 13, weight: inspectorMode == mode ? .semibold : .regular))
-                            .padding(.horizontal, 13).frame(height: 36)
-                            .background(inspectorMode == mode ? palette.selection : Color.clear, in: Capsule())
-                    }.buttonStyle(.plain).foregroundStyle(inspectorMode == mode ? palette.blue : palette.secondary)
+                    TheaterChip(title: mode.rawValue, selected: inspectorMode == mode) {
+                        previewRequestID = UUID(); openingArtifact = nil; animate { inspectorMode = mode }
+                    }
                 }
                 Spacer(minLength: 0)
                 if inspectorMode != .portrait {
@@ -447,9 +493,9 @@ struct TheaterRootView: View {
                         ToolDetailView(event: toolDetail, onClose: { self.toolDetail = nil })
                     } else if let openingArtifact {
                         VStack(spacing: 18) {
-                            Image(artifactImageName(openingArtifact)).resizable().scaledToFit().frame(width: 60, height: 60)
-                            Text(openingArtifact.name).font(.system(size: 15)).multilineTextAlignment(.center)
-                            ProgressView().tint(palette.gold)
+                            Image(artifactImageName(openingArtifact)).resizable().scaledToFit().frame(width: 72, height: 72)
+                            Text(openingArtifact.name).font(.theaterSerif(15)).multilineTextAlignment(.center)
+                            HStack(spacing: 8) { TypingHearts(); Text("正在替你翻开…").font(.system(size: 13)).foregroundStyle(palette.secondary) }
                             Button("返回琴房") {
                                 previewRequestID = UUID(); self.openingArtifact = nil
                                 animate { inspectorMode = .portrait }
@@ -472,15 +518,17 @@ struct TheaterRootView: View {
                             Task { if let artifact = await model.upload(fileURL: url) { await model.attach(artifact, to: destination); if !isWide { sheet = nil } } }
                         }, onOpenSource: openSource).id(document.id)
                     } else {
-                        VStack(spacing: 18) {
-                            Image("icon_document").resizable().scaledToFit().frame(width: 80, height: 80)
-                            Button("打开文件") { importPresented = true }.buttonStyle(TheaterActionStyle())
-                            Button("从文件柜选择") { sheet = .media }.font(.system(size: 13)).foregroundStyle(palette.secondary)
-                        }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                        VStack(spacing: 16) {
+                            Image("icon_document").resizable().scaledToFit().frame(width: 92, height: 92)
+                                .shadow(color: palette.shadow, radius: 10, x: 0, y: 5)
+                            Text("想一起看的纸页，就放在这里吧。").font(.theaterSerif(15)).foregroundStyle(palette.secondary)
+                            Button("打开文件") { importPresented = true }.buttonStyle(TheaterActionStyle(prominent: true))
+                            Button("从文件柜选择") { sheet = .media }.font(.system(size: 13)).foregroundStyle(palette.rose)
+                        }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity).clipped()
-        }.background(palette.raised)
+        }.background(palette.letter)
     }
 
     private func companionStage(closeUp: Bool) -> some View {
@@ -498,27 +546,30 @@ struct TheaterRootView: View {
             else {
                 VStack(spacing: 0) {
                     stage.frame(maxWidth: .infinity, maxHeight: .infinity)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(posture == .tea && late ? "夜深了，先松一松肩膀。" : posture == .tea ? "茶还温着" : palette.isDark ? "月下琴房" : "初春琴房")
-                            .font(.system(size: 20, weight: .regular, design: .serif)).lineLimit(1)
-                            HStack(spacing: 17) {
-                                Button { animate { inspectorMode = .scratchpad } } label: {
-                                    Text("展开草稿纸").padding(.horizontal, 12).frame(minHeight: 44).contentShape(Rectangle())
-                                }
-                                Button { teaPreference = posture != .tea } label: {
-                                    Text(posture == .tea ? "收起茶盏" : "陪我喝杯茶").padding(.horizontal, 12).frame(minHeight: 44).contentShape(Rectangle())
-                                }
-                            }.font(.system(size: 12))
-                                .buttonStyle(.plain)
-                                .foregroundStyle(palette.secondary)
-                                .frame(minHeight: 44)
+                    VStack(alignment: .leading, spacing: 6) {
+                        ScriptLine(text: "Sakiko", size: 24)
+                        Text(stageCaption(posture: posture, late: late))
+                            .font(.theaterSerif(19)).lineSpacing(3).lineLimit(2).fixedSize(horizontal: false, vertical: true)
+                        HStack(spacing: 10) {
+                            Button("展开草稿纸") { animate { inspectorMode = .scratchpad } }
+                                .buttonStyle(TheaterActionStyle())
+                            Button(posture == .tea ? "收起茶盏" : "陪我喝杯茶") { teaPreference = posture != .tea }
+                                .buttonStyle(TheaterActionStyle())
+                        }.padding(.top, 4)
                     }.frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundStyle(palette.text).padding(.horizontal, 18).padding(.vertical, 12)
+                        .foregroundStyle(palette.text).padding(.horizontal, 20).padding(.top, 16).padding(.bottom, 18)
                         .background(palette.raised)
-                        .overlay(alignment: .top) { Rectangle().fill(palette.line).frame(height: 0.5) }
+                        .overlay(alignment: .top) { StitchRule() }
                 }
             }
         }
+    }
+
+    private func stageCaption(posture: StagePosture, late: Bool) -> String {
+        if posture == .tea { return late ? "夜深了，先松一松肩膀。" : "茶还温着，慢慢喝。" }
+        if model.isGenerating { return "她在想，怎么回你才好。" }
+        if posture == .reading { return "你写，她在旁边看着呢。" }
+        return palette.isDark ? "月下琴房，灯一直亮着。" : "春日影里，窗边的位置留给你。"
     }
 
     private func isLateNight(_ date: Date) -> Bool {
@@ -561,9 +612,11 @@ struct TheaterRootView: View {
     private var renamePanel: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 18) {
+                Text("给这段乐章起个名字").font(.theaterSerif(22))
                 TextField("乐章名称", text: $conversationTitle)
                     .font(.system(size: 18)).padding(16)
-                    .background(palette.raised, in: RoundedRectangle(cornerRadius: 12))
+                    .background(palette.raised, in: RoundedRectangle(cornerRadius: 14))
+                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(palette.stitch, lineWidth: 0.7))
                     .accessibilityLabel("乐章名称")
                 if let notice = model.notice { Text(notice).font(.system(size: 13)).foregroundStyle(palette.warning) }
                 Spacer()

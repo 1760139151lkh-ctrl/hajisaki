@@ -1,10 +1,10 @@
 {
   "artifact": "hajisaki-android.apk",
-  "bytes": 44886529,
-  "sha256": "e30275f89f3f3b9f037ffc0f542dd162f9b68e3155f460b9b3ae85b187eefaee",
+  "bytes": 45783738,
+  "sha256": "bf914062d3482484b4840dbd468607b97c4bd0266647a662a382cc43ceb13b71",
   "package": "com.hajisaki.android",
   "min_sdk": 24,
   "target_sdk": 36,
   "signing": "project self-signed release key; not Play/AppGallery publication",
-  "web_files": 141
+  "web_files": 143
 }

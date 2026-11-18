@@ -3,7 +3,7 @@
 	"appName": "哈基祥",
 	"webDir": "www",
 	"android": {
-		"backgroundColor": "#05070F",
+		"backgroundColor": "#FBF4F1",
 		"allowMixedContent": false,
 		"webContentsDebuggingEnabled": false
 	},

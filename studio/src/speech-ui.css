@@ -61,7 +61,7 @@
   white-space: pre-wrap;
 }
 .uncertainty mark {
-  background: #d4af6740;
+  background: var(--gold-soft, rgba(232, 195, 130, 0.25));
   color: var(--ink);
   border-bottom: 1px dashed var(--gold);
   padding: 2px;

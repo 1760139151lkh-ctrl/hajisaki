@@ -23,7 +23,7 @@ export async function showPins(
   element.innerHTML = pins
     .map(
       (pin) =>
-        `<span class="context-pin"><button data-open="${escape(pin.id)}">♮ ${escape(
+        `<span class="context-pin"><button data-open="${escape(pin.id)}">${escape(
           (
             pin.source?.name ||
             pin.source?.content ||

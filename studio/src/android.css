@@ -1,5 +1,18 @@
-.android-connect{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:28px;background:#f6f7fb url('/artwork/scenes-user/day-room.png') center/cover}
-.android-connect::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#f6f7fb44,#f6f7fbc9)}
-.android-connect-cancel{display:block;margin:20px auto 0;color:#63718c;font-size:14px}
-.android-connect-card{position:relative;width:min(100%,380px);padding:30px 24px;border:1px solid #d3dbe9;border-radius:28px;background:#fffefaf2;color:#1b233a;box-shadow:0 24px 80px #1b233a18}
-.android-brand{font-size:42px;color:#9e7b3e}.android-connect h1{font-size:25px;font-weight:500;margin:18px 0 26px}.android-connect-primary{width:100%;min-height:50px;border:0;border-radius:16px;background:#8cb4f5;color:#05070f;font-size:16px}.android-connect-primary:disabled{opacity:.55}.android-connect details{margin-top:24px;color:#63718c;font-size:14px}.android-connect textarea{box-sizing:border-box;width:100%;min-height:100px;margin-top:16px;padding:14px;color:#1b233a;background:#f6f7fb;border:1px solid #d3dbe9;border-radius:14px;font:14px sans-serif;resize:vertical}.android-connection-error:empty{display:none}.android-connection-error{color:#9a3652;font-size:14px;line-height:1.6}
+.android-connect{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;align-items:center;overflow:auto;padding:calc(48px + env(safe-area-inset-top,0px)) 0 0;background:#fbf4f1 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='76' viewBox='0 0 76 76'%3E%3Cpath d='M19 24c-3.3-2.2-6.4-4.4-6.4-7.4 0-2 1.6-3.4 3.3-3.4 1.3 0 2.4.7 3.1 1.8.7-1.1 1.8-1.8 3.1-1.8 1.7 0 3.3 1.4 3.3 3.4 0 3-3.1 5.2-6.4 7.4z' fill='%23B8506F' fill-opacity='.06'/%3E%3C/svg%3E");color:#2e2638;font-family:"PingFang SC","HarmonyOS Sans SC","MiSans","Noto Sans SC",system-ui,sans-serif}
+.android-arch{position:relative;flex:none;width:min(100% - 64px,320px);margin:0}
+.android-bow{position:absolute;top:-27px;left:50%;z-index:2;transform:translateX(-50%);filter:drop-shadow(0 3px 4px rgba(30,20,40,.18))}
+.android-arch-frame{padding:7px;border-radius:999px 999px 28px 28px;background:#fffcfa;box-shadow:0 0 0 1px rgba(168,132,76,.42),0 24px 60px rgba(110,60,70,.14)}
+.android-arch-image{height:min(42dvh,360px);min-height:260px;border-radius:999px 999px 22px 22px;background:url('/artwork/scenes-user/day-room.png') 100% 38%/cover no-repeat;box-shadow:inset 0 0 0 1px rgba(168,132,76,.2)}
+.android-connect-card{flex:none;width:100%;max-width:420px;padding:22px 30px calc(28px + env(safe-area-inset-bottom,0px));text-align:center}
+.android-script{display:block;font:30px/1.1 "Haji Script","Snell Roundhand",cursive;color:#a8844c}
+.android-connect h1{margin:6px 0 10px;font:500 28px/1.4 "Haji Serif","Noto Serif SC","Songti SC",serif;letter-spacing:3px}
+.android-lede{margin:0 0 24px;font-size:15px;line-height:1.85;color:#6c5f75}
+.android-connect-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;border:0;border-radius:999px;background:linear-gradient(180deg,#c25d7e,#a9466a);color:#fff;font:500 16px inherit;letter-spacing:1px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 20px rgba(169,70,106,.24)}
+.android-connect-primary:disabled{opacity:.55}
+.android-connect details{margin-top:16px;color:#6c5f75;font-size:14px;text-align:left}
+.android-connect summary{padding:8px 0;text-align:center;cursor:pointer}
+.android-connect textarea{box-sizing:border-box;width:100%;min-height:96px;margin-top:8px;padding:14px 16px;color:#2e2638;background:#fffcfa;border:1px solid rgba(168,132,76,.42);border-radius:18px;font:14px/1.6 ui-monospace,monospace;resize:vertical;outline:none}
+.android-connect textarea:focus{border-color:#b8506f;box-shadow:0 0 0 3px rgba(184,80,111,.1)}
+.android-connection-error:empty{display:none}
+.android-connection-error{margin:-10px 0 16px;color:#b6405c;font-size:14px;line-height:1.7}
+.android-connect-cancel{display:block;margin:10px auto 0;padding:10px 14px;border:0;background:none;color:#6c5f75;font-size:14px}

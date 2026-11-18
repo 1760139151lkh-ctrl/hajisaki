@@ -134,13 +134,14 @@ struct NativeMessageChunk: View {
                             onToggleTask?(item, !state.checked(item))
                         } label: {
                             ZStack {
-                                RoundedRectangle(cornerRadius: 5).stroke(state.checked(item) ? palette.blue : palette.secondary, lineWidth: 1.2)
+                                RoundedRectangle(cornerRadius: 6).fill(state.checked(item) ? palette.rose : Color.clear)
+                                RoundedRectangle(cornerRadius: 6).stroke(state.checked(item) ? palette.rose : palette.secondary, lineWidth: 1.2)
                                 if state.checked(item) {
                                     Path { path in
                                         path.move(to: CGPoint(x: 5, y: 11))
                                         path.addLine(to: CGPoint(x: 9, y: 15))
                                         path.addLine(to: CGPoint(x: 17, y: 6))
-                                    }.stroke(palette.blue, style: StrokeStyle(lineWidth: 1.7, lineCap: .round, lineJoin: .round))
+                                    }.stroke(palette.onAccent, style: StrokeStyle(lineWidth: 1.7, lineCap: .round, lineJoin: .round))
                                 }
                             }.frame(width: 22, height: 22).frame(width: 44, height: 44)
                         }.buttonStyle(.plain)
@@ -476,9 +477,9 @@ private struct NativeCodeBlock: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(language.isEmpty ? "代码" : language).font(.system(size: 11, weight: .medium)).foregroundStyle(palette.secondary)
+                Text(language.isEmpty ? "代码" : language).font(.system(size: 11, weight: .medium)).foregroundStyle(palette.dim)
                 Spacer()
-                Button("复制") { UIPasteboard.general.string = code }.font(.system(size: 12))
+                Button("复制") { UIPasteboard.general.string = code }.font(.system(size: 12)).foregroundStyle(palette.rose)
             }.padding(.horizontal, 13).frame(height: 38)
             ScrollView(.horizontal) {
                 NativeTextRun(source: displayed, isNight: palette.isDark, fontSize: max(13, fontSize - 3),
@@ -489,8 +490,8 @@ private struct NativeCodeBlock: View {
                 Button(expanded ? "收起代码" : "展开全部 \(lines.count) 行") { expanded.toggle() }
                     .font(.system(size: 12)).padding(.horizontal, 13).frame(height: 38)
             }
-        }.background(palette.sidebar.opacity(0.7), in: RoundedRectangle(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(palette.line, lineWidth: 0.5))
+        }.background(palette.sunken, in: RoundedRectangle(cornerRadius: 14))
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(palette.line, lineWidth: 0.6))
     }
     private var codeWidth: CGFloat {
         let font = UIFont.monospacedSystemFont(ofSize: max(13, fontSize - 3), weight: .regular)
@@ -627,7 +628,7 @@ enum NativeTextTypography {
             if inline.contains(.emphasized), let descriptor = font.fontDescriptor.withSymbolicTraits(.traitItalic) { font = UIFont(descriptor: descriptor, size: size) }
             var attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: quote ? secondary : textColor, .paragraphStyle: style]
             if inline.contains(.strikethrough) { attributes[.strikethroughStyle] = NSUnderlineStyle.single.rawValue }
-            if inline.contains(.code) || blockCode { attributes[.backgroundColor] = UIColor(palette.selection) }
+            if inline.contains(.code) || blockCode { attributes[.backgroundColor] = UIColor(palette.blueSoft) }
             if let link = run.link { attributes[.link] = link }
             if let itemID, !seenListItems.contains(itemID) {
                 seenListItems.insert(itemID)
