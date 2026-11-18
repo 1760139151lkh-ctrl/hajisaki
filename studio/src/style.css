@@ -162,6 +162,11 @@ small { font-size: 12px; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .7s; animation-timing-function: ease; }
 .message-actions button.done { color: var(--rose); }
 .message-actions button.hearted { color: var(--rose); }
+/* With a mouse, a letter's actions stay quiet until you come near it. */
+@media (hover: hover) and (pointer: fine) {
+  .message-actions { opacity: .38; transition: opacity .2s ease; }
+  .message:hover .message-actions, .message-actions:focus-within { opacity: 1; }
+}
 .hearted-mark { display: inline-flex; color: var(--rose); }
 .message.found .message-content { animation: found-glow 2.2s var(--ease) both; border-radius: 12px; }
 @keyframes found-glow { 0%, 100% { box-shadow: 0 0 0 0 transparent; } 30% { box-shadow: 0 0 0 8px var(--rose-soft); background: var(--rose-soft); } }

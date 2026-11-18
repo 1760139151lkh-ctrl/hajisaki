@@ -193,6 +193,8 @@ function portraitName() {
   if (recorder?.state === "recording") return "listening_attentive";
   if (activeRun) return conversation?.group === "研发工坊" ? "coding_focused" : "thinking_deep";
   if (portraitMoment) return portraitMoment;
+  // While you write to her, she listens.
+  if (page === "chat" && Date.now() < composingUntil) return "listening_attentive";
   if (!connected && credentials().token) return "reconnecting_anxious";
   const hour = new Date().getHours();
   if (hour >= 3 && hour < 6) return "sleepy_soft";
@@ -915,8 +917,8 @@ function renderChat() {
     // While you write to her, the line under her name says she is waiting.
     const wasComposing = Date.now() < composingUntil;
     composingUntil = value.trim() ? Date.now() + 4000 : 0;
-    if (wasComposing !== Date.now() < composingUntil) refreshChatStatus();
-    window.setTimeout(() => { if (Date.now() >= composingUntil) refreshChatStatus(); }, 4100);
+    if (wasComposing !== Date.now() < composingUntil) { refreshChatStatus(); refreshPortrait(); }
+    window.setTimeout(() => { if (Date.now() >= composingUntil) { refreshChatStatus(); refreshPortrait(); } }, 4100);
     void save(cacheKey(`draft:${conversation!.id}`), value)
       .then(() => {
         if (draft.isConnected && draft.value === value)
@@ -933,7 +935,7 @@ function renderChat() {
     }
   };
   $("#send").onclick = () => void (activeRun ? stop() : send());
-  draft.onblur = () => { composingUntil = 0; refreshChatStatus(); };
+  draft.onblur = () => { composingUntil = 0; refreshChatStatus(); refreshPortrait(); };
   $("#messages").onwheel = (event) => {
     scrollIntentUntil = performance.now() + 600;
     if (event.deltaY < 0) readLock = true;

@@ -80,8 +80,10 @@ struct TheaterRootView: View {
     private var isWide: Bool { width >= 1024 }
     /// Saki's current face: thinking while she writes, relieved after a reply, sleepy at dawn.
     private var mood: String {
+        // While you write to her, she listens.
         CompanionMood.portrait(generating: model.isGenerating, group: model.selectedConversation?.group,
-                               connected: model.isConnected, paired: !model.deviceID.isEmpty, moment: moodMoment)
+                               connected: model.isConnected, paired: !model.deviceID.isEmpty,
+                               moment: moodMoment ?? (composing ? "listening_attentive" : nil))
     }
     private var preferredScheme: ColorScheme? {
         model.settings.theme == "night" ? .dark : model.settings.theme == "day" ? .light : nil
