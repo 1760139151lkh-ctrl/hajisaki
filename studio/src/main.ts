@@ -1213,6 +1213,10 @@ function renderMessageList() {
     messages.forEach((m) => seenMessages.add(m.id));
   }
   const hearts = heartedLines();
+  // Your latest letter shows "已读" once she has really started on it (not merely when it was queued).
+  const latestLetter = messages.map((m) => m.role).lastIndexOf("user");
+  const answer = latestLetter >= 0 ? messages.slice(latestLetter + 1).find((m) => m.role !== "user") : undefined;
+  const readByHer = !!answer && (answer.status !== "queued" || !!answer.content.trim());
   const rows: { time: number; html: string }[] = messages.flatMap((m) => {
     const sakiko = m.role !== "user";
     const note = m.status === "interrupted" || m.status === "stopped" ? "先停在这里" : m.status === "failed" ? "这一段没能写完" : "";
@@ -1238,7 +1242,7 @@ function renderMessageList() {
       ).getTime(),
       html: sakiko
         ? `<article class="message from-sakiko${streaming ? " streaming" : ""}${fresh ? " fresh" : ""}${sealed ? " sealed-now" : ""}" data-message="${esc(m.id)}"><header class="message-head"><img class="avatar-sm" src="${art("idle_gentle")}" alt="" loading="lazy"><strong>祥子${crown(13)}</strong><time datetime="${esc(m.created_at)}">${clock(m.created_at)}</time>${hearted ? `<span class="hearted-mark" title="你心动过">${heart(11)}</span>` : ""}${note ? `<span class="state">${note}</span>` : ""}</header><div class="message-content">${body}</div>${files.length ? `<div class="message-files">${files.map(artifactButton).join("")}</div>` : ""}${actions}</article>`
-        : `<article class="message from-user${fresh ? " fresh" : ""}" data-message="${esc(m.id)}"><div class="message-content"><div class="user-text">${esc(m.content)}</div></div>${files.length ? `<div class="message-files">${files.map(artifactButton).join("")}</div>` : ""}<footer class="message-meta">${note ? `<span class="state">${note}</span>` : ""}<time datetime="${esc(m.created_at)}">${clock(m.created_at)}</time><button data-copy-message="${esc(m.id)}" aria-label="复制这段话" title="复制">${icon("copy", 15)}</button><button data-pin-message="${esc(m.id)}" aria-label="钉在这段乐章" title="钉住">${icon("pin", 15)}</button></footer></article>`,
+        : `<article class="message from-user${fresh ? " fresh" : ""}" data-message="${esc(m.id)}"><div class="message-content"><div class="user-text">${esc(m.content)}</div></div>${files.length ? `<div class="message-files">${files.map(artifactButton).join("")}</div>` : ""}<footer class="message-meta">${note ? `<span class="state">${note}</span>` : ""}${readByHer && messages[latestLetter]?.id === m.id ? `<span class="read-mark">${heart(9)}已读</span>` : ""}<time datetime="${esc(m.created_at)}">${clock(m.created_at)}</time><button data-copy-message="${esc(m.id)}" aria-label="复制这段话" title="复制">${icon("copy", 15)}</button><button data-pin-message="${esc(m.id)}" aria-label="钉在这段乐章" title="钉住">${icon("pin", 15)}</button></footer></article>`,
     }];
   });
   const noted = new Set<string>();

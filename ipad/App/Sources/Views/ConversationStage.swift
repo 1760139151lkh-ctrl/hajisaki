@@ -289,6 +289,12 @@ struct ConversationStage: View {
         HStack(spacing: 8) {
                 if message.isUser {
                     Spacer(minLength: 0)
+                    if readByHer(message) {
+                        HStack(spacing: 3) {
+                            HeartShape().fill(palette.rose).frame(width: 9, height: 8.3)
+                            Text("已读").font(.system(size: 11.5))
+                        }.foregroundStyle(palette.rose).accessibilityElement(children: .combine)
+                    }
                     if message.status == "queued" || message.status == "pending" {
                         HStack(spacing: 5) {
                             TheaterGlyph(kind: .letter).stroke(lineWidth: 1.1).frame(width: 13, height: 13).foregroundStyle(palette.rose)
@@ -449,6 +455,13 @@ struct ConversationStage: View {
         if workSteps(events(for: message), live: true).contains(where: { $0.state == .working }) { return .working }
         if let started = model.replyStartedAt, now.timeIntervalSince(started) > 30 { return .long }
         return .reading
+    }
+
+    /// Your latest letter shows "已读" once she has really started on it (not merely when it was queued).
+    private func readByHer(_ message: ChatMessage) -> Bool {
+        guard message.isUser, let index = model.messages.lastIndex(where: { $0.isUser }), model.messages[index].id == message.id,
+              let answer = model.messages[(index + 1)...].first(where: { !$0.isUser }) else { return false }
+        return answer.status != "queued" || !answer.content.isEmpty
     }
 
     /// A reply that failed before any words: the letter that asked for it goes back into the draft.
