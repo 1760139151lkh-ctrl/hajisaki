@@ -688,6 +688,7 @@ async function loadConversations() {
   }
   // While she is writing back somewhere, the list keeps checking; when a reply lands, she says so.
   const answered = conversations.filter((c) => wasWriting.has(c.id) && !c.writing && unread(c));
+  if (answered.length) announceReplyInTab();
   if (page === "hub" && answered.length) {
     const letter = Array.from(answered[0].title);
     toast(answered.length === 1 ? `「${letter.length > 12 ? letter.slice(0, 11).join("") + "…" : answered[0].title}」有回信了。` : `有 ${answered.length} 封回信到了。`, true);
@@ -700,6 +701,24 @@ async function loadConversations() {
     if (document.querySelector(".home")) refreshHubLatest();
     else renderHub();
   }
+}
+/** While you are in another tab, a finished reply shows in the tab: "♥ 她回信了" and a rose dot on the icon. */
+const restingTitle = document.title;
+let restingIcon = "";
+function announceReplyInTab() {
+  if (!document.hidden) return;
+  document.title = "♥ 她回信了 · 哈基祥";
+  const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+  if (link && !restingIcon) {
+    restingIcon = link.href;
+    link.href = restingIcon.replace("%3C/svg%3E", "%3Ccircle cx='158' cy='34' r='28' fill='%23EDA3B9' stroke='%23FFFFFF' stroke-width='8'/%3E%3C/svg%3E");
+  }
+}
+function restTab() {
+  document.title = restingTitle;
+  const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+  if (link && restingIcon) link.href = restingIcon;
+  restingIcon = "";
 }
 /** The first time you open the room each day, she says a word from the window. */
 function greetFirstVisit() {
@@ -1683,6 +1702,7 @@ async function poll() {
             portraitCue("happy_achieved");
             sealNext = String(e.payload.message_id || "");
             markSeen(id);
+            announceReplyInTab();
           }
         }
         if (e.kind === "run_failed" && e.payload.message)
@@ -1836,6 +1856,7 @@ async function startStream(id: string, version: number) {
             portraitCue("happy_achieved");
             sealNext = String(event.payload.message_id || "");
             markSeen(id);
+            announceReplyInTab();
           }
           const messageId = String(event.payload.message_id || "");
           let message = messages.find((m) => m.id === messageId);
@@ -2820,6 +2841,7 @@ document.addEventListener("selectionchange", () => {
 });
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
+    restTab();
     void poll();
     applyTheme();
   }
