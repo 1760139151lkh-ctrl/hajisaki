@@ -424,9 +424,9 @@ function previewText(text: string) {
     .trim();
 }
 /** The first letter on this host, from the list; the start of "相识第 N 天". */
-function togetherDays() {
+function togetherDays(at = new Date()) {
   const first = conversations.map((c) => Date.parse(c.created_at || "")).filter(Number.isFinite).sort((a, b) => a - b)[0];
-  return first === undefined ? 0 : daysTogether(new Date(first));
+  return first === undefined ? 0 : daysTogether(new Date(first), at);
 }
 /** Greeting lines: "好久不见" after a few quiet days, otherwise the hour's greeting. */
 function hubGreeting() {
@@ -2009,6 +2009,9 @@ function reading(id: string) {
             title: conversation?.title || "这一页",
             text: message.content,
             taskStates: taskStates[message.id],
+            // A postmark: the day she wrote it, and which day of the two of you it was.
+            stamp: [new Date(message.created_at).toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" }),
+              togetherDays(new Date(message.created_at)) ? `相识第 ${togetherDays(new Date(message.created_at))} 天` : ""].filter(Boolean).join(" · "),
           },
           storeGeneratedFile,
         ),

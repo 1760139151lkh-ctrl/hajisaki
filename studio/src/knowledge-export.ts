@@ -6,6 +6,8 @@ interface KnowledgeOptions {
   title: string;
   text: string;
   taskStates?: Record<string, boolean>;
+  /** A postmark under her signature, such as "2026年11月18日 · 相识第 100 天". */
+  stamp?: string;
 }
 interface ImagePage {
   file: File;
@@ -72,7 +74,7 @@ export async function openKnowledgeExport(
   source.dataset.export = "true";
   source.dataset.theme = "day";
   source.setAttribute("aria-hidden", "true");
-  source.innerHTML = `<header class="journal-heading"><span>A page to keep</span><h1>${escape(options.title)}</h1><div class="journal-staff" aria-hidden="true">♮</div></header><article class="reading-content journal-body">${markdown(options.text, { taskStates: options.taskStates, readonlyTasks: true })}</article><footer class="journal-signature"><span>把这一页，留给以后的你。</span><strong>Sakiko</strong><b>祥</b></footer>`;
+  source.innerHTML = `<header class="journal-heading"><span>A page to keep</span><h1>${escape(options.title)}</h1><div class="journal-staff" aria-hidden="true">♮</div></header><article class="reading-content journal-body">${markdown(options.text, { taskStates: options.taskStates, readonlyTasks: true })}</article><footer class="journal-signature"><span>把这一页，留给以后的你。${options.stamp ? `<em>${escape(options.stamp)}</em>` : ""}</span><strong>Sakiko</strong><b>祥</b></footer>`;
   source.style.position = "relative";
   source.style.left = "0";
   source.style.top = "0";
@@ -110,9 +112,10 @@ export async function openKnowledgeExport(
     }
     await document.fonts.ready;
     if (closed) return;
-    const fontEmbedCSS = await getFontEmbedCSS(source, {
-      preferredFontFormat: "woff2",
-    });
+    // No preferredFontFormat: html-to-image reuses a global regex while filtering formats, so every
+    // font face after the first lost its src and her script signature fell back to a plain font.
+    // The app ships only woff2 anyway.
+    const fontEmbedCSS = await getFontEmbedCSS(source);
     const width = Math.ceil(source.getBoundingClientRect().width);
     const cuts = pageCuts(source, 7600);
     const total = cuts.length - 1;
@@ -141,7 +144,6 @@ export async function openKnowledgeExport(
           pixelRatio: 2,
           backgroundColor: "#F6F7FB",
           fontEmbedCSS,
-          preferredFontFormat: "woff2",
           cacheBust: false,
           style: { position: "relative", left: "0", top: "0" },
         });

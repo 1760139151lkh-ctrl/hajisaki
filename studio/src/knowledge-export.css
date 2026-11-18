@@ -159,6 +159,14 @@
   letter-spacing: 1px;
   margin-right: auto;
 }
+.journal-signature > span em {
+  display: block;
+  margin-top: 6px;
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #a8844c;
+}
 .journal-signature > strong {
   font:
     32px "Haji Script", cursive;
