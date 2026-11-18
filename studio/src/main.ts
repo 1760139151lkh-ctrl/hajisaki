@@ -2027,9 +2027,31 @@ function reading(id: string) {
   const message = messages.find((m) => m.id === id);
   if (!message) return;
   const dialog = openModal(
-    `<div class="reading-heading"><span class="eyebrow">静谧手稿</span><h2>${esc(conversation?.title || "这一页")}</h2></div><article class="reading-content">${markdown(message.content, { taskStates: taskStates[message.id], readonlyTasks: true })}</article><div class="reading-footer"><span aria-label="祥子">Sakiko</span><button id="copy-reading" class="text-button">复制原文</button><button id="save-reading" class="text-button">保存 Markdown</button><button id="export-knowledge" class="text-button">手账长图</button></div>`,
+    `<div class="reading-heading"><span class="eyebrow">静谧手稿</span><h2>${esc(conversation?.title || "这一页")}</h2></div><article class="reading-content">${markdown(message.content, { taskStates: taskStates[message.id], readonlyTasks: true })}</article><div class="reading-footer"><span aria-label="祥子">Sakiko</span><button id="copy-reading" class="text-button">复制原文</button><button id="save-reading" class="text-button">保存 Markdown</button><button id="export-knowledge" class="text-button">手账长图</button>${"speechSynthesis" in window ? `<button id="read-aloud" class="text-button">${icon("note", 15)}念给我听</button>` : ""}</div>`,
     true,
   );
+  // She reads it to you, with the device's Chinese voice; code and tables are left out.
+  const aloud = document.querySelector<HTMLButtonElement>("#read-aloud");
+  if (aloud) {
+    const idle = aloud.innerHTML;
+    const done = () => { aloud.innerHTML = idle; aloud.classList.remove("speaking"); };
+    aloud.onclick = () => {
+      if (speechSynthesis.speaking) { speechSynthesis.cancel(); done(); return; }
+      const utterance = new SpeechSynthesisUtterance(previewText(message.content));
+      utterance.lang = "zh-CN";
+      utterance.rate = 0.95;
+      utterance.pitch = 1.08;
+      const voice = speechSynthesis.getVoices().find((item) => /^zh(-|_)?(CN|Hans)?/i.test(item.lang) && /female|女|xiaoxiao|tingting|huihui/i.test(item.name))
+        || speechSynthesis.getVoices().find((item) => /^zh/i.test(item.lang));
+      try { if (voice) utterance.voice = voice; } catch { /* some WebViews list voices they cannot use; keep the default */ }
+      utterance.onend = done;
+      utterance.onerror = done;
+      speechSynthesis.speak(utterance);
+      aloud.innerHTML = `${heart(13)}停下`;
+      aloud.classList.add("speaking");
+    };
+    dialog.addEventListener("close", () => { if (speechSynthesis.speaking) speechSynthesis.cancel(); }, { once: true });
+  }
   void enhance(dialog).catch(report);
   $("#copy-reading").onclick = () =>
     void navigator.clipboard
