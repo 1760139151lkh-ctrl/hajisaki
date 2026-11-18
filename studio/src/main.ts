@@ -159,6 +159,8 @@ let sealNext = "", hubRefreshTimer: number | undefined;
 let keptMemory = "";
 /** Days since your last letter when this visit began (for "好久不见"), counted once per visit. */
 let awayDays: number | undefined;
+/** Extra notes asked for today by tapping her note card. */
+let extraNotes = 0;
 /** Taps on her portrait in a row, and when you last wrote in the letter box. */
 let pokes = 0, pokeTimer: number | undefined, composingUntil = 0;
 /** Disclosures (work notes, notices) the user opened stay open while the reply keeps arriving. */
@@ -433,7 +435,7 @@ function hubGreeting() {
   return back ? { script: "Welcome back", lines: back } : hello;
 }
 function hubNote() {
-  return milestoneNote(togetherDays()) ?? dailyNote(settings);
+  return (extraNotes ? undefined : milestoneNote(togetherDays())) ?? dailyNote(settings, new Date(), extraNotes);
 }
 /** The piece she would like to play for you today, under her note. */
 function pieceLine() {
@@ -504,12 +506,20 @@ function letterDate(value: string) {
   return date.toLocaleDateString("zh-CN");
 }
 const groupTabs: [string, string][] = [["全部", "全部"], ["专属日常", "日常"], ["研发工坊", "工坊"], ["资料卷宗", "卷宗"], ["已归档", "归档"]];
+/** The words you searched for glow softly in titles and previews. */
+function marked(text: string) {
+  const safe = esc(text);
+  const term = query.trim();
+  if (!term) return safe;
+  const pattern = new RegExp(esc(term).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+  return safe.replace(pattern, (hit) => `<mark>${hit}</mark>`);
+}
 function conversationRow(c: Conversation, seenMap = seenLetters()) {
   const fresh = unread(c, seenMap);
   const line = c.writing
     ? `<small class="writing-line"><span class="typing-hearts">${heart(8)}${heart(8)}${heart(8)}</span>正在给你写回信…</small>`
-    : `<small>${esc(previewText(c.preview || "还空着的一页，等你落笔。"))}</small>`;
-  return `<article class="letter-row${fresh ? " unread" : ""}${c.writing ? " writing" : ""}"><button class="conversation-open" data-id="${esc(c.id)}"${fresh ? ' aria-description="有新的回信"' : ""}>${monogram(c.title, c.pinned)}<span class="letter-text"><span class="letter-line"><strong>${esc(c.title)}</strong>${fresh ? '<i class="unread-dot" aria-hidden="true"></i>' : ""}<time>${letterDate(c.updated_at)}</time></span>${line}</span></button><button class="icon-button row-more" data-row-menu="${esc(c.id)}" aria-label="「${esc(c.title)}」的更多操作">${icon("more", 18)}</button></article>`;
+    : `<small>${marked(previewText(c.preview || "还空着的一页，等你落笔。"))}</small>`;
+  return `<article class="letter-row${fresh ? " unread" : ""}${c.writing ? " writing" : ""}"><button class="conversation-open" data-id="${esc(c.id)}"${fresh ? ' aria-description="有新的回信"' : ""}>${monogram(c.title, c.pinned)}<span class="letter-text"><span class="letter-line"><strong>${marked(c.title)}</strong>${fresh ? '<i class="unread-dot" aria-hidden="true"></i>' : ""}<time>${letterDate(c.updated_at)}</time></span>${line}</span></button><button class="icon-button row-more" data-row-menu="${esc(c.id)}" aria-label="「${esc(c.title)}」的更多操作">${icon("more", 18)}</button></article>`;
 }
 function letterMenu(c: Conversation, origin: Element | null) {
   const dialog = openModal(
@@ -587,7 +597,7 @@ function renderHub() {
   $("#view").innerHTML =
     `<section class="home${credentials().token && !connected && conversationsLoaded ? " offline" : ""}"><div class="home-tools"><button id="theme-quick" class="glass-button"></button></div><figure class="arch"><span class="arch-bow">${bow(84)}</span><div class="arch-frame"><div class="arch-image" role="img" aria-label="${isDay() ? "午后，祥子坐在窗边" : "夜里，祥子坐在亮着灯的窗边"}"></div><div class="arch-rain" aria-hidden="true"><span>灯熄着，雨一直下。<br>等你把琴房接回来。</span></div>${archAir()}<button class="arch-touch" aria-label="轻轻叫她一声"></button></div></figure><div class="home-body"><header class="home-greeting"><span class="script" aria-hidden="true">${hello.script}</span><h1>${hello.lines
       .map((line) => `<span>${esc(line)}</span>`)
-      .join("")}</h1><p class="home-date"><span>${homeDate()}</span><span id="together">${togetherLine()}</span><span class="presence"><i class="${connected ? "online" : ""}"></i><span id="presence-text">${connectionLine()}</span></span></p></header><aside class="note-card" aria-label="她留给你的小纸条">${filigree(116)}<p id="daily-note">「${esc(hubNote())}」</p><span class="script" aria-label="祥子">— Sakiko</span></aside>${pieceLine()}<div id="week-card">${weekCard()}</div><button class="letter-prompt" id="begin-chat"><span>写信给祥子…</span>${wax(17)}</button>${paired ? "" : `<div class="notice-line"><span>还没有接上琴房。</span><button class="text-button" id="pair-now">去连接</button></div>`}<section class="letters" aria-label="信笺"><div class="letters-head">${filigree()}<h2>信笺<span id="letter-count"></span></h2><button class="icon-button" id="search-toggle" aria-label="寻找一段回忆" aria-expanded="${!!query}">${icon("search", 19)}</button></div><label class="search"${query ? "" : " hidden"}>${icon("search", 16)}<input id="search" type="search" aria-label="搜索信笺" placeholder="寻找一段回忆" value="${esc(query)}"></label><div class="tabs" role="tablist">${groupTabs
+      .join("")}</h1><p class="home-date"><span>${homeDate()}</span><span id="together">${togetherLine()}</span><span class="presence"><i class="${connected ? "online" : ""}"></i><span id="presence-text">${connectionLine()}</span></span></p></header><aside class="note-card" aria-label="她留给你的小纸条，点一下再要一张" role="button" tabindex="0">${filigree(116)}<p id="daily-note">「${esc(hubNote())}」</p><span class="script" aria-label="祥子">— Sakiko</span></aside>${pieceLine()}<div id="week-card">${weekCard()}</div><button class="letter-prompt" id="begin-chat"><span>写信给祥子…</span>${wax(17)}</button>${paired ? "" : `<div class="notice-line"><span>还没有接上琴房。</span><button class="text-button" id="pair-now">去连接</button></div>`}<section class="letters" aria-label="信笺"><div class="letters-head">${filigree()}<h2>信笺<span id="letter-count"></span></h2><button class="icon-button" id="search-toggle" aria-label="寻找一段回忆" aria-expanded="${!!query}">${icon("search", 19)}</button></div><label class="search"${query ? "" : " hidden"}>${icon("search", 16)}<input id="search" type="search" aria-label="搜索信笺" placeholder="寻找一段回忆" value="${esc(query)}"></label><div class="tabs" role="tablist">${groupTabs
       .map(([value, label]) => `<button class="tab" role="tab" data-group="${value}">${label}</button>`)
       .join("")}</div><div class="conversation-list"></div></section></div></section>`;
   refreshThemeButtons();
@@ -600,6 +610,19 @@ function renderHub() {
   };
   $("#begin-chat").onclick = () => void newChat();
   $(".arch-touch").onclick = (event) => poke(event.currentTarget as HTMLElement, $(".arch"));
+  // Tap her note for another one; after three she says that is all for today.
+  const note = $(".note-card");
+  const another = () => {
+    if (extraNotes >= 3) return;
+    extraNotes += 1;
+    const text = $("#daily-note");
+    text.textContent = `「${hubNote()}」`;
+    note.classList.remove("turned");
+    void note.offsetWidth;
+    note.classList.add("turned");
+  };
+  note.onclick = another;
+  note.onkeydown = (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); another(); } };
   $("#pair-now")?.addEventListener("click", () => pairing());
   $("#search-toggle").onclick = () => {
     const field = $(".search");

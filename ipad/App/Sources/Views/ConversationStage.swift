@@ -29,6 +29,8 @@ struct ConversationStage: View {
     @State private var openNotes: Set<String> = []
     /// The night she last asked you to go to sleep, so she asks once.
     @AppStorage("hajisaki.nightCare") private var nightCareNight = ""
+    /// Extra notes asked for by tapping her note on the empty stage.
+    @State private var extraNotes = 0
     @FocusState private var composeFocused: Bool
 
     var body: some View {
@@ -217,8 +219,17 @@ struct ConversationStage: View {
             ScriptLine(text: "Only for you", size: 26)
             Text(model.selectedConversation == nil ? "把这一页，留给我们。" : CompanionMood.emptyHeading())
                 .font(.theaterSerif(24)).tracking(2).multilineTextAlignment(.center)
-            Text(model.selectedConversation == nil ? "「" + (milestone ?? CompanionMood.dailyNote(settings: model.settings)) + "」" : "不用急着整理语言。想到哪里，就从哪里开始吧。")
-                .font(.system(size: 14)).lineSpacing(5).foregroundStyle(palette.secondary).multilineTextAlignment(.center)
+            if model.selectedConversation == nil {
+                // Tap her note for another one; after three she says that is all for today.
+                Button { if extraNotes < 3 { withAnimation(.easeOut(duration: 0.35)) { extraNotes += 1 } } } label: {
+                    Text("「" + ((extraNotes == 0 ? milestone : nil) ?? CompanionMood.dailyNote(settings: model.settings, extra: extraNotes)) + "」")
+                        .font(.system(size: 14)).lineSpacing(5).foregroundStyle(palette.secondary).multilineTextAlignment(.center)
+                        .id(extraNotes).transition(.opacity)
+                }.buttonStyle(.plain).accessibilityHint("再要一张小纸条")
+            } else {
+                Text("不用急着整理语言。想到哪里，就从哪里开始吧。")
+                    .font(.system(size: 14)).lineSpacing(5).foregroundStyle(palette.secondary).multilineTextAlignment(.center)
+            }
             if model.selectedConversation == nil {
                 // The piece she would like to play for you today.
                 let today = CompanionMood.todaysPiece()

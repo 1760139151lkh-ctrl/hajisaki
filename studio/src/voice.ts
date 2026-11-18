@@ -108,18 +108,19 @@ const notes = {
     "写信给我的话，我会回的。……不写的话，我也会等。",
   ],
 };
-/** One small note a day, from the pools her temperature allows. */
-export function dailyNote(settings: Settings, date = new Date()): string {
+/** One small note a day, from the pools her temperature allows; `extra` asks for another one. */
+export function dailyNote(settings: Settings, date = new Date(), extra = 0): string {
   const voice = voiceOf(settings);
-  if (lateNight(date.getHours()))
+  if (!extra && lateNight(date.getHours()))
     return voice.teasing
       ? "这么晚还不睡……明天起不来，我可不管你。——骗你的，晚安。"
       : voice.sweet ? named("很晚了。闭上眼睛之前，记得我在。晚安，{nick}。", voice) : "已经很晚了。聊完这一段，就乖乖去睡吧。晚安。";
   const special = specialDay(date);
-  if (special) return special.note;
+  if (special && !extra) return special.note;
   const pool = [...notes.base, ...(voice.sweet ? notes.sweet : []), ...(voice.teasing ? notes.teasing : [])];
   const day = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000);
-  return named(pool[day % pool.length], voice);
+  if (extra >= 3) return voice.teasing ? "……贪心。今天就这些，明天再给你写。" : "……今天的份就这些了。明天再来。";
+  return named(pool[(day + extra * 5) % pool.length], voice);
 }
 
 /** The prompt line in the letter box changes with the hour, not with every keystroke. */

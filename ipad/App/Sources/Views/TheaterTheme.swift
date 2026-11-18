@@ -814,16 +814,17 @@ enum CompanionMood {
          "别总让我担心。……我是说，别让我操心。", "你不在的时候，琴房安静得有点无聊。只是有点。", "写信给我的话，我会回的。……不写的话，我也会等。"]
     )
     /// One small note a day, from the pools her temperature allows.
-    static func dailyNote(_ date: Date = .now, settings: TheaterSettings) -> String {
+    static func dailyNote(_ date: Date = .now, settings: TheaterSettings, extra: Int = 0) -> String {
         let voice = voice(settings)
-        if isLateNight(date) {
+        if extra == 0 && isLateNight(date) {
             return voice.teasing ? "这么晚还不睡……明天起不来，我可不管你。——骗你的，晚安。"
                 : voice.sweet ? named("很晚了。闭上眼睛之前，记得我在。晚安，{nick}。", voice) : "已经很晚了。聊完这一段，就乖乖去睡吧。晚安。"
         }
-        if let special = special(date) { return special.note }
+        if extra == 0, let special = special(date) { return special.note }
         let pool = notes.base + (voice.sweet ? notes.sweet : []) + (voice.teasing ? notes.teasing : [])
         let day = Calendar.current.ordinality(of: .day, in: .year, for: date) ?? 0
-        return named(pool[day % pool.count], voice)
+        if extra >= 3 { return voice.teasing ? "……贪心。今天就这些，明天再给你写。" : "……今天的份就这些了。明天再来。" }
+        return named(pool[(day + extra * 5) % pool.count], voice)
     }
     static func dateLine(_ date: Date = .now) -> String {
         let hour = Calendar.current.component(.hour, from: date)
