@@ -1,6 +1,9 @@
 import { api } from "./api";
 import { escape } from "./render";
 
+/** Her short answer, shown by the main view's toast. */
+const say = (text: string) => window.dispatchEvent(new CustomEvent("haji-say", { detail: { text, kept: true } }));
+
 interface Reminder {
   id: string;
   content: string;
@@ -45,6 +48,7 @@ export async function mountReminders(element: HTMLElement) {
                 { enabled: button.dataset.enabled !== "true" },
                 "PATCH",
               );
+              say(button.dataset.enabled === "true" ? "先放一放。想起来的时候，再叫醒它。" : "嗯，我继续替你记着。");
               await refresh();
             } catch {
               button.textContent = "尚未保存，重试";
@@ -63,6 +67,7 @@ export async function mountReminders(element: HTMLElement) {
         (button) =>
           (button.onclick = async () => {
             await api(`/inbox/${button.dataset.read}/read`, {});
+            say("嗯，记得就好。");
             await refresh();
           }),
       );
@@ -100,6 +105,8 @@ export async function mountReminders(element: HTMLElement) {
             repeat: data.get("repeat"),
           });
           dialog.close();
+          const due = new Date(String(data.get("due")));
+          say(`约好了。${due.getMonth() + 1}月${due.getDate()}日 ${String(due.getHours()).padStart(2, "0")}:${String(due.getMinutes()).padStart(2, "0")}，我会叫你。`);
           await refresh();
         } catch (error) {
           dialog.querySelector<HTMLElement>(".form-error")!.textContent =

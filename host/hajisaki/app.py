@@ -4,6 +4,7 @@ import asyncio
 import ipaddress
 import json
 import os
+import re
 import shutil
 import socket
 import time
@@ -17,7 +18,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .artifacts import Artifacts, TransferError
@@ -135,6 +136,13 @@ class Settings(Body):
     transparency: Literal["companion", "balanced", "studio"] | None = None
     personality: Personality | None = None
     sound: bool | None = None
+    nickname: str | None = Field(default=None, max_length=24)
+
+    @field_validator("nickname")
+    @classmethod
+    def tidy_nickname(cls, value: str | None) -> str | None:
+        # What she calls you: one short line of text; an empty string clears it.
+        return None if value is None else " ".join(value.split())
 
 
 class Upload(Body):
@@ -252,6 +260,22 @@ def conversation(ident: str) -> dict:
     return row
 
 
+PLACEHOLDER_TITLES = {"新的乐章", "未写完的乐章", "新乐章"}
+
+
+def letter_title(content: str, attachments: list[dict]) -> str:
+    """Name a new letter after its first line, the way she would label it on the envelope."""
+    lines = [line.strip() for line in content.splitlines() if line.strip()]
+    line = next((item for item in lines if not item.startswith(">")), lines[0] if lines else "")
+    line = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", line)
+    line = re.sub(r"^(#+|[-*+]\s|\d+[.)]\s|>\s*)+", "", line)
+    line = " ".join(re.sub(r"[*_`~#|<>]", "", line).split()).strip(" ，,。.：:；;、")
+    if not line and attachments:
+        stem = Path(str(attachments[0].get("name", ""))).stem.strip()
+        line = f"关于「{stem[:14]}」" if stem else ""
+    return line if len(line) <= 18 else line[:17].rstrip(" ，,。.：:；;、") + "…"
+
+
 def create_conversation(title: str, group: str) -> dict:
     ident, stamp = uid(), now()
     with store.connect() as db:
@@ -341,13 +365,18 @@ async def conversations(q: str = "", group: str = "", archived: bool = False):
         conditions.append("(c.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM messages m WHERE m.conversation_id=c.id AND m.content LIKE ? ESCAPE '\\'))")
         term = "%" + q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%"
         params.extend([term, term])
-    rows = store.all("SELECT c.*,latest.id AS preview_message_id,latest.content AS preview_content FROM conversations c LEFT JOIN messages latest ON latest.rowid=(SELECT rowid FROM messages WHERE conversation_id=c.id ORDER BY created_at DESC,rowid DESC LIMIT 1) WHERE "
+    # The preview is the latest letter that has words in it (a reply still being written is empty);
+    # preview_role and writing let the clients show "she wrote back" and "she is writing".
+    rows = store.all("SELECT c.*,latest.id AS preview_message_id,latest.content AS preview_content,latest.role AS preview_role,"
+                     "EXISTS(SELECT 1 FROM runs r WHERE r.conversation_id=c.id AND r.status IN ('queued','running','stopping')) AS writing "
+                     "FROM conversations c LEFT JOIN messages latest ON latest.rowid=(SELECT rowid FROM messages WHERE conversation_id=c.id AND content<>'' ORDER BY created_at DESC,rowid DESC LIMIT 1) WHERE "
                      + " AND ".join(conditions) + " ORDER BY c.pinned DESC,c.updated_at DESC", tuple(params))
     visible_rows = []
     for row in rows:
         message_id = row.pop("preview_message_id")
         content = row.pop("preview_content") or ""
         row["preview"] = store.public_content(message_id, content)[:160]
+        row["writing"] = bool(row["writing"])
         if q and q.casefold() not in row["title"].casefold():
             matches = store.all("SELECT id,content FROM messages WHERE conversation_id=? AND content LIKE ? ESCAPE '\\'", (row["id"], term))
             if not any(q.casefold() in store.public_content(item["id"], item["content"]).casefold() for item in matches):
@@ -427,6 +456,12 @@ async def send_message(ident: str, body: MessageCreate, request: Request):
         db.execute("INSERT INTO messages VALUES(?,?,?,?,?,?,?,NULL)", (assistant_id, ident, "assistant", "", "queued", now(), "[]"))
         db.execute("INSERT INTO runs VALUES(?,?,?,?,?,?,?,?,NULL,NULL)", (run_id, ident, user_id, assistant_id, "queued", body.model, body.effort, stamp))
         db.execute("UPDATE conversations SET updated_at=? WHERE id=?", (stamp, ident))
+        current = db.execute("SELECT title FROM conversations WHERE id=?", (ident,)).fetchone()["title"]
+        if current in PLACEHOLDER_TITLES and not db.execute(
+                "SELECT 1 FROM messages WHERE conversation_id=? AND role='user' AND id<>? LIMIT 1", (ident, user_id)).fetchone():
+            named = letter_title(body.content, attached)
+            if named:
+                db.execute("UPDATE conversations SET title=? WHERE id=?", (named, ident))
         features = sorted({'artifact-links-v1', 'native-cards-v1'} &
                           {value.strip() for value in request.headers.get('x-haji-features', '')[:256].split(',')})
         platform = request.headers.get("x-haji-platform", "").strip().lower()

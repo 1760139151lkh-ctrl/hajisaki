@@ -50,6 +50,51 @@ final class TheaterModel: ObservableObject {
     @Published private(set) var interactiveCards: [String: InteractiveCardSnapshot] = [:]
     @Published private(set) var interactiveCardReading: [String: InteractiveCardReading] = [:]
     @Published private(set) var updatingCardIDs: Set<String> = []
+    /// When you last looked at each letter on this iPad; a reply that arrived later shows a rose dot.
+    @Published private(set) var seenLetters: [String: Date] = [:]
+    /// The reply that was just finished, for a small sealed moment under her name.
+    @Published private(set) var justSealedMessageID: String?
+    /// When the reply on its way was first seen here, for "想得有点久".
+    @Published private(set) var replyStartedAt: Date?
+    /// A short line from her after something was kept (a memory, a pinned passage); shown briefly, then gone.
+    @Published private(set) var keepsakeLine: String?
+    /// Her lines you put a heart on, kept on this iPad, gathered in the memory panel.
+    struct HeartedLine: Codable, Equatable, Sendable {
+        var conversationID: String
+        var title: String
+        var excerpt: String
+        var at: Date
+    }
+    @Published private(set) var heartedLines: [String: HeartedLine] = {
+        guard let data = UserDefaults.standard.data(forKey: "hajisaki.heartedLines"),
+              let saved = try? JSONDecoder().decode([String: HeartedLine].self, from: data) else { return [:] }
+        return saved
+    }()
+    var heartedMessages: Set<String> { Set(heartedLines.keys) }
+    func toggleHeart(_ message: ChatMessage) {
+        if heartedLines[message.id] != nil { heartedLines[message.id] = nil }
+        else {
+            let plain = message.content.replacingOccurrences(of: #"[*_`#>|~\[\]]"#, with: "", options: .regularExpression)
+                .split(whereSeparator: \.isWhitespace).joined(separator: " ")
+            heartedLines[message.id] = HeartedLine(conversationID: message.conversationID,
+                                                   title: selectedConversation?.title ?? "", excerpt: String(plain.prefix(90)), at: Date())
+            say(CompanionMood.heartLine(settings))
+        }
+        if let data = try? JSONEncoder().encode(heartedLines) { UserDefaults.standard.set(data, forKey: "hajisaki.heartedLines") }
+    }
+    /// The sticker she holds up with that line, if any (an asset name such as "sticker_praise").
+    @Published private(set) var keepsakeSticker: String?
+    private var keepsakeTask: Task<Void, Never>?
+    func say(_ line: String, sticker: String? = nil) {
+        keepsakeLine = line
+        keepsakeSticker = sticker
+        keepsakeTask?.cancel()
+        keepsakeTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 2_600_000_000)
+            guard !Task.isCancelled else { return }
+            self?.keepsakeLine = nil
+        }
+    }
 
     var selectedConversation: Conversation? {
         conversations.first { $0.id == selectedConversationID }
@@ -410,6 +455,7 @@ final class TheaterModel: ObservableObject {
                 try await destinationStore?.saveConversations(found)
                 guard revision == searchRevision, hostRevision == connectionRevision else { return }
                 conversations = found
+                watchWriting()
             } else {
                 let found = try await destinationStore?.loadConversations(query: query, group: group) ?? []
                 guard revision == searchRevision, hostRevision == connectionRevision else { return }
@@ -442,6 +488,12 @@ final class TheaterModel: ObservableObject {
         await flushDraft()
         guard selectionRevision == revision else { return CancellationError() }
         eventTask?.cancel()
+        if let leaving = selectedConversationID {
+            markSeen(leaving, at: [events.last?.createdAt, messages.last?.createdAt, selectedConversation?.updatedAt]
+                .compactMap { $0 }.max { (Self.letterDate($0) ?? .distantPast) < (Self.letterDate($1) ?? .distantPast) })
+        }
+        let waiting = isUnread(conversation) && selectedConversationID != conversation.id
+        markSeen(conversation.id, at: conversation.updatedAt)
         let retainingCurrent = selectedConversationID == conversation.id && conversationNamespace == namespace
             && draftOwnerID == conversation.id && draftIsReady
         selectedConversationID = conversation.id
@@ -472,6 +524,9 @@ final class TheaterModel: ObservableObject {
                 pendingAttachments = savedAttachments + pendingAttachments.filter { extra in !savedAttachments.contains(where: { $0.id == extra.id }) }
                 draftOwnerID = conversation.id; draftIsReady = true
                 if draftEditRevision == initialDraftRevision { restoreDraft(savedDraft) }
+                // She notices why you came back: your unfinished draft, or her reply waiting for you.
+                if !savedDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { say(CompanionMood.openLine(draft: true, settings: settings)) }
+                else if waiting { say(CompanionMood.openLine(draft: false, settings: settings)) }
                 else if !savedDraft.isEmpty { draft = savedDraft + "\n" + draft }
             }
             try await refreshPending()
@@ -577,6 +632,7 @@ final class TheaterModel: ObservableObject {
         do {
             _ = try await client.value([String: JSONValue].self, path: "/api/runs/\(run)/stop", method: "POST")
             guard hostRevision == connectionRevision, selectedRevision == selectionRevision else { return }
+            say(settings.personality.teasing >= 60 ? "……好吧，先停在这里。" : "好，先停在这里。")
             if activeRunID == run { activeRunID = nil; currentRun = nil }
             if let id = conversationID {
                 eventTask?.cancel()
@@ -594,6 +650,9 @@ final class TheaterModel: ObservableObject {
             let changed = try await client.value(Conversation.self, path: "/api/conversations/\(conversation.id)", method: "PATCH",
                                                 body: ["pinned": .bool(!conversation.pinned)])
             try await destinationStore?.saveConversations([changed])
+            // Pinning touches the letter's time; that is not a new reply.
+            if seenLetters[changed.id] != nil { markSeen(changed.id, at: changed.updatedAt) }
+            say(changed.pinned ? "放在心上了。最上面那封，就是它。" : "嗯，先把它放回原处。")
             if hostRevision == connectionRevision { await search() }
         } catch { show(error) }
     }
@@ -610,6 +669,7 @@ final class TheaterModel: ObservableObject {
             await search()
             guard hostRevision == connectionRevision else { return }
             await selectConversation(created)
+            say("从这里另起一页。原来那一页，我也好好留着。")
         } catch { show(error) }
     }
 
@@ -626,6 +686,8 @@ final class TheaterModel: ObservableObject {
             let updated = try await client.value(Conversation.self, path: "/api/conversations/\(conversation.id)", method: "PATCH", body: ["title": .string(title)])
             try await destinationStore.saveConversations([updated])
             guard namespace == origin, connectionRevision == revision else { return }
+            if seenLetters[updated.id] != nil { markSeen(updated.id, at: updated.updatedAt) }
+            say("嗯，它现在叫「\(updated.title)」了。")
             if selectedConversationID == updated.id { selectedConversationValue = updated }
             await search()
         } catch { if namespace == origin, connectionRevision == revision { show(error) } }
@@ -687,7 +749,10 @@ final class TheaterModel: ObservableObject {
             let item = try await client.value(MemoryEntry.self, path: id.map { "/api/memories/\($0)" } ?? "/api/memories",
                                              method: id == nil ? "POST" : "PATCH", body: ["content": .string(content)])
             let updated = try await destinationStore?.upsertMemory(item) ?? []
-            if hostRevision == connectionRevision { memories = updated }
+            if hostRevision == connectionRevision {
+                memories = updated
+                say(id == nil ? "嗯，我记住了。" : "改好了。我会记住新的样子。")
+            }
         } catch { show(error) }
     }
     func removeMemory(_ memory: MemoryEntry) async {
@@ -696,7 +761,10 @@ final class TheaterModel: ObservableObject {
         do {
             _ = try await client.value([String: JSONValue].self, path: "/api/memories/\(memory.id)", method: "DELETE")
             let updated = try await destinationStore?.forgetMemory(id: memory.id) ?? []
-            if hostRevision == connectionRevision { memories = updated }
+            if hostRevision == connectionRevision {
+                memories = updated
+                say("先把这件事收起来了。想找回的话，主机回收站里还在。")
+            }
         } catch { show(error) }
     }
     func saveSettings(_ value: TheaterSettings) async {
@@ -948,7 +1016,9 @@ final class TheaterModel: ObservableObject {
 
     func pinMessage(_ message: ChatMessage) async -> ContextPin? {
         guard !message.id.hasPrefix("pending-"), canonicalMessages.contains(where: { $0.id == message.id && $0.conversationID == message.conversationID }) else { return nil }
-        return await addPin(kind: .message, targetID: message.id, conversationID: message.conversationID)
+        let pin = await addPin(kind: .message, targetID: message.id, conversationID: message.conversationID)
+        if pin != nil { say("钉好了。这一段，我会一直放在手边。") }
+        return pin
     }
 
     func removePin(_ pin: ContextPin) async -> Bool {
@@ -1088,6 +1158,8 @@ final class TheaterModel: ObservableObject {
                 return updated
             }
             guard namespace == origin, connectionRevision == revision else { return nil }
+            // Ticking off a step she listed earns a (reluctant) word of praise.
+            if checked { say(CompanionMood.taskPraise(settings), sticker: "sticker_praise") }
             return result
         } catch { if namespace == origin, connectionRevision == revision { show(error) }; return nil }
     }
@@ -1312,6 +1384,41 @@ final class TheaterModel: ObservableObject {
     private func openStore(for credentials: GatewayCredentials) throws {
         namespace = Self.namespace(for: credentials)
         store = try LocalStore(url: libraryURL.appendingPathComponent(namespace + ".sqlite3"))
+        let saved = UserDefaults.standard.dictionary(forKey: seenLettersKey) as? [String: Double] ?? [:]
+        seenLetters = saved.mapValues { Date(timeIntervalSince1970: $0) }
+    }
+    private var seenLettersKey: String { "hajisaki.seenLetters." + namespace }
+    /// Stamped with the host's own times (letter, message or event) where known, so a device clock
+    /// that runs a little behind the computer does not mark a letter you just read as new.
+    func markSeen(_ id: String, at stamp: String? = nil) {
+        seenLetters[id] = stamp.flatMap(Self.letterDate) ?? Date()
+        UserDefaults.standard.set(seenLetters.mapValues(\.timeIntervalSince1970), forKey: seenLettersKey)
+    }
+    /// A letter she answered after you last looked at it on this iPad.
+    func isUnread(_ conversation: Conversation) -> Bool {
+        guard conversation.id != selectedConversationID, let seen = seenLetters[conversation.id],
+              conversation.previewRole == "assistant", conversation.writing != true,
+              let updated = Self.letterDate(conversation.updatedAt) else { return false }
+        return updated > seen
+    }
+    private static func letterDate(_ value: String) -> Date? {
+        // The host writes microseconds, which ISO8601DateFormatter does not reliably accept.
+        ISO8601DateFormatter().date(from: value.replacingOccurrences(of: #"\.\d+"#, with: "", options: .regularExpression))
+    }
+    private var writingWatch: Task<Void, Never>?
+    /// While she is writing back in another letter, the list looks again every few seconds.
+    private func watchWriting() {
+        writingWatch?.cancel()
+        guard isConnected, conversations.contains(where: { $0.writing == true && $0.id != selectedConversationID }) else { return }
+        writingWatch = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            guard !Task.isCancelled, let self else { return }
+            let writing = Set(self.conversations.filter { $0.writing == true }.map(\.id))
+            await self.search()
+            if self.conversations.contains(where: { writing.contains($0.id) && $0.writing != true && self.isUnread($0) }) {
+                TheaterAudio.shared.play(.reply)
+            }
+        }
     }
     private func loadCachedLibrary() async throws {
         guard let store else { throw TheaterError.storage }
@@ -1346,6 +1453,7 @@ final class TheaterModel: ObservableObject {
     }
     private func applySnapshot(_ value: MessageSnapshot) {
         canonicalMessages = value.messages
+        if value.activeRun?.id != activeRunID { replyStartedAt = value.activeRun == nil ? nil : Date() }
         currentRun = value.activeRun; activeRunID = value.activeRun?.id; cursor = value.cursor
         messages = value.messages
     }
@@ -1529,6 +1637,20 @@ final class TheaterModel: ObservableObject {
         }
         try await refreshPending()
         if event.kind == "run_failed", let text = event.payload["message"]?.stringValue { notice = text }
+        if ["run_finished", "run_stopped", "run_failed"].contains(event.kind) {
+            markSeen(event.conversationID, at: event.createdAt)
+            if event.kind == "run_finished", let id = event.messageID {
+                justSealedMessageID = id
+                if let reply = canonicalMessages.first(where: { $0.id == id }), reply.content.count > 900 {
+                    say(CompanionMood.longReplyLine(settings))
+                }
+                Task { [weak self] in
+                    try? await Task.sleep(nanoseconds: 2_400_000_000)
+                    if self?.justSealedMessageID == id { self?.justSealedMessageID = nil }
+                }
+            }
+            Task { await self.search() }
+        }
     }
 
     private func streamDidConnect(conversationID: String, selection: UUID, connection: UUID, source: String = "event-stream") {

@@ -47,7 +47,7 @@ def main():
         source=frontend/name
         if source.is_file():
             dest=web/name;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source,dest)
-    for name in ['avatars-youth','scenes-user','audio','icons']:
+    for name in ['avatars-youth','scenes-user','audio','icons','stickers-web','scenes-web']:
         source=ROOT/'shared/assets'/name
         if source.is_dir():shutil.copytree(source,web/'artwork'/name,dirs_exist_ok=True)
     staged_web=STAGE/'android/app/src/main/assets/public'

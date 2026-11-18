@@ -25,6 +25,10 @@ struct ConversationStage: View {
     @State private var messageLayoutRevision = 0
     @State private var layout = ConversationLayout()
     @State private var rows: [ConversationRow] = []
+    /// Work notes the user opened stay open while the reply keeps arriving.
+    @State private var openNotes: Set<String> = []
+    /// The night she last asked you to go to sleep, so she asks once.
+    @AppStorage("hajisaki.nightCare") private var nightCareNight = ""
     @FocusState private var composeFocused: Bool
 
     var body: some View {
@@ -35,6 +39,13 @@ struct ConversationStage: View {
                         .frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 12)
                     GlyphButton(label: "收起提示", glyph: .close) { model.notice = nil }
                 }.padding(.leading, 22).padding(.trailing, 10).background(palette.sunken)
+            }
+            TimelineView(.everyMinute) { context in
+                if model.selectedConversation != nil, CompanionMood.isLateNight(context.date),
+                   context.date.timeIntervalSince(CompanionMood.launchedAt) > 25 * 60,
+                   nightCareNight != Self.nightKey(context.date) {
+                    nightCare(context.date)
+                }
             }
             if model.providerSimulated && model.isConnected {
                 HStack(spacing: 7) {
@@ -77,8 +88,12 @@ struct ConversationStage: View {
             if !followsLatest && !model.messages.isEmpty {
                 Button { followsLatest = true } label: {
                     HStack(spacing: 6) {
-                        TheaterGlyph(kind: .chevron).stroke(lineWidth: 1.4).frame(width: 14, height: 14)
-                        Text("回到最新").font(.system(size: 13, weight: .medium))
+                        if model.isGenerating {
+                            HeartShape().fill(palette.rose).frame(width: 11, height: 10)
+                        } else {
+                            TheaterGlyph(kind: .chevron).stroke(lineWidth: 1.4).frame(width: 14, height: 14)
+                        }
+                        Text(model.isGenerating ? "她还在写" : "回到最新").font(.system(size: 13, weight: .medium))
                     }.foregroundStyle(palette.background).padding(.horizontal, 16).frame(height: 36)
                         .background(palette.text, in: Capsule())
                         .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
@@ -102,6 +117,39 @@ struct ConversationStage: View {
         }
         .onAppear { RichDocumentView.prewarm() }
         .onChange(of: pencilInteractionRevision) { _, _ in lockReading() }
+    }
+
+    /// Past midnight, once: she asks you to go to sleep.
+    private func nightCare(_ date: Date) -> some View {
+        HStack(alignment: .center, spacing: 14) {
+          Image("sticker_sleep").resizable().scaledToFit().frame(width: 72, height: 72).accessibilityLabel("快去睡觉！")
+          VStack(alignment: .leading, spacing: 6) {
+            ScriptLine(text: "Sweet dreams", size: 20)
+            Text(CompanionMood.nightCare(date, settings: model.settings)).font(.theaterSerif(15)).lineSpacing(5)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 18) {
+                Spacer(minLength: 0)
+                Button("好，这就去睡") {
+                    nightCareNight = Self.nightKey(date)
+                    let name = (model.settings.nickname ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                    model.say(name.isEmpty ? "晚安。梦里见。" : "晚安，\(name)。梦里见。")
+                }
+                Button("再聊一会儿") {
+                    nightCareNight = Self.nightKey(date)
+                    model.say(model.settings.personality.teasing >= 60 ? "……就十分钟。我会看着时间的。" : "那就再一会儿。我陪你。")
+                }
+            }.font(.system(size: 14, weight: .medium)).foregroundStyle(palette.rose).buttonStyle(.plain)
+          }
+        }.padding(.horizontal, 18).padding(.top, 14).padding(.bottom, 10)
+            .letterCard(cornerRadius: 18)
+            .frame(maxWidth: 680).padding(.horizontal, 22).padding(.top, 12).frame(maxWidth: .infinity)
+            .transition(.opacity)
+    }
+    /// One key per night: the hours after midnight belong to the evening before.
+    private static func nightKey(_ date: Date) -> String {
+        let evening = date.addingTimeInterval(-12 * 3600)
+        let parts = Calendar.current.dateComponents([.year, .month, .day], from: evening)
+        return "\(parts.year ?? 0)-\(parts.month ?? 0)-\(parts.day ?? 0)"
     }
 
     private var layoutInput: [ConversationLayoutInput] {
@@ -167,10 +215,32 @@ struct ConversationStage: View {
                 .padding(.bottom, 10)
             FiligreeDivider(width: 132)
             ScriptLine(text: "Only for you", size: 26)
-            Text(model.selectedConversation == nil ? "把这一页，留给我们。" : "这一刻，只听你说。")
+            Text(model.selectedConversation == nil ? "把这一页，留给我们。" : CompanionMood.emptyHeading())
                 .font(.theaterSerif(24)).tracking(2).multilineTextAlignment(.center)
-            Text(model.selectedConversation == nil ? CompanionMood.greeting() : "不用急着整理语言。想到哪里，就从哪里开始吧。")
+            Text(model.selectedConversation == nil ? "「" + (milestone ?? CompanionMood.dailyNote(settings: model.settings)) + "」" : "不用急着整理语言。想到哪里，就从哪里开始吧。")
                 .font(.system(size: 14)).lineSpacing(5).foregroundStyle(palette.secondary).multilineTextAlignment(.center)
+            if model.selectedConversation == nil {
+                // The piece she would like to play for you today.
+                let today = CompanionMood.todaysPiece()
+                HStack(alignment: .firstTextBaseline, spacing: 7) {
+                    TheaterGlyph(kind: .sparkle).fill(palette.gold).frame(width: 10, height: 10)
+                    (Text("今天想弹给你听：").foregroundStyle(palette.secondary)
+                     + Text(today.piece).font(.theaterSerif(14)).foregroundStyle(palette.text)
+                     + Text("  " + today.word).foregroundStyle(palette.dim)).font(.system(size: 13))
+                }.multilineTextAlignment(.center).padding(.top, 8)
+            }
+            if model.selectedConversation == nil, let week = weekSummary {
+                // Sunday: a page from her weekly journal.
+                HStack(spacing: 14) {
+                    Image("weekly_journal_cover").resizable().scaledToFill().frame(width: 40, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 4)).rotationEffect(.degrees(-4)).accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 4) {
+                        ScriptLine(text: "This week", size: 18)
+                        Text(week).font(.theaterSerif(14)).lineSpacing(4).fixedSize(horizontal: false, vertical: true)
+                    }
+                }.padding(.horizontal, 16).padding(.vertical, 12).frame(maxWidth: 420, alignment: .leading)
+                    .letterCard(cornerRadius: 16).padding(.top, 10)
+            }
             if model.selectedConversation == nil {
                 HStack(spacing: 12) {
                     Button("写一封信") { Task { await model.createConversation(); composeFocused = true } }
@@ -181,6 +251,21 @@ struct ConversationStage: View {
                 VStack(spacing: 8) { starterButtons }.frame(maxWidth: 360).padding(.top, 18)
             }
         }.padding(.top, 48).padding(.bottom, 35).frame(maxWidth: .infinity)
+    }
+
+    /// Letters touched and hearts given this week, on Sundays only.
+    private var weekSummary: String? {
+        guard Calendar.current.component(.weekday, from: .now) == 1 else { return nil }
+        let since = Date().addingTimeInterval(-7 * 86_400)
+        let letters = model.conversations.filter { !$0.archived && (hostDate($0.updatedAt) ?? .distantPast) >= since }.count
+        let hearts = model.heartedLines.values.filter { $0.at >= since }.count
+        return CompanionMood.weekLine(letters: letters, hearts: hearts, settings: model.settings)
+    }
+
+    /// On round days (100, 365, 520…) the note belongs to the two of you.
+    private var milestone: String? {
+        model.conversations.compactMap { $0.createdAt.flatMap(hostDate) }.min()
+            .flatMap { CompanionMood.milestoneNote(CompanionMood.daysTogether(since: $0)) }
     }
 
     @ViewBuilder private var starterButtons: some View {
@@ -205,14 +290,21 @@ struct ConversationStage: View {
                 if message.isUser {
                     Spacer(minLength: 0)
                     if message.status == "queued" || message.status == "pending" {
-                        Text("正在寄出").font(.system(size: 12)).foregroundStyle(palette.rose)
+                        HStack(spacing: 5) {
+                            TheaterGlyph(kind: .letter).stroke(lineWidth: 1.1).frame(width: 13, height: 13).foregroundStyle(palette.rose)
+                            Text(model.isConnected ? "寄出中" : "等琴房亮灯就寄出").font(.system(size: 12)).foregroundStyle(palette.dim)
+                        }
                     }
                     Text(messageClock(message.createdAt)).font(.system(size: 12)).monospacedDigit().foregroundStyle(palette.dim)
                 } else {
                     CameoPortrait(image: "idle_gentle", size: 28)
                     Text("祥子").font(.theaterSerif(15)).tracking(1).foregroundStyle(palette.rose)
                     TiaraMark(width: 13)
+                        .overlay { if model.justSealedMessageID == message.id { SealBurst() } }
                     Text(messageClock(message.createdAt)).font(.system(size: 12)).monospacedDigit().foregroundStyle(palette.dim)
+                    if model.heartedMessages.contains(message.id) {
+                        HeartShape().fill(palette.rose).frame(width: 11, height: 10).accessibilityLabel("你心动过")
+                    }
                     Spacer(minLength: 0)
                 }
                 Button { actionMessageID = message.id } label: {
@@ -221,6 +313,9 @@ struct ConversationStage: View {
                 }.buttonStyle(.plain).accessibilityLabel("这条消息的操作")
                 .popover(isPresented: Binding(get: { actionMessageID == message.id }, set: { if !$0 { actionMessageID = nil } })) {
                   TheaterPopup {
+                    if !message.isUser && !message.content.isEmpty {
+                        Button(model.heartedMessages.contains(message.id) ? "取消心动" : "心动") { finishMessageActions { model.toggleHeart(message) } }
+                    }
                     Button("引用到输入框") { finishMessageActions { model.quote(message); composeFocused = true } }
                     Button("从这里分支") { finishMessageActions { Task { await model.fork(from: message) } } }
                     Button("记入记忆星空") { finishMessageActions { Task { await model.saveMemory(content: message.content) } } }.disabled(message.content.isEmpty)
@@ -303,16 +398,65 @@ struct ConversationStage: View {
 
     @ViewBuilder private func messageStatus(_ message: ChatMessage) -> some View {
         if message.status == "failed" {
-            Text("这一段没能写完。已经写下的内容仍在。").font(.system(size: 12)).foregroundStyle(palette.warning).padding(.top, 13)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(message.content.isEmpty ? "这封回信没能写成。把你的信再寄一次，我重新写给你。" : "这一段没能写完。已经写下的内容仍在。")
+                    .font(message.content.isEmpty ? .theaterSerif(14) : .system(size: 12))
+                    .foregroundStyle(message.content.isEmpty ? palette.secondary : palette.warning)
+                if message.content.isEmpty && !message.isUser {
+                    Button { resend(answering: message) } label: {
+                        HStack(spacing: 6) {
+                            TheaterGlyph(kind: .letter).stroke(lineWidth: 1.2).frame(width: 15, height: 15)
+                            Text("放回信纸，再寄一次").font(.system(size: 13, weight: .medium))
+                        }.foregroundStyle(palette.rose).frame(minHeight: 36).contentShape(Rectangle())
+                    }.buttonStyle(.plain)
+                }
+            }.padding(.top, 13)
         } else if message.status == "stopped" {
-            Text("先停在这里。想继续时，再叫我。").font(.system(size: 12)).foregroundStyle(palette.secondary).padding(.top, 13)
+            Text(message.content.isEmpty ? "还没落笔，就先停下了。" : "先停在这里。想继续时，再叫我。")
+                .font(.system(size: 12)).foregroundStyle(palette.secondary).padding(.top, 13)
         } else if !message.isUser && message.content.isEmpty && ["queued", "running", "streaming"].contains(message.status) {
-            HStack(spacing: 9) {
-                TypingHearts()
-                Text("正在写回信").font(.system(size: 13)).foregroundStyle(palette.dim)
-            }.frame(minHeight: 30).padding(.top, 10)
-                .accessibilityElement(children: .combine)
+            // Before her first words: reading your letter, looking things up, or thinking a little long.
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                let phase = replyPhase(for: message, now: context.date)
+                HStack(spacing: 9) {
+                    TypingHearts()
+                    Text(CompanionMood.phaseLine(phase, settings: model.settings, letter: letterContext(answering: message)))
+                        .font(.theaterSerif(14)).tracking(0.5).foregroundStyle(palette.rose)
+                    if phase == .working {
+                        // While she looks things up for you, she holds up her little "交给我吧".
+                        Image("sticker_trust").resizable().scaledToFit().frame(width: 52, height: 52)
+                            .rotationEffect(.degrees(-4)).padding(.vertical, -10).accessibilityLabel("交给我吧")
+                    }
+                }.frame(minHeight: 30).padding(.top, 10)
+                    .accessibilityElement(children: .combine)
+            }
         }
+    }
+
+    /// The letter this reply answers: pictures, a recording, documents, or many words.
+    private func letterContext(answering message: ChatMessage) -> CompanionMood.LetterContext {
+        guard let index = model.messages.firstIndex(where: { $0.id == message.id }),
+              let letter = model.messages[..<index].last(where: { $0.isUser }) else { return CompanionMood.LetterContext() }
+        let files = letter.attachments.compactMap { reference in reference.artifact ?? model.artifacts.first { $0.id == reference.id } }
+        return CompanionMood.LetterContext(images: files.filter { $0.mime.hasPrefix("image/") }.count,
+                                           audio: files.filter { $0.mime.hasPrefix("audio/") }.count,
+                                           documents: files.filter { !$0.mime.hasPrefix("image/") && !$0.mime.hasPrefix("audio/") && !$0.mime.hasPrefix("video/") }.count,
+                                           long: letter.content.count > 300,
+                                           small: hostDate(letter.createdAt).map { (1..<5).contains(Calendar.current.component(.hour, from: $0)) } ?? false)
+    }
+
+    private func replyPhase(for message: ChatMessage, now: Date) -> CompanionMood.ReplyPhase {
+        if workSteps(events(for: message), live: true).contains(where: { $0.state == .working }) { return .working }
+        if let started = model.replyStartedAt, now.timeIntervalSince(started) > 30 { return .long }
+        return .reading
+    }
+
+    /// A reply that failed before any words: the letter that asked for it goes back into the draft.
+    private func resend(answering message: ChatMessage) {
+        guard let index = model.messages.firstIndex(where: { $0.id == message.id }),
+              let asked = model.messages[..<index].last(where: { $0.isUser }) else { return }
+        model.draft = asked.content
+        composeFocused = true
     }
 
     private func loadTasks(for message: ChatMessage) async {
@@ -330,12 +474,72 @@ struct ConversationStage: View {
         afterMessageActions = action
         actionMessageID = nil
     }
+    /// One tool step of a reply, merged per call so it shows once with its latest state.
+    struct WorkStep: Identifiable {
+        enum State { case working, done, alert }
+        let id: String
+        var label: String
+        var state: State
+        var event: StreamEvent
+    }
+    private func workSteps(_ values: [StreamEvent], live: Bool) -> [WorkStep] {
+        var steps: [WorkStep] = []
+        for event in values where event.layer == "L2" && event.kind == "tool" {
+            let raw = event.payload["summary"]?.stringValue ?? event.payload["title"]?.stringValue ?? event.payload["name"]?.stringValue ?? ""
+            let label = raw.replacingOccurrences(of: #"^Antigravity\s*·\s*"#, with: "", options: .regularExpression)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !label.isEmpty else { continue }
+            let value = (event.payload["state"]?.stringValue ?? "").lowercased()
+            let state: WorkStep.State = value.range(of: "block|fail|error|denied|permission|cancel|reject", options: .regularExpression) != nil ? .alert
+                : value.range(of: "done|complete|success|finish", options: .regularExpression) != nil ? .done : .working
+            let call = event.payload["detail"]?.objectValue?["tool_call_id"]?.stringValue
+            if let call, let index = steps.firstIndex(where: { $0.id == call }) {
+                steps[index].label = label; steps[index].state = state; steps[index].event = event
+            } else if call == nil, let last = steps.indices.last, steps[last].label == label, steps[last].state == .working {
+                steps[last].state = state; steps[last].event = event
+            } else {
+                steps.append(WorkStep(id: call ?? String(event.seq), label: label, state: state, event: event))
+            }
+        }
+        return live ? steps : steps.map { step in var step = step; if step.state == .working { step.state = .done }; return step }
+    }
+
+    private enum ActivityItem: Identifiable {
+        case notes(String), narration(StreamEvent), summary(StreamEvent), capsule(StreamEvent)
+        var id: String {
+            switch self {
+            case .notes(let run): return "notes:" + run
+            case .narration(let event), .summary(let event), .capsule(let event): return String(event.seq)
+            }
+        }
+    }
     @ViewBuilder private func activity(for message: ChatMessage) -> some View {
         let values = events(for: message)
-        if !values.isEmpty {
+        let live = values.first.map { $0.runID == model.activeRunID } ?? false
+        let steps = workSteps(values, live: live)
+        let items: [ActivityItem] = values.reduce(into: []) { items, event in
+            if event.layer == "L2" && event.kind == "tool" {
+                if !steps.isEmpty, !items.contains(where: { if case .notes = $0 { return true }; return false }) { items.append(.notes(event.runID)) }
+            } else if event.layer == "L2" || event.layer == "L4" {
+                items.append(.capsule(event))
+            } else if !event.text.isEmpty {
+                if event.layer == "L1" { items.append(.summary(event)) }
+                else if event.kind == "narration" { items.append(.narration(event)) }
+            }
+        }
+        if !items.isEmpty {
             VStack(alignment: .leading, spacing: 9) {
-                ForEach(values) { event in
-                    if event.layer == "L2" || event.layer == "L4" {
+                ForEach(items) { item in
+                    switch item {
+                    case .notes(let run): workNotes(steps, run: run, live: live)
+                    case .summary(let event): PublicSummaryView(text: event.text)
+                    case .narration(let event):
+                        // A short note she slips in while she works — her voice, so in her serif.
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            TheaterGlyph(kind: .quill).stroke(lineWidth: 1.1).frame(width: 13, height: 13).foregroundStyle(palette.gold)
+                            Text(event.text).font(.theaterSerif(14.5)).lineSpacing(4).foregroundStyle(palette.secondary).textSelection(.enabled)
+                        }
+                    case .capsule(let event):
                         Button {
                             if event.layer == "L4", let artifact = eventArtifact(event) { onArtifact(artifact) }
                             else { onTool(event) }
@@ -347,14 +551,56 @@ struct ConversationStage: View {
                             }.padding(.horizontal, 10).padding(.vertical, 9).background(palette.selection, in: RoundedRectangle(cornerRadius: 9))
                         }.buttonStyle(.plain).foregroundStyle(palette.secondary)
                             .pencilPreview(title: capsuleTitle(event), text: event.payload["detail"]?.stringValue ?? event.payload["summary"]?.stringValue ?? event.text)
-                    } else if !event.text.isEmpty {
-                        if event.layer == "L1" {
-                            PublicSummaryView(text: event.text)
-                        } else if event.kind == "narration" {
-                            Text(event.text).font(.system(size: 14)).lineSpacing(4).foregroundStyle(palette.secondary).textSelection(.enabled)
-                        }
                     }
                 }
+            }
+        }
+    }
+
+    /// Every step of one reply folded into a single line; the current step writes with a quill.
+    private func workNotes(_ steps: [WorkStep], run: String, live: Bool) -> some View {
+        let current = live ? steps.last(where: { $0.state == .working }) : nil
+        let alerts = steps.filter { $0.state == .alert }
+        let open = openNotes.contains(run)
+        let title = current.map { $0.label + "…" }
+            ?? (alerts.count == 1 ? alerts[0].label : alerts.count > 1 ? "有 \(alerts.count) 步没有走通" : "工作札记 · \(steps.count) 步")
+        return VStack(alignment: .leading, spacing: 8) {
+            Button {
+                withAnimation(.easeOut(duration: 0.2)) { if open { openNotes.remove(run) } else { openNotes.insert(run) } }
+            } label: {
+                HStack(spacing: 8) {
+                    if current != nil {
+                        QuillWriting()
+                    } else {
+                        TheaterGlyph(kind: alerts.isEmpty ? .check : .sparkle).stroke(lineWidth: 1.3).frame(width: 14, height: 14)
+                            .foregroundStyle(alerts.isEmpty ? palette.gold : palette.rose)
+                    }
+                    Text(title).font(.system(size: 12.5)).lineLimit(1)
+                        .foregroundStyle(alerts.isEmpty ? (current == nil ? palette.secondary : palette.text) : palette.rose)
+                    TheaterGlyph(kind: .chevron).stroke(lineWidth: 1.1).frame(width: 12, height: 12)
+                        .rotationEffect(.degrees(open ? 180 : 0)).foregroundStyle(palette.dim)
+                }.padding(.horizontal, 12).frame(minHeight: 34)
+                    .background(palette.raised, in: Capsule())
+                    .overlay(Capsule().strokeBorder(alerts.isEmpty ? (current == nil ? palette.goldLine.opacity(0.5) : palette.goldLine) : palette.rose, lineWidth: 0.8))
+                    .contentShape(Capsule())
+            }.buttonStyle(.plain)
+                .accessibilityLabel(title).accessibilityHint(open ? "收起这些步骤" : "展开这些步骤")
+            if open {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(steps) { step in
+                        Button { onTool(step.event) } label: {
+                            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                                TheaterGlyph(kind: step.state == .done ? .check : step.state == .alert ? .close : .quill)
+                                    .stroke(lineWidth: 1.2).frame(width: 12, height: 12)
+                                    .foregroundStyle(step.state == .done ? palette.gold : palette.rose)
+                                Text(step.label).font(.system(size: 12.5)).multilineTextAlignment(.leading)
+                                    .foregroundStyle(step.state == .alert ? palette.rose : step.state == .working ? palette.text : palette.secondary)
+                            }.frame(minHeight: 28).contentShape(Rectangle())
+                        }.buttonStyle(.plain)
+                    }
+                }.padding(.leading, 18).padding(.vertical, 2)
+                    .overlay(alignment: .leading) { Rectangle().fill(palette.goldLine.opacity(0.5)).frame(width: 0.8).padding(.leading, 6) }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
     }
@@ -398,7 +644,7 @@ struct ConversationStage: View {
             }
             if let progress = model.transferProgress { ProgressView(value: progress).tint(palette.rose) }
             VStack(spacing: 4) {
-                TextField("写给祥子", text: $model.draft, prompt: Text("写给祥子…").foregroundColor(palette.dim), axis: .vertical)
+                TextField("写给祥子", text: $model.draft, prompt: Text(CompanionMood.draftPrompt()).foregroundColor(palette.dim), axis: .vertical)
                     .font(.system(size: 17)).lineSpacing(5).lineLimit(2...7).focused($composeFocused)
                     .autocorrectionDisabled().textInputAutocapitalization(.never)
                     .padding(.horizontal, 18).padding(.top, 15).accessibilityLabel("写给祥子")

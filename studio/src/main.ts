@@ -17,6 +17,7 @@ import {
   cacheKey,
 } from "./api";
 import { markdown, enhance, escape as esc } from "./render";
+import { homeGreeting, dailyNote, dayPart, lateNight, draftPlaceholder, phaseLine, phaseStatus, voiceSample, taskPraise, daysTogether, milestoneNote, reunion, pokeLine, composingLine, nightCare, longReplyLine, heartLine, openLine, weekLine, todaysPiece, emptyHeading, type Phase, type LetterContext } from "./voice";
 import type {
   Conversation,
   Message,
@@ -100,13 +101,6 @@ const wax = (size = 18) => `<span class="wax" aria-hidden="true">${heart(size)}<
 /** The first character of a letter's title, set in a gold-ringed roundel. */
 const monogram = (title: string, pinned = false) =>
   `<span class="monogram" aria-hidden="true">${esc(Array.from(title).find((ch) => /[\p{L}\p{N}]/u.test(ch)) || "信")}${pinned ? `<i>${heart(9)}</i>` : ""}</span>`;
-/** A few words in copperplate, as she would sign a letter. */
-function salutation(hour = new Date().getHours()) {
-  if (hour < 5 || hour >= 23) return "Sweet dreams";
-  if (hour < 11) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
-}
 /** A small heart rises from the place where something was kept. */
 function heartBurst(target: Element | null, count = 1) {
   if (!target || reducedMotion()) return;
@@ -123,6 +117,8 @@ function heartBurst(target: Element | null, count = 1) {
     window.setTimeout(() => mark.remove(), 1200 + index * 90);
   }
 }
+/** A negative delay that keeps looping marks (beating hearts, halos) in phase when they are redrawn. */
+const animationClock = () => `${-(performance.now() % 2400) / 1000}s`;
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) =>
   document.querySelector<T>(selector)!;
 const art = (name = portraitName()) => `/artwork/avatars-youth/${name}.png`;
@@ -152,6 +148,21 @@ let status: HostStatus | undefined,
   loading = false,
   readLock = false;
 let shellListening = false;
+/** Whether the first real answer from the host has arrived, so an empty list is not shown as "nothing yet". */
+let conversationsLoaded = false, memoriesLoaded = false, artifactsLoaded = false, messagesLoaded = true;
+/** "sending" while a letter is on its way, "failed" once the host could not take it. */
+let pendingState: "sending" | "failed" = "sending";
+/** When each reply started on this screen, for "想得有点久"; and the reply that just got sealed. */
+const runSeenAt = new Map<string, number>();
+let sealNext = "", hubRefreshTimer: number | undefined;
+/** The memory just written down, so it can settle into the list with a small glow. */
+let keptMemory = "";
+/** Days since your last letter when this visit began (for "好久不见"), counted once per visit. */
+let awayDays: number | undefined;
+/** Taps on her portrait in a row, and when you last wrote in the letter box. */
+let pokes = 0, pokeTimer: number | undefined, composingUntil = 0;
+/** Disclosures (work notes, notices) the user opened stay open while the reply keeps arriving. */
+const keptOpen = new Set<string>();
 /** Messages already on screen for this conversation; only newcomers get the entrance animation. */
 const seenMessages = new Set<string>();
 let seenConversation = "";
@@ -240,7 +251,7 @@ function dayLabel(time: number) {
   return date.toLocaleDateString("zh-CN", { month: "long", day: "numeric", weekday: "short" });
 }
 function starters(): [string, string][] {
-  const night: [string, string][] = lateNight() ? [["睡不着", "睡不着，想和你说说话。"]] : [];
+  const night: [string, string][] = lateNight(new Date().getHours()) ? [["睡不着", "睡不着，想和你说说话。"]] : [];
   return [
     ...night,
     ["今天发生了一件事", "今天发生了一件事，想讲给你听："],
@@ -328,8 +339,17 @@ function shell() {
     ($("#file-input") as HTMLInputElement).value = "";
   };
 }
+let wasOffline = false;
 function connectionState() {
   refreshPortrait();
+  // The window shows the empty room in the rain while the light is out, and her again when it is back.
+  const offline = !!credentials().token && !connected && conversationsLoaded;
+  const home = document.querySelector<HTMLElement>(".home");
+  if (home) {
+    home.classList.toggle("offline", offline);
+    if (wasOffline && !offline && document.querySelector(".arch")) whisper($(".arch"), "……灯亮了。欢迎回来。");
+  }
+  wasOffline = offline;
   document
     .querySelectorAll(".presence i, .presence-card strong i")
     .forEach((dot) => dot.classList.toggle("online", connected));
@@ -359,6 +379,8 @@ async function navigate(next: Page, fromHistory = false) {
     return;
   }
   if (next !== "hub") enterSubpage();
+  if (page === "chat" && conversation) markSeen(conversation.id);
+  pokes = 0;
   messageResizeObserver?.disconnect();
   streamAbort?.abort();
   streamLive = false;
@@ -399,38 +421,76 @@ function previewText(text: string) {
     .replace(/\s+/g, " ")
     .trim();
 }
-const lateNight = (hour = new Date().getHours()) => hour >= 23 || hour < 5;
-function greeting(hour = new Date().getHours()): string[] {
-  if (hour < 3 || hour >= 23) return ["这么晚还醒着呀。", "陪你一会儿，就去睡哦。"];
-  if (hour < 5) return ["天都快亮了。", "说完这句，就去睡吧？"];
-  if (hour < 10) return ["早安。", "今天，也请多指教了。"];
-  if (hour < 14) return ["午安。", "别忘了好好吃饭哦。"];
-  if (hour < 18) return ["红茶刚泡好。", "坐下来，歇一会儿吧。"];
-  return ["回来了呢。", "今天也辛苦了。"];
+/** The first letter on this host, from the list; the start of "相识第 N 天". */
+function togetherDays() {
+  const first = conversations.map((c) => Date.parse(c.created_at || "")).filter(Number.isFinite).sort((a, b) => a - b)[0];
+  return first === undefined ? 0 : daysTogether(new Date(first));
 }
-const dailyLines = [
-  "记得喝水。不是在担心你……只是顺便提醒一下。",
-  "今天也不必勉强自己。做不完的事，明天我们再一起看。",
-  "肩膀放松一点。你皱眉的样子，我都看得见哦。",
-  "要好好吃饭。这一点上，我可不会让步。",
-  "累了的话，就来这里坐坐吧。我弹一首曲子给你听。",
-  "无论结果怎样，你认真的样子，我都记得。",
-  "今天的你，也比昨天更努力了一点点。",
-  "外面风大，出门记得多穿一件。",
-  "想不通的事，就说给我听。整理思绪，本来就是两个人的事。",
-  "如果今天很难过，也没关系。我会一直在这里。",
-  "偶尔停下来，看看窗外吧。今天的天空，也很好看。",
-  "做得好的地方，要记得好好夸奖自己。……我也会的。",
-];
-function dailyNote() {
-  if (lateNight()) return "已经很晚了。聊完这一段，就乖乖去睡吧。晚安。";
-  const now = new Date();
-  const day = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
-  return dailyLines[day % dailyLines.length];
+/** Greeting lines: "好久不见" after a few quiet days, otherwise the hour's greeting. */
+function hubGreeting() {
+  const hello = homeGreeting(settings);
+  const back = awayDays === undefined ? undefined : reunion(awayDays, settings);
+  return back ? { script: "Welcome back", lines: back } : hello;
+}
+function hubNote() {
+  return milestoneNote(togetherDays()) ?? dailyNote(settings);
+}
+/** The piece she would like to play for you today, under her note. */
+function pieceLine() {
+  const [piece, word] = todaysPiece();
+  return `<p class="today-piece">${icon("note", 15)}<span>今天想弹给你听：<strong>${esc(piece)}</strong><em>${esc(word)}</em></span></p>`;
+}
+/** On Sundays, a small journal page about the week: letters written and hearts given. */
+function weekCard() {
+  if (new Date().getDay() !== 0) return "";
+  const since = Date.now() - 7 * 86400000;
+  const letters = conversations.filter((c) => !c.archived && Date.parse(c.updated_at) >= since).length;
+  const hearts = Object.values(heartedLines()).filter((line) => Date.parse(line.at) >= since).length;
+  const line = weekLine(letters, hearts, settings);
+  return line ? `<aside class="week-card" aria-label="这一周的手账"><img src="/artwork/scenes-web/journal.webp" alt=""><div><span class="script" aria-hidden="true">This week</span><p>${esc(line)}</p></div></aside>` : "";
+}
+function togetherLine() {
+  const days = togetherDays();
+  return days ? `<span class="together">${heart(9)}相识第 ${days} 天</span>` : "";
+}
+/** Petals drift through the window by day; by night a few stars keep her company. */
+const starPlaces = [[18, 9], [33, 5], [47, 13], [62, 7], [76, 16], [26, 21], [55, 24], [84, 10], [40, 31]];
+/** The season outside her window: sakura, summer light, autumn leaves, snow. */
+function season(month = new Date().getMonth() + 1) {
+  return month >= 3 && month <= 5 ? "petals" : month >= 6 && month <= 8 ? "motes" : month >= 9 && month <= 11 ? "leaves" : "snow";
+}
+function drift(kind: string, count: number) {
+  const marks = Array.from({ length: count }, (_, index) => `<i style="--i:${index};--x:${8 + ((index * 13) % 84)}%;--w:${8 + (index % 3) * 2}px;--h:${6 + (index % 3) * 1.5}px"></i>`);
+  return `<div class="arch-air ${kind}" aria-hidden="true">${marks.join("")}</div>`;
+}
+function archAir() {
+  const now = season();
+  if (isDay()) return drift(now, now === "motes" ? 8 : 7);
+  const stars = `<div class="arch-air stars" aria-hidden="true">${starPlaces.map(([x, y], index) => `<i style="--i:${index};--x:${x}%;--y:${y}%"></i>`).join("")}</div>`;
+  return now === "snow" ? stars + drift("snow", 6) : stars;
+}
+/** A short line from her in a pearl bubble, anchored to the window or her avatar. */
+function whisper(host: HTMLElement, text: string) {
+  host.querySelector(".whisper")?.remove();
+  const bubble = document.createElement("p");
+  bubble.className = "whisper";
+  bubble.setAttribute("role", "status");
+  bubble.textContent = text;
+  host.append(bubble);
+  window.setTimeout(() => bubble.classList.add("leaving"), 2400);
+  window.setTimeout(() => bubble.remove(), 2900);
+}
+/** She answers when you tap her portrait; tap often enough and she gets flustered. */
+function poke(target: HTMLElement, bubbleHost: HTMLElement) {
+  pokes += 1;
+  window.clearTimeout(pokeTimer);
+  pokeTimer = window.setTimeout(() => (pokes = 0), 8000);
+  heartBurst(target, pokes >= 5 ? 3 : 1);
+  portraitCue(pokes >= 5 ? (settings.personality.teasing >= 60 ? "tsundere_chide" : "happy_achieved") : "proud_smug");
+  whisper(bubbleHost, pokeLine(pokes, settings));
 }
 function homeDate(date = new Date()) {
-  const hour = date.getHours();
-  const period = hour < 5 ? "深夜" : hour < 8 ? "清晨" : hour < 11 ? "上午" : hour < 13 ? "中午" : hour < 17 ? "午后" : hour < 19 ? "傍晚" : hour < 23 ? "夜里" : "深夜";
+  const period = { night: "深夜", dawn: "破晓前", morning: date.getHours() < 8 ? "清晨" : "上午", noon: "中午", afternoon: "午后", evening: date.getHours() < 19 ? "傍晚" : "夜里" }[dayPart(date.getHours())];
   return `${date.toLocaleDateString("zh-CN", { month: "long", day: "numeric" })} · ${date.toLocaleDateString("zh-CN", { weekday: "long" })} · ${period}`;
 }
 function letterDate(value: string) {
@@ -444,8 +504,12 @@ function letterDate(value: string) {
   return date.toLocaleDateString("zh-CN");
 }
 const groupTabs: [string, string][] = [["全部", "全部"], ["专属日常", "日常"], ["研发工坊", "工坊"], ["资料卷宗", "卷宗"], ["已归档", "归档"]];
-function conversationRow(c: Conversation) {
-  return `<article class="letter-row"><button class="conversation-open" data-id="${esc(c.id)}">${monogram(c.title, c.pinned)}<span class="letter-text"><span class="letter-line"><strong>${esc(c.title)}</strong><time>${letterDate(c.updated_at)}</time></span><small>${esc(previewText(c.preview || "还空着的一页，等你落笔。"))}</small></span></button><button class="icon-button row-more" data-row-menu="${esc(c.id)}" aria-label="「${esc(c.title)}」的更多操作">${icon("more", 18)}</button></article>`;
+function conversationRow(c: Conversation, seenMap = seenLetters()) {
+  const fresh = unread(c, seenMap);
+  const line = c.writing
+    ? `<small class="writing-line"><span class="typing-hearts">${heart(8)}${heart(8)}${heart(8)}</span>正在给你写回信…</small>`
+    : `<small>${esc(previewText(c.preview || "还空着的一页，等你落笔。"))}</small>`;
+  return `<article class="letter-row${fresh ? " unread" : ""}${c.writing ? " writing" : ""}"><button class="conversation-open" data-id="${esc(c.id)}"${fresh ? ' aria-description="有新的回信"' : ""}>${monogram(c.title, c.pinned)}<span class="letter-text"><span class="letter-line"><strong>${esc(c.title)}</strong>${fresh ? '<i class="unread-dot" aria-hidden="true"></i>' : ""}<time>${letterDate(c.updated_at)}</time></span>${line}</span></button><button class="icon-button row-more" data-row-menu="${esc(c.id)}" aria-label="「${esc(c.title)}」的更多操作">${icon("more", 18)}</button></article>`;
 }
 function letterMenu(c: Conversation, origin: Element | null) {
   const dialog = openModal(
@@ -454,12 +518,16 @@ function letterMenu(c: Conversation, origin: Element | null) {
   dialog.querySelector<HTMLButtonElement>('[data-act="pin"]')!.onclick = () => {
     dialog.close();
     if (!c.pinned) heartBurst(origin);
-    void modifyConversation(c.id, { pinned: !c.pinned });
+    void modifyConversation(c.id, { pinned: !c.pinned }).then((done) => {
+      if (done) toast(c.pinned ? "嗯，先把它放回原处。" : "放在心上了。最上面那封，就是它。", !c.pinned);
+    });
   };
   dialog.querySelector<HTMLButtonElement>('[data-act="rename"]')!.onclick = () => conversationSettings(c);
   dialog.querySelector<HTMLButtonElement>('[data-act="archive"]')!.onclick = () => {
     dialog.close();
-    void modifyConversation(c.id, { archived: !c.archived });
+    void modifyConversation(c.id, { archived: !c.archived }).then((done) => {
+      if (done) toast(c.archived ? "拿回来了。它又在信笺里了。" : "收好了。想它的时候，去「归档」里找。");
+    });
   };
 }
 function renderConversationList(entering = false) {
@@ -476,9 +544,19 @@ function renderConversationList(entering = false) {
           .includes(query.toLowerCase())),
   );
   const narrowed = !!query || filter !== "全部";
+  container.style.setProperty("--clock", animationClock());
+  const seenMap = seenLetters();
   container.innerHTML = list.length
-    ? list.map(conversationRow).join("")
-    : `<div class="empty">${narrowed ? `<p>还没找到这一段回忆。</p><button class="text-button" id="clear-filter">看看全部信笺</button>` : `<h2>第一封信，从今天开始。</h2><p>想到什么，就写给她吧。</p>`}</div>`;
+    ? list.map((c) => conversationRow(c, seenMap)).join("")
+    : !conversationsLoaded && credentials().token && !narrowed
+      ? `<div class="letter-skeleton" role="status" aria-label="正在取回信笺">${'<div><span class="monogram"></span><span><i></i><i></i></span></div>'.repeat(3)}</div>`
+    : `<div class="empty">${query
+        ? `<img class="empty-scene" src="/artwork/scenes-web/streetlamp.webp" alt="雨夜里，祥子站在路灯下"><p>我在路灯下找了一圈……<br>还没找到「${esc(query)}」。</p><button class="text-button" id="clear-filter">看看全部信笺</button>`
+        : filter === "已归档"
+          ? `<p>收进归档的信，会在这里安静地等你。</p><button class="text-button" id="clear-filter">看看全部信笺</button>`
+          : narrowed
+            ? `<p>这一册还空着。写一封放进来吧？</p><button class="text-button" id="clear-filter">看看全部信笺</button>`
+            : `<h2>第一封信，从今天开始。</h2><p>想到什么，就写给她吧。</p>`}</div>`;
   const count = document.querySelector("#letter-count");
   if (count) count.textContent = String(conversations.filter((c) => !c.archived).length);
   document.querySelectorAll<HTMLButtonElement>("[data-group]").forEach((b) => {
@@ -505,15 +583,23 @@ function renderConversationList(entering = false) {
 }
 function renderHub() {
   const paired = !!credentials().token;
+  const hello = hubGreeting();
   $("#view").innerHTML =
-    `<section class="home"><div class="home-tools"><button id="theme-quick" class="glass-button"></button></div><figure class="arch"><span class="arch-bow">${bow(84)}</span><div class="arch-frame"><div class="arch-image" role="img" aria-label="${isDay() ? "午后，祥子坐在窗边" : "夜里，祥子坐在亮着灯的窗边"}"></div></div></figure><div class="home-body"><header class="home-greeting"><span class="script" aria-hidden="true">${salutation()}</span><h1>${greeting()
-      .map((line) => `<span>${line}</span>`)
-      .join("")}</h1><p class="home-date"><span>${homeDate()}</span><span class="presence"><i class="${connected ? "online" : ""}"></i><span id="presence-text">${connectionLine()}</span></span></p></header><aside class="note-card" aria-label="她留给你的小纸条">${filigree(116)}<p>「${dailyNote()}」</p><span class="script" aria-label="祥子">— Sakiko</span></aside><button class="letter-prompt" id="begin-chat"><span>写信给祥子…</span>${wax(17)}</button>${paired ? "" : `<div class="notice-line"><span>还没有接上琴房。</span><button class="text-button" id="pair-now">去连接</button></div>`}<section class="letters" aria-label="信笺"><div class="letters-head">${filigree()}<h2>信笺<span id="letter-count"></span></h2><button class="icon-button" id="search-toggle" aria-label="寻找一段回忆" aria-expanded="${!!query}">${icon("search", 19)}</button></div><label class="search"${query ? "" : " hidden"}>${icon("search", 16)}<input id="search" type="search" aria-label="搜索信笺" placeholder="寻找一段回忆" value="${esc(query)}"></label><div class="tabs" role="tablist">${groupTabs
+    `<section class="home${credentials().token && !connected && conversationsLoaded ? " offline" : ""}"><div class="home-tools"><button id="theme-quick" class="glass-button"></button></div><figure class="arch"><span class="arch-bow">${bow(84)}</span><div class="arch-frame"><div class="arch-image" role="img" aria-label="${isDay() ? "午后，祥子坐在窗边" : "夜里，祥子坐在亮着灯的窗边"}"></div><div class="arch-rain" aria-hidden="true"><span>灯熄着，雨一直下。<br>等你把琴房接回来。</span></div>${archAir()}<button class="arch-touch" aria-label="轻轻叫她一声"></button></div></figure><div class="home-body"><header class="home-greeting"><span class="script" aria-hidden="true">${hello.script}</span><h1>${hello.lines
+      .map((line) => `<span>${esc(line)}</span>`)
+      .join("")}</h1><p class="home-date"><span>${homeDate()}</span><span id="together">${togetherLine()}</span><span class="presence"><i class="${connected ? "online" : ""}"></i><span id="presence-text">${connectionLine()}</span></span></p></header><aside class="note-card" aria-label="她留给你的小纸条">${filigree(116)}<p id="daily-note">「${esc(hubNote())}」</p><span class="script" aria-label="祥子">— Sakiko</span></aside>${pieceLine()}<div id="week-card">${weekCard()}</div><button class="letter-prompt" id="begin-chat"><span>写信给祥子…</span>${wax(17)}</button>${paired ? "" : `<div class="notice-line"><span>还没有接上琴房。</span><button class="text-button" id="pair-now">去连接</button></div>`}<section class="letters" aria-label="信笺"><div class="letters-head">${filigree()}<h2>信笺<span id="letter-count"></span></h2><button class="icon-button" id="search-toggle" aria-label="寻找一段回忆" aria-expanded="${!!query}">${icon("search", 19)}</button></div><label class="search"${query ? "" : " hidden"}>${icon("search", 16)}<input id="search" type="search" aria-label="搜索信笺" placeholder="寻找一段回忆" value="${esc(query)}"></label><div class="tabs" role="tablist">${groupTabs
       .map(([value, label]) => `<button class="tab" role="tab" data-group="${value}">${label}</button>`)
       .join("")}</div><div class="conversation-list"></div></section></div></section>`;
   refreshThemeButtons();
-  $("#theme-quick").onclick = () => void updateSettings({ theme: isDay() ? "night" : "day" });
+  $("#theme-quick").onclick = () => {
+    const toNight = isDay();
+    void updateSettings({ theme: toNight ? "night" : "day" }).then(() => {
+      // She says something about the light, from the window.
+      if (page === "hub" && document.querySelector(".arch")) whisper($(".arch"), toNight ? "夜里了呢。灯给你留着。" : "窗帘拉开了。……今天也要好好的。");
+    });
+  };
   $("#begin-chat").onclick = () => void newChat();
+  $(".arch-touch").onclick = (event) => poke(event.currentTarget as HTMLElement, $(".arch"));
   $("#pair-now")?.addEventListener("click", () => pairing());
   $("#search-toggle").onclick = () => {
     const field = $(".search");
@@ -541,6 +627,8 @@ function renderHub() {
   renderConversationList(true);
 }
 async function loadConversations() {
+  window.clearTimeout(hubRefreshTimer);
+  const wasWriting = new Set(conversations.filter((c) => c.writing).map((c) => c.id));
   try {
     const [data, archived] = await Promise.all([
       api<{ conversations: Conversation[] }>("/conversations"),
@@ -554,15 +642,60 @@ async function loadConversations() {
     conversations = await cached(cacheKey("conversations"), conversations);
     if (credentials().token) report(error);
   }
+  const firstAnswer = !conversationsLoaded && connected;
+  conversationsLoaded = true;
+  if (firstAnswer && awayDays === undefined) {
+    const latest = conversations.map((c) => Date.parse(c.updated_at)).filter(Number.isFinite).sort((a, b) => b - a)[0];
+    awayDays = latest === undefined ? 0 : Math.floor((Date.now() - latest) / 86400000);
+  }
+  if (page === "hub") refreshHubWords();
+  // The host names a new letter after its first line; the open letter takes the name as it arrives.
+  const named = page === "chat" && conversation ? conversations.find((c) => c.id === conversation!.id) : undefined;
+  if (named && conversation && named.title !== conversation.title) {
+    conversation.title = named.title;
+    const title = document.querySelector<HTMLElement>("#rename-chat");
+    if (title) {
+      title.textContent = named.title;
+      if (!reducedMotion()) title.animate([{ opacity: 0, transform: "translateY(4px)" }, { opacity: 1, transform: "none" }], { duration: 480, easing: "ease-out" });
+    }
+  }
+  // While she is writing back somewhere, the list keeps checking; when a reply lands, she says so.
+  const answered = conversations.filter((c) => wasWriting.has(c.id) && !c.writing && unread(c));
+  if (page === "hub" && answered.length) {
+    const letter = Array.from(answered[0].title);
+    toast(answered.length === 1 ? `「${letter.length > 12 ? letter.slice(0, 11).join("") + "…" : answered[0].title}」有回信了。` : `有 ${answered.length} 封回信到了。`, true);
+    playEffect("reply");
+  }
+  if (page === "hub" && conversations.some((c) => c.writing))
+    hubRefreshTimer = window.setTimeout(() => { if (page === "hub") void loadConversations(); }, 2500);
   connectionState();
   if (page === "hub") {
     if (document.querySelector(".home")) refreshHubLatest();
     else renderHub();
   }
 }
+/** Greeting, note and day count follow the letters once they arrive, with a soft cross-fade. */
+function refreshHubWords() {
+  const heading = document.querySelector<HTMLElement>(".home-greeting h1");
+  const script = document.querySelector<HTMLElement>(".home-greeting .script");
+  const hello = hubGreeting();
+  const lines = hello.lines.map((line) => `<span>${esc(line)}</span>`).join("");
+  if (heading && heading.innerHTML !== lines) {
+    heading.innerHTML = lines;
+    if (script) script.textContent = hello.script;
+    if (!reducedMotion()) heading.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, easing: "ease-out" });
+  }
+  const note = document.querySelector("#daily-note");
+  if (note) note.textContent = `「${hubNote()}」`;
+  const together = document.querySelector("#together");
+  if (together) together.innerHTML = togetherLine();
+  const week = document.querySelector("#week-card");
+  if (week) week.innerHTML = weekCard();
+}
 /** Refresh the letters without replaying the whole room. */
 function refreshHubLatest() {
-  renderConversationList(true);
+  const fresh = !document.querySelector(".letter-row");
+  renderConversationList(fresh);
   const line = document.querySelector("#presence-text");
   if (line) line.textContent = connectionLine();
 }
@@ -583,12 +716,16 @@ async function newChat() {
     report(error);
   }
 }
-async function modifyConversation(id: string, changes: Partial<Conversation>) {
+async function modifyConversation(id: string, changes: Partial<Conversation>): Promise<boolean> {
   try {
-    await api(`/conversations/${id}`, changes, "PATCH");
+    const changed = await api<Conversation>(`/conversations/${id}`, changes, "PATCH");
+    // Pinning or renaming touches the letter's time; that is not a new reply.
+    if (seenLetters()[id] && changed?.updated_at) markSeen(id, changed.updated_at);
     await loadConversations();
+    return true;
   } catch (error) {
     report(error);
+    return false;
   }
 }
 async function openConversation(id: string) {
@@ -607,6 +744,11 @@ async function openConversation(id: string) {
   messages =
     localSnapshot?.messages || (await cached(cacheKey(`messages:${id}`), []));
   messageCursor = localSnapshot?.cursor || 0;
+  messagesLoaded = messages.length > 0;
+  pendingState = "sending";
+  const waiting = unread(conversation);
+  markSeen(id);
+  pokes = 0;
   events = await cached(cacheKey(`events:${id}`), []);
   pending = await cached<Pending | undefined>(
     cacheKey(`pending:${id}`),
@@ -626,12 +768,20 @@ async function openConversation(id: string) {
   shell();
   renderChat();
   await restoreDraft();
+  // She notices why you came back: your unfinished draft, or her reply waiting for you.
+  const draftLeft = !!document.querySelector<HTMLTextAreaElement>("#draft")?.value.trim();
+  if (draftLeft || waiting)
+    window.setTimeout(() => {
+      const head = document.querySelector<HTMLElement>(".chat-head");
+      if (head && conversation?.id === id) whisper(head, openLine(draftLeft ? "draft" : "unread", settings));
+    }, 650);
   try {
     const data = await api<{ messages: Message[]; cursor: number }>(
       `/conversations/${id}/messages`,
     );
     if (version !== viewVersion) return;
     mergeMessageSnapshot(data);
+    messagesLoaded = true;
     await save(cacheKey(`snapshot:${id}`), { messages, cursor: messageCursor });
     renderMessageList();
     await poll();
@@ -639,12 +789,17 @@ async function openConversation(id: string) {
     void startStream(id, version);
   } catch (error) {
     report(error);
+    messagesLoaded = true;
+    if (pending) pendingState = "failed";
+    if (version === viewVersion) renderMessageList();
     void startStream(id, version);
   }
 }
 function chatStatusLine() {
   if (recorder?.state === "recording") return `${icon("mic", 12)}在听你说…`;
-  if (activeRun && !stopping) return `${heart(10)}正在写回信…`;
+  const phase = currentPhase();
+  if (phase) return `${heart(10)}${phaseStatus(phase.phase)}`;
+  if (Date.now() < composingUntil && connected) return `${icon("quill", 12)}${esc(composingLine(settings))}`;
   if (!credentials().token) return "还没有接上琴房";
   if (!connected) return "琴房的灯暂时熄了 · 草稿会替你留着";
   if (status?.provider.name === "development") return "本地演练 · 回复不来自模型";
@@ -662,6 +817,9 @@ function refreshSendButton() {
   if (!button) return;
   const draft = document.querySelector<HTMLTextAreaElement>("#draft");
   const empty = !draft?.value.trim() && !selectedAttachments.length;
+  // The quiet circle becomes a wax seal, with a small press, the moment there is something to send.
+  if (button.classList.contains("idle") && !activeRun && !empty && !reducedMotion())
+    button.animate([{ transform: "scale(.82)" }, { transform: "scale(1.08)" }, { transform: "none" }], { duration: 340, easing: "cubic-bezier(.2,.7,.2,1)" });
   button.innerHTML = icon(activeRun ? "stop" : "send", 19);
   button.classList.toggle("stop", !!activeRun);
   button.classList.toggle("idle", !activeRun && empty);
@@ -674,9 +832,13 @@ function renderChat() {
     return;
   }
   $("#view").innerHTML =
-    `<section class="chat"><header class="chat-head"><button class="icon-button" id="chat-back" aria-label="回到琴房">${icon("back")}</button><img class="chat-avatar" data-mood src="${art()}" alt="祥子"><div class="chat-title"><button id="rename-chat" aria-label="这段乐章的名字与设置">${esc(conversation.title)}</button><small id="chat-status"></small></div><button class="icon-button" id="chat-menu" aria-label="这段乐章的设置">${icon("more", 20)}</button></header><div class="chat-pins" id="chat-pins" hidden></div><div class="messages" id="messages"></div><button id="jump-bottom" class="jump-bottom" hidden>${icon("chevron", 15)}回到最新</button><footer class="composer-wrap"><div id="upload-status"></div><div class="composer"><div id="attachments" class="attachments"></div><textarea id="draft" aria-label="写给祥子的话" placeholder="写给祥子…" rows="1"></textarea><div class="composer-bar"><button id="attach" class="icon-button" aria-label="添加文件" title="添加文件">${icon("plus", 21)}</button><button id="record" class="icon-button" aria-label="录一段语音" title="录一段语音">${icon("mic", 19)}</button><button id="quote" class="icon-button" aria-label="引用选中的文字" title="引用选中的文字">${icon("quote", 18)}</button><button id="draw" class="icon-button" aria-label="画板" title="画板">${icon("palette", 18)}</button><span id="record-status"></span><span class="composer-gap"></span><button id="model" class="model-trigger" aria-label="选择模型" aria-haspopup="dialog"><span>${esc(selectedFamily(models, selectedModel)?.name || "等待连接模型")}</span>${icon("chevron", 13)}</button><button id="effort" class="model-trigger effort-trigger" aria-label="思考强度" aria-haspopup="dialog"></button><button id="send" class="send-button idle" aria-label="寄出">${icon("send", 19)}</button></div></div><p class="composer-foot" id="draft-state" aria-live="polite"></p></footer></section>`;
+    `<section class="chat"><header class="chat-head"><button class="icon-button" id="chat-back" aria-label="回到琴房">${icon("back")}</button><img class="chat-avatar" data-mood src="${art()}" alt="祥子" role="button" tabindex="0" aria-label="轻轻叫她一声"><div class="chat-title"><button id="rename-chat" aria-label="这段乐章的名字与设置">${esc(conversation.title)}</button><small id="chat-status"></small></div><button class="icon-button" id="chat-menu" aria-label="这段乐章的设置">${icon("more", 20)}</button></header><div class="chat-pins" id="chat-pins" hidden></div><div class="messages" id="messages"></div><button id="jump-bottom" class="jump-bottom" hidden>${icon("chevron", 15)}回到最新</button><footer class="composer-wrap"><div id="upload-status"></div><div class="composer"><div id="attachments" class="attachments"></div><textarea id="draft" aria-label="写给祥子的话" placeholder="${draftPlaceholder()}" rows="1"></textarea><div class="composer-bar"><button id="attach" class="icon-button" aria-label="添加文件" title="添加文件">${icon("plus", 21)}</button><button id="record" class="icon-button" aria-label="录一段语音" title="录一段语音">${icon("mic", 19)}</button><button id="quote" class="icon-button" aria-label="引用选中的文字" title="引用选中的文字">${icon("quote", 18)}</button><button id="draw" class="icon-button" aria-label="画板" title="画板">${icon("palette", 18)}</button><span id="record-status"></span><span class="composer-gap"></span><button id="model" class="model-trigger" aria-label="选择模型" aria-haspopup="dialog"><span>${esc(selectedFamily(models, selectedModel)?.name || "等待连接模型")}</span>${icon("chevron", 13)}</button><button id="effort" class="model-trigger effort-trigger" aria-label="思考强度" aria-haspopup="dialog"></button><button id="send" class="send-button idle" aria-label="寄出">${icon("send", 19)}</button></div></div><p class="composer-foot" id="draft-state" aria-live="polite"></p></footer></section>`;
   refreshChatStatus();
   $("#chat-back").onclick = () => void navigate("hub");
+  $(".chat-avatar").onclick = () => poke($(".chat-avatar"), $(".chat-head"));
+  $(".chat-avatar").onkeydown = (event) => {
+    if (event.key === "Enter" || event.key === " ") { event.preventDefault(); poke($(".chat-avatar"), $(".chat-head")); }
+  };
   $("#rename-chat").onclick = () => conversationSettings(conversation!, true);
   $("#chat-menu").onclick = () => conversationSettings(conversation!, true);
   $("#model").onclick = showModelPicker;
@@ -710,6 +872,11 @@ function renderChat() {
     draft.style.height = `${Math.min(180, draft.scrollHeight)}px`;
     const value = draft.value;
     refreshSendButton();
+    // While you write to her, the line under her name says she is waiting.
+    const wasComposing = Date.now() < composingUntil;
+    composingUntil = value.trim() ? Date.now() + 4000 : 0;
+    if (wasComposing !== Date.now() < composingUntil) refreshChatStatus();
+    window.setTimeout(() => { if (Date.now() >= composingUntil) refreshChatStatus(); }, 4100);
     void save(cacheKey(`draft:${conversation!.id}`), value)
       .then(() => {
         if (draft.isConnected && draft.value === value)
@@ -726,6 +893,7 @@ function renderChat() {
     }
   };
   $("#send").onclick = () => void (activeRun ? stop() : send());
+  draft.onblur = () => { composingUntil = 0; refreshChatStatus(); };
   $("#messages").onwheel = (event) => {
     scrollIntentUntil = performance.now() + 600;
     if (event.deltaY < 0) readLock = true;
@@ -787,6 +955,7 @@ function showStrengthPicker() {
     const level=family.levels.find(item=>item.effort===button.dataset.strength)!;
     selectedModel=level.wireId;effort=level.effort;refreshEffort();
     if(['max','xhigh'].includes(effort))playEffect('effort');dialog.close();
+    toast(({low:'那就轻声说说，不绕弯子。',medium:'嗯，我会好好斟酌。',high:'那我认真想一想。',xhigh:'……要我拿出全部本事？好。',max:'……要我拿出全部本事？好。'} as Record<string,string>)[effort] || '好。');
   };
 }
 function refreshEffort() {
@@ -877,6 +1046,137 @@ function loadImagePreviews(container: HTMLElement) {
       }
     });
 }
+/** One tool step of a reply, merged per call so each step shows once with its latest state. */
+type WorkStep = { key: string; label: string; state: "working" | "done" | "alert"; payload: Record<string, unknown> };
+function stepState(state: unknown): WorkStep["state"] {
+  const value = String(state || "").toLowerCase();
+  if (/block|fail|error|denied|permission|cancel|reject/.test(value)) return "alert";
+  if (/done|complete|success|finish|^ok$/.test(value)) return "done";
+  return "working";
+}
+function workSteps(runId: string, live: boolean): WorkStep[] {
+  const steps: WorkStep[] = [];
+  for (const event of events) {
+    if (event.run_id !== runId || event.kind !== "tool") continue;
+    const label = String(event.payload.summary ?? event.payload.title ?? event.payload.text ?? event.payload.name ?? "")
+      .replace(/^Antigravity\s*·\s*/, "").trim();
+    if (!label) continue;
+    const detail = (event.payload.detail || {}) as Record<string, unknown>;
+    const call = typeof detail.tool_call_id === "string" ? detail.tool_call_id : "";
+    const state = stepState(event.payload.state);
+    const last = steps.at(-1);
+    const previous = call ? steps.find((step) => step.key === call) : last && last.label === label && last.state === "working" ? last : undefined;
+    if (previous) Object.assign(previous, { label, state, payload: event.payload });
+    else steps.push({ key: call || String(event.seq), label, state, payload: event.payload });
+  }
+  // Once the reply is over, a step that never reported back is simply part of the finished work.
+  return live ? steps : steps.map((step) => (step.state === "working" ? { ...step, state: "done" } : step));
+}
+function workNotes(runId: string, live: boolean) {
+  const steps = workSteps(runId, live);
+  if (!steps.length) return "";
+  const current = live ? [...steps].reverse().find((step) => step.state === "working") : undefined;
+  const alerts = steps.filter((step) => step.state === "alert");
+  const summary = current
+    ? `<span class="quill-writing">${icon("quill", 15)}</span><span>${esc(current.label)}…</span>`
+    : alerts.length
+      ? `${icon("sparkle", 15)}<span>${alerts.length === 1 ? esc(alerts[0].label) : `有 ${alerts.length} 步没有走通`}</span>`
+      : `${icon("check", 15)}<span>工作札记 · ${steps.length} 步</span>`;
+  const key = `notes:${runId}`;
+  return `<details class="work-notes${current ? " live" : ""}${alerts.length ? " alert" : ""}" data-keep="${esc(key)}"${keptOpen.has(key) ? " open" : ""}><summary>${summary}${icon("chevron", 14)}</summary><ol>${steps
+    .map((step) => `<li class="${step.state}">${icon(step.state === "done" ? "check" : step.state === "alert" ? "close" : "quill", 13)}<span>${esc(step.label)}</span>${settings.transparency === "studio" ? `<pre>${esc(JSON.stringify(step.payload, null, 2))}</pre>` : ""}</li>`)
+    .join("")}</ol></details>`;
+}
+/** Where the reply on its way stands: reading the letter, looking things up, writing, or thinking long. */
+function currentPhase(): { phase: Phase; step: string } | undefined {
+  if (!activeRun || stopping) return undefined;
+  if (!runSeenAt.has(activeRun)) runSeenAt.set(activeRun, Date.now());
+  const replyId = String(events.find((e) => e.run_id === activeRun && e.kind === "run_started")?.payload.message_id || "");
+  const reply = replyId ? messages.find((m) => m.id === replyId) : [...messages].reverse().find((m) => m.role !== "user" && ["streaming", "running", "queued"].includes(m.status));
+  if (reply?.content.trim()) return { phase: "writing", step: "" };
+  const working = workSteps(activeRun, true).reverse().find((step) => step.state === "working");
+  if (working) return { phase: "working", step: working.label };
+  return { phase: Date.now() - runSeenAt.get(activeRun)! > 30000 ? "long" : "reading", step: "" };
+}
+/** What came with the letter she is answering: pictures, a recording, documents, or many words. */
+function letterContext(): LetterContext {
+  const letter = [...messages].reverse().find((m) => m.role === "user");
+  const files = (letter?.attachments || []).map((a) => (typeof a === "string" ? artifacts.find((item) => item.id === a) : a)).filter((a): a is Artifact => !!a);
+  return {
+    images: files.filter((a) => a.mime.startsWith("image/")).length,
+    audio: files.filter((a) => a.mime.startsWith("audio/")).length,
+    documents: files.filter((a) => !/^(image|audio|video)\//.test(a.mime)).length,
+    long: Array.from(letter?.content || "").length > 300,
+    // Written in the small hours (1–5 am): she notices.
+    small: (() => { const hour = new Date(letter?.created_at || "").getHours(); return hour >= 1 && hour < 5; })(),
+  };
+}
+function typingRow() {
+  const phase = currentPhase();
+  if (!phase || phase.phase === "writing") return "";
+  // While she looks things up for you, she holds up her little "交给我吧".
+  const trust = phase.phase === "working" ? `<img class="typing-sticker" src="${sticker("trust")}" alt="交给我吧">` : "";
+  return `<div class="typing" role="status" data-phase="${phase.phase}"><span class="typing-cameo"><img class="avatar-sm" src="${art("thinking_deep")}" alt=""></span><span class="typing-hearts">${heart(9)}${heart(9)}${heart(9)}</span><span class="typing-text">${esc(phaseLine(phase.phase, settings, letterContext()))}</span>${trust}</div>`;
+}
+/** Her stickers: 快去睡觉 (sleep), 交给我吧 (trust), 勉强夸你一句 (praise). */
+const sticker = (name: "sleep" | "trust" | "praise") => `/artwork/stickers-web/${name}.webp`;
+/** A sticker she sends for a moment, then takes back. */
+function stickerPop(name: "sleep" | "trust" | "praise", alt: string) {
+  document.querySelector(".sticker-pop")?.remove();
+  const image = document.createElement("img");
+  image.className = "sticker-pop";
+  image.src = sticker(name);
+  image.alt = alt;
+  document.body.append(image);
+  window.setTimeout(() => image.classList.add("leaving"), 1800);
+  window.setTimeout(() => image.remove(), 2300);
+}
+/** The line of the reply being written gets a small beating heart at its end, like a pen still on paper. */
+function placeCaret(content: Element) {
+  const lastNode = (element: Element) => {
+    let node = element.lastChild;
+    while (node && node.nodeType === Node.TEXT_NODE && !node.textContent!.trim()) node = node.previousSibling;
+    return node;
+  };
+  let target = content;
+  for (let node = lastNode(target); node instanceof Element && node === target.lastElementChild
+    && !/^(PRE|TABLE|INPUT|BR|HR|IMG|SVG|DETAILS|FIGURE)$/i.test(node.tagName)
+    && !node.matches(".katex, .katex-display, .mermaid, [data-diagram]"); node = lastNode(target))
+    target = node;
+  target.insertAdjacentHTML("beforeend", `<span class="ink-caret" aria-hidden="true">${heart(10)}</span>`);
+}
+function jumpLabel() {
+  if (activeRun && !stopping) return `${heart(11)}她还在写`;
+  return `${icon("chevron", 15)}回到最新`;
+}
+/** Her lines you put a heart on: kept on this device, gathered on the memory page. */
+type Hearted = { conversation: string; title: string; excerpt: string; at: string };
+function heartedLines(): Record<string, Hearted> {
+  try { return JSON.parse(localStorage.getItem(cacheKey("hearts")) || "{}"); } catch { return {}; }
+}
+function saveHearted(lines: Record<string, Hearted>) {
+  try { localStorage.setItem(cacheKey("hearts"), JSON.stringify(lines)); } catch { /* only a keepsake */ }
+}
+/** Letters she answered since you last looked carry a small rose dot on the music-room list. */
+function seenLetters(): Record<string, string> {
+  try { return JSON.parse(localStorage.getItem(cacheKey("seen-letters")) || "{}"); } catch { return {}; }
+}
+/** The host's own clock as this letter last showed it, so "seen" never depends on this device's clock. */
+function hostStamp(id: string) {
+  const times = [conversations.find((c) => c.id === id)?.updated_at];
+  if (conversation?.id === id) times.push(events.at(-1)?.created_at, messages.at(-1)?.created_at);
+  const values = times.map((time) => Date.parse(time || "")).filter(Number.isFinite);
+  return values.length ? new Date(Math.max(...values)).toISOString() : new Date().toISOString();
+}
+function markSeen(id: string, stamp = hostStamp(id)) {
+  const seen = seenLetters();
+  seen[id] = stamp;
+  try { localStorage.setItem(cacheKey("seen-letters"), JSON.stringify(seen)); } catch { /* only a convenience */ }
+}
+function unread(c: Conversation, seenMap = seenLetters()) {
+  const seen = seenMap[c.id];
+  return !!seen && c.preview_role === "assistant" && !c.writing && Date.parse(c.updated_at) > Date.parse(seen);
+}
 function renderMessageList() {
   refreshPortrait();
   if (page !== "chat" || !conversation || !$("#messages")) return;
@@ -912,26 +1212,45 @@ function renderMessageList() {
     seenMessages.clear();
     messages.forEach((m) => seenMessages.add(m.id));
   }
-  const rows: { time: number; html: string }[] = messages.map((m) => {
+  const hearts = heartedLines();
+  const rows: { time: number; html: string }[] = messages.flatMap((m) => {
     const sakiko = m.role !== "user";
+    const note = m.status === "interrupted" || m.status === "stopped" ? "先停在这里" : m.status === "failed" ? "这一段没能写完" : "";
+    const streaming = sakiko && ["streaming", "running", "queued"].includes(m.status);
+    const files = visibleFiles.get(m.id) || [];
+    // A reply with no words yet is represented by the typing line at the end, not by an empty letter.
+    if (sakiko && !m.content.trim() && !files.length && (streaming || !note)) return [];
     const fresh = !seenMessages.has(m.id);
     seenMessages.add(m.id);
-    const note = m.status === "interrupted" || m.status === "stopped" ? "先停在这里" : m.status === "failed" ? "这一段没能写完" : "";
-    const streaming = sakiko && ["streaming", "running"].includes(m.status);
-    const files = visibleFiles.get(m.id) || [];
-    return {
+    const sealed = sealNext === m.id;
+    const hearted = sakiko && !!hearts[m.id];
+    const actions = streaming || !m.content.trim() ? "" : `<div class="message-actions"><button data-heart="${esc(m.id)}" class="${hearted ? "hearted" : ""}" aria-pressed="${hearted}" aria-label="心动" title="心动">${hearted ? heart(16) : icon("heart", 16)}</button><button data-copy-message="${esc(m.id)}" aria-label="复制这段话" title="复制">${icon("copy", 16)}</button><button data-pin-message="${esc(m.id)}" aria-label="钉在这段乐章" title="钉住">${icon("pin", 16)}</button><button data-read="${esc(m.id)}" aria-label="静谧阅读" title="静谧阅读">${icon("book", 16)}</button><button data-fork="${esc(m.id)}" aria-label="从这里另写一段" title="从这里另写一段">${icon("fork", 16)}</button>${settings.transparency === "studio" ? `<button data-raw-message="${esc(m.id)}" aria-label="原始记录" title="原始记录">${icon("archive", 16)}</button>` : ""}</div>`;
+    const body = !m.content.trim()
+      ? m.status === "failed"
+        ? `<p class="unwritten">这封回信没能写成。把你的信再寄一次，我重新写给你。</p><button class="text-button resend-letter" data-resend="${esc(m.id)}">${icon("letter", 15)}放回信纸，再寄一次</button>`
+        : `<p class="unwritten">还没落笔，就先停下了。</p>`
+      : markdown(m.content, { taskStates: taskStates[m.id], artifacts: m.attachments.filter((a): a is Artifact => typeof a !== "string") });
+    return [{
       time: new Date(
         events.find(
           (e) => e.kind === "reply_delta" && e.payload.message_id === m.id,
         )?.created_at || m.created_at,
       ).getTime(),
       html: sakiko
-        ? `<article class="message from-sakiko${streaming ? " streaming" : ""}${fresh ? " fresh" : ""}" data-message="${esc(m.id)}"><header class="message-head"><img class="avatar-sm" src="${art("idle_gentle")}" alt="" loading="lazy"><strong>祥子${crown(13)}</strong><time datetime="${esc(m.created_at)}">${clock(m.created_at)}</time>${note ? `<span class="state">${note}</span>` : ""}</header><div class="message-content">${markdown(m.content || "…", { taskStates: taskStates[m.id], artifacts: m.attachments.filter((a): a is Artifact => typeof a !== "string") })}</div>${files.length ? `<div class="message-files">${files.map(artifactButton).join("")}</div>` : ""}<div class="message-actions"><button data-copy-message="${esc(m.id)}" aria-label="复制这段话" title="复制">${icon("copy", 16)}</button><button data-pin-message="${esc(m.id)}" aria-label="钉在这段乐章" title="钉住">${icon("pin", 16)}</button><button data-read="${esc(m.id)}" aria-label="静谧阅读" title="静谧阅读">${icon("book", 16)}</button><button data-fork="${esc(m.id)}" aria-label="从这里另写一段" title="从这里另写一段">${icon("fork", 16)}</button>${settings.transparency === "studio" ? `<button data-raw-message="${esc(m.id)}" aria-label="原始记录" title="原始记录">${icon("archive", 16)}</button>` : ""}</div></article>`
+        ? `<article class="message from-sakiko${streaming ? " streaming" : ""}${fresh ? " fresh" : ""}${sealed ? " sealed-now" : ""}" data-message="${esc(m.id)}"><header class="message-head"><img class="avatar-sm" src="${art("idle_gentle")}" alt="" loading="lazy"><strong>祥子${crown(13)}</strong><time datetime="${esc(m.created_at)}">${clock(m.created_at)}</time>${hearted ? `<span class="hearted-mark" title="你心动过">${heart(11)}</span>` : ""}${note ? `<span class="state">${note}</span>` : ""}</header><div class="message-content">${body}</div>${files.length ? `<div class="message-files">${files.map(artifactButton).join("")}</div>` : ""}${actions}</article>`
         : `<article class="message from-user${fresh ? " fresh" : ""}" data-message="${esc(m.id)}"><div class="message-content"><div class="user-text">${esc(m.content)}</div></div>${files.length ? `<div class="message-files">${files.map(artifactButton).join("")}</div>` : ""}<footer class="message-meta">${note ? `<span class="state">${note}</span>` : ""}<time datetime="${esc(m.created_at)}">${clock(m.created_at)}</time><button data-copy-message="${esc(m.id)}" aria-label="复制这段话" title="复制">${icon("copy", 15)}</button><button data-pin-message="${esc(m.id)}" aria-label="钉在这段乐章" title="钉住">${icon("pin", 15)}</button></footer></article>`,
-    };
+    }];
   });
+  const noted = new Set<string>();
   for (const event of auxiliary) {
     const payload = event.payload;
+    if (event.kind === "tool") {
+      if (noted.has(event.run_id)) continue;
+      noted.add(event.run_id);
+      const notes = workNotes(event.run_id, event.run_id === activeRun && !stopping);
+      if (notes) rows.push({ time: new Date(event.created_at).getTime(), html: notes });
+      continue;
+    }
     const text = String(
       payload.text ?? payload.title ?? payload.summary ?? payload.name ?? "",
     );
@@ -941,13 +1260,13 @@ function renderMessageList() {
       time: new Date(event.created_at).getTime(),
       html: payload.artifact
         ? `<div class="event-artifact">${event.kind === "visual_input" ? "<small>随消息附上的画面</small>" : ""}${artifactButton(payload.artifact as Artifact)}</div>`
-        : `<details class="event-pill ${l1 ? "thought" : ""}"><summary>${icon(l1 ? "sparkle" : "check", 15)}${esc(text.slice(0, 150))}</summary><div>${esc(text)}${typeof payload.diagnostic_id === "string" ? `<button class="text-button" data-diagnostic="${esc(payload.diagnostic_id)}">打开主机记录</button>` : ""}${settings.transparency === "studio" ? `<pre>${esc(JSON.stringify(payload, null, 2))}</pre>` : ""}</div></details>`,
+        : `<details class="event-pill ${l1 ? "thought" : ""}" data-keep="event:${event.seq}"${keptOpen.has(`event:${event.seq}`) ? " open" : ""}><summary>${icon(l1 ? "sparkle" : "check", 15)}${esc(text.slice(0, 150))}</summary><div>${esc(text)}${typeof payload.diagnostic_id === "string" ? `<button class="text-button" data-diagnostic="${esc(payload.diagnostic_id)}">打开主机记录</button>` : ""}${settings.transparency === "studio" ? `<pre>${esc(JSON.stringify(payload, null, 2))}</pre>` : ""}</div></details>`,
     });
   }
   for (const event of events.filter((e) => e.kind === "narration"))
     rows.push({
       time: new Date(event.created_at).getTime(),
-      html: `<div class="narration">${esc(event.payload.text)}</div>`,
+      html: `<p class="narration">${icon("quill", 14)}<span>${esc(event.payload.text)}</span></p>`,
     });
   rows.sort((a, b) => a.time - b.time);
   let lastDay = "";
@@ -961,25 +1280,31 @@ function renderMessageList() {
     .join("");
   const flow = document.createElement("div");
   flow.className = "message-flow";
+  flow.style.setProperty("--clock", animationClock());
   flow.style.height = !rows.length && !pending ? "100%" : "auto";
   flow.innerHTML = rows.length
     ? flowHtml
-    : pending
+    : pending || activeRun
       ? ""
-      : `<div class="chat-empty"><div class="cameo-frame">${bow(54)}<img class="empty-portrait" data-mood src="${art()}" alt="祥子"></div><span class="script" aria-hidden="true">Only for you</span><h2>这一刻，只听你说。</h2><p>不用急着整理语言。<br>想到哪里，就从哪里开始吧。</p><div class="starters">${starters()
+      : !messagesLoaded
+        ? `<div class="chat-loading" role="status"><span class="typing-hearts">${heart(10)}${heart(10)}${heart(10)}</span><p>正在展开信纸…</p></div>`
+      : `<div class="chat-empty"><div class="cameo-frame">${bow(54)}<img class="empty-portrait" data-mood src="${art()}" alt="祥子"></div><span class="script" aria-hidden="true">Only for you</span><h2>${emptyHeading()}</h2><p>不用急着整理语言。<br>想到哪里，就从哪里开始吧。</p><div class="starters">${starters()
           .map(([label, text]) => `<button data-starter="${esc(text)}">${heart(13)}<span>${label}</span>${icon("arrow", 16)}</button>`)
           .join("")}</div></div>`;
   list.replaceChildren(flow);
   if (pending)
     flow.insertAdjacentHTML(
       "beforeend",
-      `<article class="message from-user queued"><div class="message-content"><div class="user-text">${esc(pending.content)}</div></div><footer class="message-meta"><span class="state">正在寄出</span><button id="retry-send" class="text-button">重新寄出</button></footer></article>`,
+      `<article class="message from-user queued${pendingState === "failed" ? " failed" : ""}"><div class="message-content"><div class="user-text">${esc(pending.content)}</div></div><footer class="message-meta">${pendingState === "failed"
+        ? `<span class="state">没能寄出</span><button id="retry-send" class="text-button">${icon("send", 14)}再寄一次</button>`
+        : `<span class="state sending">${icon("letter", 14)}${connected ? "寄出中" : "等琴房亮灯就寄出"}</span>`}</footer></article>`,
     );
-  if (activeRun && !stopping)
-    flow.insertAdjacentHTML(
-      "beforeend",
-      `<div class="typing" role="status"><img class="avatar-sm" src="${art("thinking_deep")}" alt=""><span class="typing-hearts">${heart(9)}${heart(9)}${heart(9)}</span><span>正在写回信</span></div>`,
-    );
+  flow.insertAdjacentHTML("beforeend", typingRow());
+  const writing = flow.querySelector(".from-sakiko.streaming .message-content");
+  if (writing) placeCaret(writing);
+  flow.querySelectorAll<HTMLDetailsElement>("details[data-keep]").forEach((detail) => {
+    detail.ontoggle = () => (detail.open ? keptOpen.add(detail.dataset.keep!) : keptOpen.delete(detail.dataset.keep!));
+  });
   flow.querySelectorAll<HTMLButtonElement>("[data-starter]").forEach(
     (button) =>
       (button.onclick = () => {
@@ -1026,7 +1351,8 @@ function renderMessageList() {
             taskStates[id] = result.tasks;
             if (checked) {
               portraitCue("proud_smug");
-              toast("做得很好。……勉强夸你一句。", true);
+              stickerPop("praise", "勉强夸你一句");
+              toast(taskPraise(settings), true);
             }
             renderMessageList();
           } catch (error) {
@@ -1041,6 +1367,7 @@ function renderMessageList() {
       (b.onclick = async () => {
         try {
           await addPin(conversation!.id, "message", b.dataset.pinMessage!);
+          playEffect("bookmark");
           heartBurst(b);
           portraitCue("proud_smug");
           await refreshPins();
@@ -1049,6 +1376,29 @@ function renderMessageList() {
         }
       }),
   );
+  // Keep the selection alive when the heart is pressed, so a chosen sentence can be kept.
+  list.querySelectorAll<HTMLButtonElement>("[data-heart]").forEach((b) => (b.onpointerdown = (event) => event.preventDefault()));
+  list.querySelectorAll<HTMLButtonElement>("[data-heart]").forEach((b) => (b.onclick = () => {
+    const id = b.dataset.heart!, lines = heartedLines();
+    const message = messages.find((m) => m.id === id);
+    if (!message || !conversation) return;
+    // A sentence you selected inside her letter is the one kept; otherwise the letter's opening.
+    const selection = window.getSelection();
+    const article = document.querySelector(`[data-message="${CSS.escape(id)}"]`);
+    const chosen = selection && !selection.isCollapsed && article?.contains(selection.anchorNode) ? selection.toString().replace(/\s+/g, " ").trim() : "";
+    if (lines[id] && !chosen) delete lines[id];
+    else lines[id] = { conversation: conversation.id, title: conversation.title, excerpt: (chosen || previewText(message.content)).slice(0, 90), at: new Date().toISOString() };
+    selection?.removeAllRanges();
+    saveHearted(lines);
+    const added = !!lines[id];
+    renderMessageList();
+    if (added) {
+      heartBurst(document.querySelector(`[data-heart="${CSS.escape(id)}"]`), 3);
+      playEffect("bookmark");
+      const head = document.querySelector<HTMLElement>(".chat-head");
+      if (head) whisper(head, heartLine(settings));
+    }
+  }));
   list.querySelectorAll<HTMLButtonElement>("[data-copy-message]").forEach(
     (b) =>
       (b.onclick = () =>
@@ -1056,7 +1406,12 @@ function renderMessageList() {
           .writeText(
             messages.find((m) => m.id === b.dataset.copyMessage)?.content || "",
           )
-          .then(() => toast("这段话，替你收好了。"))
+          .then(() => {
+            toast("这段话，替你收好了。");
+            b.innerHTML = icon("check", 16);
+            b.classList.add("done");
+            window.setTimeout(() => { if (b.isConnected) { b.innerHTML = icon("copy", 16); b.classList.remove("done"); } }, 1400);
+          })
           .catch(report)),
   );
   list
@@ -1094,6 +1449,30 @@ function renderMessageList() {
             .catch(report)),
     );
   $("#retry-send")?.addEventListener("click", () => void retryPending());
+  // A reply that failed before any words: the letter that asked for it goes back into the draft.
+  flow.querySelectorAll<HTMLButtonElement>("[data-resend]").forEach((button) => (button.onclick = () => {
+    const index = messages.findIndex((m) => m.id === button.dataset.resend);
+    const asked = messages.slice(0, index).reverse().find((m) => m.role === "user");
+    const input = document.querySelector<HTMLTextAreaElement>("#draft");
+    if (!asked || !input) return;
+    input.value = asked.content;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  }));
+  const jump = document.querySelector<HTMLElement>("#jump-bottom");
+  if (jump) jump.innerHTML = jumpLabel();
+  if (sealNext) {
+    const sealed = flow.querySelector<HTMLElement>(".sealed-now");
+    const reply = messages.find((m) => m.id === sealNext);
+    if (reply && Array.from(reply.content).length > 900) {
+      const head = document.querySelector<HTMLElement>(".chat-head");
+      if (head) window.setTimeout(() => whisper(head, longReplyLine(settings)), 900);
+    }
+    sealNext = "";
+    if (sealed && !readLock) window.setTimeout(() => heartBurst(sealed.querySelector(".message-head .crown"), 2), 120);
+    else if (sealed && jump) jump.innerHTML = `${heart(11)}她回信了`;
+  }
   refreshSendButton();
   refreshChatStatus();
 }
@@ -1151,6 +1530,10 @@ async function send() {
     return;
   }
   playEffect("send");
+  heartBurst($("#send"));
+  composingUntil = 0;
+  readLock = false;
+  pendingState = "sending";
   pending = {
     content,
     client_id: crypto.randomUUID(),
@@ -1172,8 +1555,10 @@ async function send() {
 async function retryPending() {
   if (!conversation || !pending || loading) return;
   loading = true;
+  pendingState = "sending";
   const id = conversation.id,
     payload = pending;
+  if (document.querySelector(".queued")) renderMessageList();
   try {
     const result = await api<{ message: Message; run_id: string }>(
       `/conversations/${id}/messages`,
@@ -1193,6 +1578,8 @@ async function retryPending() {
     void loadConversations();
   } catch (error) {
     report(error);
+    pendingState = "failed";
+    if (conversation?.id === id) renderMessageList();
   } finally {
     loading = false;
   }
@@ -1205,6 +1592,8 @@ async function stop() {
   renderMessageList();
   try {
     await api(`/runs/${id}/stop`, {});
+    const head = document.querySelector<HTMLElement>(".chat-head");
+    if (head) whisper(head, settings.personality.teasing >= 60 ? "……好吧，先停在这里。" : "好，先停在这里。");
   } catch (error) {
     activeRun = id;
     stopping = false;
@@ -1245,6 +1634,8 @@ async function poll() {
           if (e.kind === "run_finished") {
             playEffect("reply");
             portraitCue("happy_achieved");
+            sealNext = String(e.payload.message_id || "");
+            markSeen(id);
           }
         }
         if (e.kind === "run_failed" && e.payload.message)
@@ -1393,7 +1784,12 @@ async function startStream(id: string, version: number) {
           stopping = false;
         }
         if (unseen) {
-          if (event.kind === "run_finished") { playEffect("reply"); portraitCue("happy_achieved"); }
+          if (event.kind === "run_finished") {
+            playEffect("reply");
+            portraitCue("happy_achieved");
+            sealNext = String(event.payload.message_id || "");
+            markSeen(id);
+          }
           const messageId = String(event.payload.message_id || "");
           let message = messages.find((m) => m.id === messageId);
           if (event.kind === "reply_delta" && !stopping) {
@@ -1477,6 +1873,7 @@ function pairing() {
       pair(data.token, data.device);
       dialog.close();
       await bootstrap();
+      toast("接上了。欢迎回来。", true);
     } catch (error) {
       $("#pair-error").textContent =
         error instanceof Error ? error.message : "没有连上琴房。";
@@ -1492,6 +1889,7 @@ function pairing() {
       connected = true;
       dialog.close();
       await bootstrap();
+      toast("接上了。欢迎回来。", true);
     } catch (error) {
       pair(old.token, old.device);
       $("#pair-error").textContent =
@@ -1530,9 +1928,11 @@ function conversationSettings(c: Conversation, inChat = false) {
         { title: data.get("title"), group: data.get("group") },
         "PATCH",
       );
+      const renamed = c.title !== String(data.get("title")), moved = c.group !== String(data.get("group"));
       c.title = String(data.get("title"));
       c.group = String(data.get("group"));
       dialog.close();
+      if (renamed || moved) toast(renamed ? `嗯，它现在叫「${c.title}」了。` : `放进「${c.group}」那一册了。`);
       const title = document.querySelector("#rename-chat");
       if (title && conversation?.id === c.id) title.textContent = c.title;
       await loadConversations();
@@ -1550,6 +1950,7 @@ async function fork(messageId: string) {
     );
     conversations.unshift(c);
     await openConversation(c.id);
+    toast("从这里另起一页。原来那一页，我也好好留着。");
   } catch (error) {
     report(error);
   }
@@ -1596,11 +1997,35 @@ async function loadMemories() {
     memories = await cached(cacheKey("memories"), []);
     if (credentials().token) report(error);
   }
+  memoriesLoaded = true;
   if (page === "memory") renderMemory(true);
 }
 function renderMemory(entering = false) {
   $("#view").innerHTML =
-    `<section class="page memory-page">${pageHead("记忆", "她记得的，关于你的小事。", `<button class="text-button" id="add-memory">${icon("plus", 18)}记下一件事</button>`, "Little things about you")}${memories.length ? `<ol class="memory-list${entering ? " entering" : ""}">${memories.map((m, i) => `<li class="memory-item"><span class="memory-no">No. ${i + 1}${heart(11)}</span><div><p>${esc(m.content)}</p><small>记于${shortDate(m.updated_at)}</small></div><div class="memory-actions"><button class="icon-button" data-edit-memory="${esc(m.id)}" aria-label="重新写这件事">${icon("edit", 17)}</button><button class="icon-button" data-delete-memory="${esc(m.id)}" aria-label="移除这件事">${icon("trash", 17)}</button></div></li>`).join("")}</ol>` : `<div class="empty">${filigree()}<h2>慢慢认识你。</h2><p>想让她记住的事，由你亲手写下。</p><button class="text-button" id="empty-memory-add">${icon("plus", 17)}写下第一件</button></div>`}</section>`;
+    `<section class="page memory-page"><div class="journal-head"><img class="journal-cover" src="/artwork/scenes-web/journal.webp" alt="">${pageHead("记忆", memories.length ? `关于你的事，我已经记下 ${memories.length} 件了。` : "她记得的，关于你的小事。", `<button class="text-button" id="add-memory">${icon("plus", 18)}记下一件事</button>`, "Little things about you")}</div>${memories.length ? `<ol class="memory-list${entering ? " entering" : ""}">${memories.map((m, i) => `<li class="memory-item${m.content === keptMemory ? " kept" : ""}"><span class="memory-no">No. ${i + 1}${heart(11)}</span><div><p>${esc(m.content)}</p><small>记于${shortDate(m.updated_at)}</small></div><div class="memory-actions"><button class="icon-button" data-edit-memory="${esc(m.id)}" aria-label="重新写这件事">${icon("edit", 17)}</button><button class="icon-button" data-delete-memory="${esc(m.id)}" aria-label="移除这件事">${icon("trash", 17)}</button></div></li>`).join("")}</ol>` : !memoriesLoaded && credentials().token ? `<div class="memory-skeleton" role="status" aria-label="正在翻开记忆"><div></div><div></div></div>` : `<div class="empty">${filigree()}<h2>慢慢认识你。</h2><p>想让她记住的事，由你亲手写下。</p><button class="text-button" id="empty-memory-add">${icon("plus", 17)}写下第一件</button></div>`}</section>`;
+  const kept = document.querySelector<HTMLElement>(".memory-item.kept");
+  if (kept) {
+    keptMemory = "";
+    kept.scrollIntoView({ block: "center", behavior: reducedMotion() ? "auto" : "smooth" });
+    window.setTimeout(() => heartBurst(kept.querySelector(".memory-no svg"), 2), 260);
+  }
+  const hearts = Object.entries(heartedLines()).sort((a, b) => b[1].at.localeCompare(a[1].at));
+  if (hearts.length) {
+    const section = document.createElement("section");
+    section.className = "hearted-section";
+    section.innerHTML = `<h2>你心动过的话</h2><p class="hearted-lede">她写给你、你悄悄喜欢的句子。</p><ol>${hearts
+      .map(([id, line]) => `<li><button data-hearted="${esc(id)}" data-letter="${esc(line.conversation)}"><span class="hearted-quote">${heart(11)}「${esc(line.excerpt)}${line.excerpt.length >= 90 ? "…" : ""}」</span><small>${esc(line.title)} · ${shortDate(line.at)}</small></button></li>`)
+      .join("")}</ol>`;
+    $("#view .memory-page").append(section);
+    section.querySelectorAll<HTMLButtonElement>("[data-hearted]").forEach((button) => (button.onclick = async () => {
+      if (!conversations.some((c) => c.id === button.dataset.letter)) await loadConversations();
+      await openConversation(button.dataset.letter!);
+      window.setTimeout(() => {
+        const target = document.querySelector<HTMLElement>(`[data-message="${CSS.escape(button.dataset.hearted!)}"]`);
+        if (target) { readLock = true; target.scrollIntoView({ block: "center", behavior: reducedMotion() ? "auto" : "smooth" }); target.classList.add("found"); }
+      }, 900);
+    }));
+  }
   const reminders = document.createElement("section");
   $("#view .memory-page").append(reminders);
   void import("./reminders").then((m) => m.mountReminders(reminders));
@@ -1636,6 +2061,8 @@ function editMemory(memory?: Memory) {
         memory ? "PATCH" : "POST",
       );
       dialog.close();
+      keptMemory = content;
+      playEffect("bookmark");
       await loadMemories();
       toast(memory ? "改好了。我会记住新的样子。" : "嗯，我记住了。", true);
     } catch (error) {
@@ -1647,13 +2074,23 @@ async function deleteMemory(id: string) {
   try {
     await api(`/memories/${id}`, undefined, "DELETE");
     await loadMemories();
-    toast("这件事先放进主机回收站了，想找回时还在。");
+    toast("嗯……先把这件事收起来了。想找回的话，主机回收站里还在。");
   } catch (error) {
     report(error);
   }
 }
+/** Day and night cross-fade instead of snapping, where the browser can paint both. */
+function fadeTheme() {
+  const start = (document as Document & { startViewTransition?: (update: () => void) => unknown }).startViewTransition;
+  if (start && !reducedMotion()) start.call(document, applyTheme);
+  else applyTheme();
+}
 async function updateSettings(changes: Partial<Settings>) {
   const old = settings;
+  if (changes.theme && changes.theme !== settings.theme) {
+    settings = { ...settings, theme: changes.theme };
+    fadeTheme();
+  }
   try {
     if (credentials().token)
       settings = await api<Settings>("/settings", changes, "PATCH");
@@ -1664,10 +2101,13 @@ async function updateSettings(changes: Partial<Settings>) {
     if (page === "hub") {
       const art = document.querySelector(".arch-image");
       if (art) art.setAttribute("aria-label", isDay() ? "午后，祥子坐在窗边" : "夜里，祥子坐在亮着灯的窗边");
+      const airs = document.querySelectorAll(".arch-air");
+      airs.forEach((air, index) => (index ? air.remove() : (air.outerHTML = archAir())));
     }
     if (page === "chat") renderMessageList();
   } catch (error) {
     settings = old;
+    applyTheme();
     report(error);
   }
 }
@@ -1680,11 +2120,12 @@ async function loadArtifacts() {
     artifacts = await cached(cacheKey("artifacts"), []);
     if (credentials().token) report(error);
   }
+  artifactsLoaded = true;
   if (page === "vault") renderVault();
 }
 function renderVault() {
   $("#view").innerHTML =
-    `<section class="page vault-page">${pageHead("珍藏", "纸页、原音和画面，都替你收着。", `<button class="text-button" id="export">${icon("download", 17)}导出</button><button class="primary" id="upload-file">${icon("plus", 17)}收进文件</button>`, "Treasures")}<div id="upload-status"></div><div class="tabs" role="tablist"><button class="tab selected" role="tab" data-type="all">全部</button><button class="tab" role="tab" data-type="image">画面</button><button class="tab" role="tab" data-type="video">影像</button><button class="tab" role="tab" data-type="audio">原音</button><button class="tab" role="tab" data-type="document">纸页</button></div><div id="artifact-grid" class="artifact-grid"></div></section>`;
+    `<section class="page vault-page">${pageHead("珍藏", artifacts.length ? `这里替你收着 ${artifacts.length} 件珍藏。` : "纸页、原音和画面，都替你收着。", `<button class="text-button" id="export">${icon("download", 17)}导出</button><button class="primary" id="upload-file">${icon("plus", 17)}收进文件</button>`, "Treasures")}<div id="upload-status"></div><div class="tabs" role="tablist"><button class="tab selected" role="tab" data-type="all">全部</button><button class="tab" role="tab" data-type="image">画面</button><button class="tab" role="tab" data-type="video">影像</button><button class="tab" role="tab" data-type="audio">原音</button><button class="tab" role="tab" data-type="document">纸页</button></div><div id="artifact-grid" class="artifact-grid"></div></section>`;
   $("#upload-file").onclick = () =>
     ($("#file-input") as HTMLInputElement).click();
   $("#export").onclick = () => void exportAll();
@@ -1726,6 +2167,8 @@ function renderArtifactGrid(type: string) {
             `<button class="artifact-card" data-open="${esc(a.id)}"><span class="artifact-visual" ${a.mime.startsWith("image/") ? `data-thumb="${esc(a.id)}"` : ""}>${artifactVisual(a)}</span><strong>${esc(a.name)}</strong><small>${bytes(a.size)} · ${esc(a.mime.split("/").at(-1))}</small></button>`,
         )
         .join("")
+    : !artifactsLoaded && credentials().token
+      ? `<div class="vault-skeleton" role="status" aria-label="正在打开珍藏">${"<span></span>".repeat(4)}</div>`
     : `<div class="empty"><h2>这里还空着。</h2><p>想留下的纸页、原音和画面，都可以交给我。</p></div>`;
   document
     .querySelectorAll<HTMLButtonElement>("[data-open]")
@@ -1881,6 +2324,9 @@ async function upload(file: File) {
         if (page === "chat" && conversation?.id === attachTo) {
           selectedAttachments = next;
           renderAttachments();
+          const chip = document.querySelector("#attachments .file-chip:last-child");
+          chip?.classList.add("just-added");
+          heartBurst(chip);
         }
       }
       if (page === "vault") renderArtifactGrid("all");
@@ -2018,10 +2464,12 @@ async function openArtifact(id: string, seconds = 0) {
   }
 }
 async function exportAll() {
+  toast("正在把回忆装进盒子里……", true);
   try {
-    if(isAndroidApp()){await saveAndroidPath('/api/export','HajiSaki-回忆档案.zip','application/zip');return;}
+    if(isAndroidApp()){await saveAndroidPath('/api/export','HajiSaki-回忆档案.zip','application/zip');toast("回忆都装好了。好好收着。", true);return;}
     const response = await request("/export");
     downloadBlob(await response.blob(), "HajiSaki-回忆档案.zip");
+    toast("回忆都装好了。好好收着。", true);
   } catch (error) {
     report(error);
   }
@@ -2159,12 +2607,12 @@ function renderHost() {
           : "把琴房的钥匙交给我吧。";
   const chevron = icon("chevronRight", 16);
   $("#view").innerHTML =
-    `<section class="page settings-page">${pageHead("设置", "", "", "Just for you")}<div class="presence-card"><img data-mood src="${art()}" alt="祥子"><div><strong><i class="${connected ? "online" : ""}"></i>${connected ? "琴房灯亮着" : "琴房的灯熄着"}</strong><p>${providerLine}</p></div><button class="text-button" id="pair-again">${connected ? "更换配对" : "连接"}</button></div><h3 class="group-title">她说话的样子</h3><div class="group">${sliders
+    `<section class="page settings-page">${pageHead("设置", "", "", "Just for you")}<div class="presence-card"><img data-mood src="${art()}" alt="祥子"><div><strong><i class="${connected ? "online" : ""}"></i>${connected ? "琴房灯亮着" : "琴房的灯熄着"}</strong><p>${providerLine}</p></div><button class="text-button" id="pair-again">${connected ? "更换配对" : "连接"}</button></div><h3 class="group-title">她说话的样子</h3><div class="group"><label class="group-row nickname-row"><span>她怎么称呼你<small>亲近的时候，她会这样叫你</small></span><input id="nickname" maxlength="24" autocomplete="off" enterkeyhint="done" placeholder="你" value="${esc(settings.nickname || "")}" aria-label="她怎么称呼你"></label>${sliders
       .map(([key, title, left, right, inverted]) => {
         const value = inverted ? 100 - personality[key] : personality[key];
         return `<label class="slider-row"><span>${title}<small data-slider-value="${key}">${value}</small></span><input type="range" min="0" max="100" value="${value}" data-personality="${key}" aria-label="${title}：从${left}到${right}"><span class="slider-ends"><span>${left}</span><span>${right}</span></span></label>`;
       })
-      .join("")}</div><h3 class="group-title">光线</h3><div class="group"><div class="group-pad"><div class="segmented" role="group" aria-label="光线">${[
+      .join("")}<figure class="voice-sample" aria-live="polite"><span class="script" aria-hidden="true">She'd say</span><blockquote id="voice-sample">${esc(voiceSample(personality, settings.nickname || ""))}</blockquote><figcaption>当你说“今天把报告写完了”</figcaption></figure></div><h3 class="group-title">光线</h3><div class="group"><div class="group-pad"><div class="segmented" role="group" aria-label="光线">${[
       ["day", "春日"],
       ["night", "月下"],
       ["auto", "随昼夜"],
@@ -2189,11 +2637,21 @@ function renderHost() {
         : "<div><dt>连接后查看实际能力</dt><dd>—</dd></div>"
     }</dl></details></section>`;
   $("#pair-again").onclick = () => pairing();
+  const cameo = document.querySelector<HTMLImageElement>(".presence-card img");
+  if (cameo) {
+    cameo.setAttribute("role", "button");
+    cameo.setAttribute("aria-label", "轻轻叫她一声");
+    cameo.onclick = () => poke(cameo, $(".presence-card"));
+  }
   $("#refresh-status").onclick = () => void refreshStatus();
   $("#reference-roots").onclick = () => void showReferenceRoots();
   $("#export-all").onclick = () => void exportAll();
-  ($("#sound-toggle") as HTMLInputElement).onchange = (e) =>
-    void updateSettings({ sound: (e.target as HTMLInputElement).checked });
+  ($("#sound-toggle") as HTMLInputElement).onchange = async (e) => {
+    const on = (e.target as HTMLInputElement).checked;
+    await updateSettings({ sound: on });
+    // Switching it on plays the little chime, so you know what you will hear.
+    if (on && settings.sound) playEffect("bookmark");
+  };
   ($("#rain-toggle") as HTMLInputElement).onchange = async (e) => {
     const input = e.target as HTMLInputElement;
     try {
@@ -2208,6 +2666,7 @@ function renderHost() {
       input.oninput = () => {
         const label = document.querySelector(`[data-slider-value="${input.dataset.personality}"]`);
         if (label) label.textContent = input.value;
+        refreshVoiceSample();
       };
       input.onchange = () =>
         void updateSettings({
@@ -2224,14 +2683,46 @@ function renderHost() {
   document.querySelectorAll<HTMLButtonElement>("[data-theme-choice]").forEach(
     (button) => (button.onclick = () => void updateSettings({ theme: button.dataset.themeChoice! })),
   );
+  const nickname = $("#nickname") as HTMLInputElement;
+  nickname.oninput = refreshVoiceSample;
+  nickname.onkeydown = (event) => { if (event.key === "Enter" && !event.isComposing) nickname.blur(); };
+  nickname.onchange = async () => {
+    const value = nickname.value.split(/\s+/).filter(Boolean).join(" ");
+    if (value === (settings.nickname || "")) return;
+    await updateSettings({ nickname: value });
+    toast(value ? `嗯……${value}。我记住了。` : "那就还是叫你“你”。", true);
+  };
   $("#disconnect")?.addEventListener("click", () => {
-    void disconnectAndroid().catch(report);
-    disconnect();
-    connected = false;
-    status = undefined;
-    connectionState();
-    renderHost();
+    const sheet = openModal(`<h2>要收起这把钥匙吗？</h2>${filigree()}<p class="dialog-lede">收起之后，这台设备就不再接回琴房。信笺和记忆都还在电脑上，重新配对就能回来。</p><div class="confirm-actions"><button class="secondary" data-keep>再想想</button><button class="primary danger-primary" data-forget>收起钥匙</button></div>`);
+    sheet.querySelector<HTMLButtonElement>("[data-keep]")!.onclick = () => sheet.close();
+    sheet.querySelector<HTMLButtonElement>("[data-forget]")!.onclick = () => {
+      sheet.close();
+      void disconnectAndroid().catch(report);
+      disconnect();
+      connected = false;
+      status = undefined;
+      connectionState();
+      renderHost();
+      toast("钥匙收好了。想回来的时候，我还在这里。");
+    };
   });
+}
+/** The sample line follows the sliders and the nickname as they move, before anything is saved. */
+function refreshVoiceSample() {
+  const target = document.querySelector("#voice-sample");
+  if (!target) return;
+  const value = (key: keyof Settings["personality"]) => {
+    const input = document.querySelector<HTMLInputElement>(`[data-personality="${key}"]`);
+    return input ? (key === "formality" ? 100 - Number(input.value) : Number(input.value)) : settings.personality[key];
+  };
+  const nickname = document.querySelector<HTMLInputElement>("#nickname")?.value.trim() ?? settings.nickname ?? "";
+  const line = voiceSample({ formality: value("formality"), detail: value("detail"), teasing: value("teasing") }, nickname);
+  if (target.textContent !== line) {
+    target.textContent = line;
+    target.classList.remove("changed");
+    void (target as HTMLElement).offsetWidth;
+    target.classList.add("changed");
+  }
 }
 async function bootstrap() {
   await initializeAndroid(pair);
@@ -2258,6 +2749,10 @@ async function bootstrap() {
   render();
   await loadConversations();
 }
+window.addEventListener("haji-say", (event) => {
+  const detail = (event as CustomEvent<{ text: string; kept?: boolean }>).detail;
+  if (detail?.text) toast(detail.text, !!detail.kept);
+});
 window.addEventListener("online", () => {
   void refreshStatus();
   void retryPending();
@@ -2281,8 +2776,40 @@ document.addEventListener("visibilitychange", () => {
 });
 setInterval(() => void poll(), 850);
 setInterval(() => {
+  if (page !== "chat" || !activeRun || document.hidden) return;
+  const row = document.querySelector<HTMLElement>(".typing");
+  const phase = currentPhase();
+  if (row && phase && phase.phase !== "writing" && row.dataset.phase !== phase.phase) {
+    row.dataset.phase = phase.phase;
+    row.querySelector(".typing-text")!.textContent = phaseLine(phase.phase, settings, letterContext());
+    refreshChatStatus();
+  }
+}, 1000);
+/** Once a night, after you have stayed up with her for a while, she asks you to go to sleep. */
+function offerNightCare() {
+  const now = new Date();
+  if (page !== "chat" || !lateNight(now.getHours()) || Date.now() - openedAt < 25 * 60000 || document.querySelector(".night-care")) return;
+  const night = new Date(now.getTime() - 12 * 3600000).toDateString();
+  try { if (localStorage.getItem(cacheKey("night-care")) === night) return; localStorage.setItem(cacheKey("night-care"), night); } catch { return; }
+  const card = document.createElement("aside");
+  card.className = "night-care";
+  card.setAttribute("role", "status");
+  card.innerHTML = `<img class="night-sticker" src="${sticker("sleep")}" alt="快去睡觉！"><span class="script" aria-hidden="true">Sweet dreams</span><p>${esc(nightCare(now, settings))}</p><div><button class="text-button" data-sleep>${icon("moon", 15)}好，这就去睡</button><button class="text-button" data-stay>再聊一会儿</button></div>`;
+  document.querySelector(".chat-head")?.after(card);
+  card.querySelector<HTMLButtonElement>("[data-sleep]")!.onclick = () => {
+    card.remove();
+    portraitCue("happy_achieved");
+    toast(settings.nickname ? `晚安，${settings.nickname}。梦里见。` : "晚安。梦里见。", true);
+  };
+  card.querySelector<HTMLButtonElement>("[data-stay]")!.onclick = () => {
+    card.remove();
+    toast(settings.personality.teasing >= 60 ? "……就十分钟。我会看着时间的。" : "那就再一会儿。我陪你。", true);
+  };
+}
+setInterval(() => {
   if (!document.hidden) {
     if (settings.theme === "auto") applyTheme();
+    offerNightCare();
     refreshPortrait();
   }
 }, 60000);

@@ -1,6 +1,6 @@
 .android-connect{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;align-items:center;overflow:auto;padding:calc(48px + env(safe-area-inset-top,0px)) 0 0;background:#fbf4f1 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='76' height='76' viewBox='0 0 76 76'%3E%3Cpath d='M19 24c-3.3-2.2-6.4-4.4-6.4-7.4 0-2 1.6-3.4 3.3-3.4 1.3 0 2.4.7 3.1 1.8.7-1.1 1.8-1.8 3.1-1.8 1.7 0 3.3 1.4 3.3 3.4 0 3-3.1 5.2-6.4 7.4z' fill='%23B8506F' fill-opacity='.06'/%3E%3C/svg%3E");color:#2e2638;font-family:"PingFang SC","HarmonyOS Sans SC","MiSans","Noto Sans SC",system-ui,sans-serif}
 .android-arch{position:relative;flex:none;width:min(100% - 64px,320px);margin:0}
-.android-bow{position:absolute;top:-27px;left:50%;z-index:2;transform:translateX(-50%);filter:drop-shadow(0 3px 4px rgba(30,20,40,.18))}
+.android-bow{position:absolute;top:-27px;left:50%;z-index:2;transform:translateX(-50%);transform-origin:50% 30%;filter:drop-shadow(0 3px 4px rgba(30,20,40,.18));animation:android-sway 7s ease-in-out infinite}
 .android-arch-frame{padding:7px;border-radius:999px 999px 28px 28px;background:#fffcfa;box-shadow:0 0 0 1px rgba(168,132,76,.42),0 24px 60px rgba(110,60,70,.14)}
 .android-arch-image{height:min(42dvh,360px);min-height:260px;border-radius:999px 999px 22px 22px;background:url('/artwork/scenes-user/day-room.png') 100% 38%/cover no-repeat;box-shadow:inset 0 0 0 1px rgba(168,132,76,.2)}
 .android-connect-card{flex:none;width:100%;max-width:420px;padding:22px 30px calc(28px + env(safe-area-inset-bottom,0px));text-align:center}
@@ -16,3 +16,13 @@
 .android-connection-error:empty{display:none}
 .android-connection-error{margin:-10px 0 16px;color:#b6405c;font-size:14px;line-height:1.7}
 .android-connect-cancel{display:block;margin:10px auto 0;padding:10px 14px;border:0;background:none;color:#6c5f75;font-size:14px}
+/* Connecting: the heart on the seal beats; once connected, a breath of welcome, then the room. */
+@keyframes android-sway{0%,100%{transform:translateX(-50%) rotate(-2deg)}50%{transform:translateX(-50%) rotate(2deg)}}
+@keyframes android-beat{0%,70%,100%{transform:scale(.8);opacity:.55}35%{transform:scale(1.12);opacity:1}}
+@keyframes android-note{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.android-connect-primary[aria-busy="true"]{opacity:.85}
+.android-connect-primary[aria-busy="true"] svg{animation:android-beat 1.1s ease-in-out infinite}
+.android-connect-primary.connected{opacity:1;background:linear-gradient(180deg,#d07390,#b8506f)}
+.android-connection-error.shown{animation:android-note .35s ease both}
+.android-connect.leaving{opacity:0;transform:scale(1.015);transition:opacity .5s ease,transform .5s ease}
+@media (prefers-reduced-motion:reduce){.android-bow,.android-connect-primary svg,.android-connection-error{animation:none!important}.android-connect.leaving{transition:none}}

@@ -5,7 +5,11 @@ export interface Conversation {
   pinned: boolean;
   archived: boolean;
   updated_at: string;
+  created_at?: string;
   preview?: string;
+  /** Who wrote the latest words in this letter, and whether she is writing right now. */
+  preview_role?: string | null;
+  writing?: boolean;
 }
 export interface Artifact {
   id: string;
@@ -45,6 +49,8 @@ export interface Settings {
   transparency: string;
   personality: { formality: number; detail: number; teasing: number };
   sound: boolean;
+  /** What she calls you when she is being sweet; empty means just “你”. */
+  nickname?: string;
 }
 export interface Model {
   id: string;

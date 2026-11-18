@@ -108,9 +108,30 @@ struct SettingsPanel: View {
                     choiceRow("透视度", values: [("伴侣纯净", "companion"), ("智能平衡", "balanced"), ("完整记录", "studio")], selection: value(\.transparency))
                 }.listRowBackground(palette.letter)
                 Section("灵魂调律") {
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("她怎么称呼你").font(.system(size: 15))
+                            Text("亲近的时候，她会这样叫你").font(.system(size: 11)).foregroundStyle(palette.secondary)
+                        }
+                        Spacer(minLength: 8)
+                        TextField("你", text: nickname).font(.theaterSerif(16)).foregroundStyle(palette.rose)
+                            .multilineTextAlignment(.trailing).textInputAutocapitalization(.never).autocorrectionDisabled()
+                            .submitLabel(.done).frame(maxWidth: 180).accessibilityLabel("她怎么称呼你")
+                    }.padding(.vertical, 6)
                     personalitySlider("端庄与温柔", lower: "卸下防备", upper: "端庄严谨", keyPath: \.formality)
                     personalitySlider("讲述分寸", lower: "克制留白", upper: "事无巨细", keyPath: \.detail)
                     personalitySlider("轻嗔浓度", lower: "坦率温和", upper: "傲娇俏皮", keyPath: \.teasing)
+                    // How she would answer at these positions, before anything is saved.
+                    let current = edited ?? model.settings
+                    let sample = CompanionMood.voiceSample(current.personality, nickname: current.nickname ?? "")
+                    VStack(alignment: .leading, spacing: 6) {
+                        ScriptLine(text: "She'd say", size: 20)
+                        Text("「" + sample + "」").font(.theaterSerif(15.5)).lineSpacing(5).foregroundStyle(palette.text)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .id(sample).transition(.opacity)
+                        Text("当你说“今天把报告写完了”").font(.system(size: 11)).foregroundStyle(palette.dim)
+                    }.padding(.vertical, 8).animation(.easeOut(duration: 0.25), value: sample)
+                        .accessibilityElement(children: .combine)
                 }.listRowBackground(palette.letter)
                 Section("声音") {
                     Toggle("琴音微仪式", isOn: Binding(get: { (edited ?? model.settings).sound }, set: { enabled in
@@ -145,6 +166,11 @@ struct SettingsPanel: View {
                 }
             }.scrollContentBackground(.hidden).tint(palette.rose).onAppear { edited = model.settings }
         }
+    }
+    private var nickname: Binding<String> {
+        Binding(get: { (edited ?? model.settings).nickname ?? "" }, set: { newValue in
+            var updated = edited ?? model.settings; updated.nickname = String(newValue.prefix(24)); edited = updated
+        })
     }
     private func value(_ keyPath: WritableKeyPath<TheaterSettings, String>) -> Binding<String> {
         Binding(get: { (edited ?? model.settings)[keyPath: keyPath] }, set: { newValue in
@@ -193,13 +219,58 @@ struct MemoryPanel: View {
     @State private var editingID: String?
     @State private var editorShown = false
     @State private var saving = false
+    /// The lines of hers you put a heart on; a tap opens that letter.
+    @ViewBuilder private var heartedSection: some View {
+        let lines = model.heartedLines.sorted { $0.value.at > $1.value.at }
+        if !lines.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("你心动过的话").font(.theaterSerif(16)).tracking(1)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(lines, id: \.key) { entry in
+                            Button {
+                                Task {
+                                    if let letter = model.conversations.first(where: { $0.id == entry.value.conversationID }) {
+                                        await model.selectConversation(letter)
+                                    }
+                                    dismiss()
+                                }
+                            } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                                        HeartShape().fill(palette.rose).frame(width: 10, height: 9)
+                                        Text("「" + entry.value.excerpt + "」").font(.theaterSerif(14)).lineSpacing(4).lineLimit(3)
+                                            .multilineTextAlignment(.leading)
+                                    }
+                                    Text(entry.value.title).font(.system(size: 11)).foregroundStyle(palette.dim).lineLimit(1)
+                                }.padding(12).frame(width: 220, alignment: .leading).letterCard(cornerRadius: 14)
+                            }.buttonStyle(.plain).accessibilityHint("打开这封信")
+                        }
+                    }.padding(.vertical, 2)
+                }
+            }.padding(.horizontal, 22).padding(.top, 14)
+        }
+    }
     private var filtered: [MemoryEntry] {
         model.memories.filter { query.isEmpty || $0.content.localizedCaseInsensitiveContains(query) }
     }
     var body: some View {
         TheaterPanel(title: "记忆星空") {
             VStack(spacing: 0) {
-                ScriptLine(text: "Little things about you", size: 26).frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 22).padding(.top, 14)
+                // Her keepsake journal: navy cover, gold roses, a ribbon marker; and a count in her voice.
+                HStack(alignment: .bottom, spacing: 16) {
+                    Image("weekly_journal_cover").resizable().scaledToFill().frame(width: 56, height: 84)
+                        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 3, bottomLeadingRadius: 3, bottomTrailingRadius: 7, topTrailingRadius: 7))
+                        .shadow(color: palette.shadow, radius: 8, x: 0, y: 5)
+                        .rotationEffect(.degrees(-4)).accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 4) {
+                        ScriptLine(text: "Little things about you", size: 26)
+                        Text(model.memories.isEmpty ? "她记得的，关于你的小事。" : "关于你的事，我已经记下 \(model.memories.count) 件了。")
+                            .font(.system(size: 13)).foregroundStyle(palette.secondary)
+                    }
+                    Spacer(minLength: 0)
+                }.padding(.horizontal, 22).padding(.top, 16)
+                heartedSection
                 HStack(spacing: 10) {
                     HStack(spacing: 8) {
                         TheaterGlyph(kind: .search).stroke(lineWidth: 1.3).frame(width: 17, height: 17).foregroundStyle(palette.dim)

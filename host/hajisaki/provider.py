@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 import time
+from datetime import datetime
 from pathlib import Path
 
 from .config import Config
@@ -14,7 +15,7 @@ from .documents import Documents
 from .acp import AcpClient, AcpError
 from .context import Context
 from .composer import COMPACTION_INSTRUCTION, tone
-from .persona import character_prompt, reply_voice
+from .persona import character_prompt, moment, reply_voice
 from .agent_tools import AgentTools, AgentGrant
 from .branches import Branches
 from .store import Store, encoded, now
@@ -190,7 +191,7 @@ class Runner:
         )[::-1]
         for message in messages:
             message["content"] = self.store.public_message(message)["content"]
-        instruction = character_prompt(settings['personality']) + (
+        instruction = character_prompt(settings['personality'], settings.get('nickname')) + self._moment(run) + (
             "\n工作与资料边界：用户在自己的客户端前，不能直接访问主机磁盘和 localhost。"
             "保留真实信息，不假装已执行工具或审阅图片。只提供可公开的简短工作概述，不输出隐私推理。"
             "视觉描述聚焦用户指定的标记或区域，不把原页的插图、箭头或排版装饰擅称用户手写。"
@@ -297,6 +298,17 @@ class Runner:
         if compacting:instruction += '\n本轮只执行以下整理要求：\n'+COMPACTION_INSTRUCTION+'\n'
         else:instruction += '\n回应时的声音：\n'+reply_voice()+'\n'
         return instruction
+
+    def _moment(self, run: dict) -> str:
+        """Local time, days together and time since the previous letter, read from this host's records."""
+        first = self.store.one("SELECT MIN(created_at) AS t FROM conversations")
+        previous = self.store.one("SELECT created_at AS t FROM messages WHERE role='user' AND id<>? ORDER BY created_at DESC LIMIT 1",
+                                  (run["user_message_id"],))
+        stamp = lambda row: datetime.fromisoformat(row["t"]) if row and row["t"] else None
+        try:
+            return moment(datetime.now().astimezone(), stamp(first), stamp(previous))
+        except ValueError:
+            return ''
 
     def _archive_compaction(self, run: dict, compaction: dict) -> dict:
         """Stream the real public transcript to CAS without temporary copies."""

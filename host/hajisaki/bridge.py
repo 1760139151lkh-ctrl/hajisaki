@@ -79,7 +79,7 @@ TOOLS = [
      "inputSchema": schema({"path": PATH}, ["path"])},
     {"name": "deliver_interactive_card_to_client", "description": 'deliver_interactive_card 面向当前已连接客户端的别名，作用与安全限制完全一致。',
      "inputSchema": schema({"path": PATH}, ["path"])},
-    {"name": "send_progress_note", "description": '向用户记录一条简短公开的工作进展（1–1000 字符）。必须用丰川祥子自己干净、自然的中文口吻直接告知现在核对到哪一步、接下来准备做什么；绝不写入私密隐藏推理、长段脚本，也不要出现工具函数名或后台流水账。',
+    {"name": "send_progress_note", "description": '向用户递一张简短公开的进展小纸条（1–1000 字符，通常一句、四十字以内就好，客户端会把它显示成她夹在信里的便笺）。必须用丰川祥子自己干净、自然的中文口吻直接告知现在核对到哪一步、接下来准备做什么；绝不写入私密隐藏推理、长段脚本，也不要出现工具函数名或后台流水账。',
      "inputSchema": schema({"text": {"type": "string", "minLength": 1, "maxLength": 1000}}, ["text"])},
 ]
 

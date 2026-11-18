@@ -158,6 +158,33 @@ small { font-size: 12px; }
 .serif { font-family: var(--font-serif); }
 
 @keyframes fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+/* Day to night: the whole room cross-fades, slowly, like a lamp being lit. */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .7s; animation-timing-function: ease; }
+.message-actions button.done { color: var(--rose); }
+.message-actions button.hearted { color: var(--rose); }
+.hearted-mark { display: inline-flex; color: var(--rose); }
+.message.found .message-content { animation: found-glow 2.2s var(--ease) both; border-radius: 12px; }
+@keyframes found-glow { 0%, 100% { box-shadow: 0 0 0 0 transparent; } 30% { box-shadow: 0 0 0 8px var(--rose-soft); background: var(--rose-soft); } }
+/* The lines of hers you put a heart on, gathered like pressed flowers. */
+.hearted-section { margin-top: 48px; }
+.hearted-section h2 { font: 500 21px/1.4 var(--font-serif); letter-spacing: 2px; }
+.hearted-lede { margin: 4px 0 12px; font-size: 13px; color: var(--muted); }
+.hearted-section ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.hearted-section button {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: var(--raised);
+  box-shadow: 0 0 0 1px var(--gold-faint);
+  text-align: left;
+}
+.hearted-section button:hover { box-shadow: 0 0 0 1px var(--rose); }
+.hearted-quote { display: flex; gap: 6px; font: 15px/1.8 var(--font-serif); color: var(--ink); }
+.hearted-quote svg { flex: none; margin-top: 7px; color: var(--rose); }
+.hearted-section small { color: var(--dim); font-size: 12px; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes beat { 0%, 70%, 100% { transform: scale(.72); opacity: .35; } 35% { transform: scale(1); opacity: 1; } }
 @keyframes sheet-up { from { transform: translateY(26px); opacity: .6; } to { transform: none; opacity: 1; } }
@@ -473,6 +500,15 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .empty .filigree { margin-bottom: 18px; }
 .empty h2 { margin-bottom: 6px; font: 500 19px/1.6 var(--font-serif); color: var(--ink); letter-spacing: 1.5px; }
 .empty .text-button { margin-top: 10px; }
+.empty-scene {
+  width: 148px;
+  height: 196px;
+  margin: 0 auto 16px;
+  border-radius: 999px 999px 18px 18px;
+  object-fit: cover;
+  object-position: 50% 30%;
+  box-shadow: 0 0 0 4px var(--raised), 0 0 0 5px var(--gold-line), var(--shadow-soft);
+}
 
 /* ==========================================================================
    Home — 她坐在拱窗边；你的信笺在下面
@@ -512,6 +548,7 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   filter: drop-shadow(0 3px 4px rgba(30, 20, 40, .18));
 }
 .arch-frame {
+  position: relative;
   padding: 7px;
   border-radius: 999px 999px 30px 30px;
   background: var(--raised);
@@ -524,6 +561,150 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   background: var(--scene) 100% 38% / cover no-repeat;
   box-shadow: inset 0 0 0 1px var(--gold-faint);
 }
+/* The window is alive: petals drift past by day, a few stars keep her company at night.
+   Tapping the window says hello; she answers in a small pearl bubble. */
+.arch-air, .arch-touch, .arch-rain { position: absolute; inset: 7px; border-radius: 999px 999px 24px 24px; }
+/* While the music room's light is out: the empty room in the rain, rain falling past the glass. */
+.arch-rain {
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: url("/artwork/scenes-web/rainy-room.webp") 64% 50% / cover no-repeat;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .9s ease, visibility 0s .9s;
+  pointer-events: none;
+}
+.arch-rain::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  background: repeating-linear-gradient(104deg, transparent 0 18px, rgba(214, 226, 255, .2) 18px 19px, transparent 19px 41px) 0 0 / 160px 160px;
+  animation: rainfall .7s linear infinite;
+}
+@keyframes rainfall { to { background-position: -36px 160px; } }
+.arch-rain span {
+  position: relative;
+  margin-bottom: 18px;
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: rgba(23, 19, 31, .55);
+  color: #f3e9e4;
+  font: 13px/1.7 var(--font-serif);
+  text-align: center;
+  letter-spacing: .5px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.home.offline .arch-rain { opacity: 1; visibility: visible; transition: opacity .9s ease; }
+.home.offline .arch-air { opacity: 0; }
+.arch-air { transition: opacity .9s ease; }
+.arch-air { overflow: hidden; pointer-events: none; }
+.arch-air.petals i, .arch-air.leaves i {
+  position: absolute;
+  top: -12px;
+  left: var(--x);
+  width: var(--w);
+  height: var(--h);
+  border-radius: 80% 0 80% 0;
+  background: linear-gradient(135deg, #fbd9e3, #e8a1b8);
+  opacity: 0;
+  animation: petal calc(12s + var(--i) * 1.4s) linear calc(var(--i) * -2.3s) infinite;
+}
+/* Autumn: a few amber leaves, matching the trees in her window. */
+.arch-air.leaves i { border-radius: 0 85% 0 85%; background: linear-gradient(135deg, #f2bb6e, #c9663a); width: calc(var(--w) + 3px); }
+/* Winter: slow snow. Summer: motes of sunlight drifting up. */
+.arch-air.snow i {
+  position: absolute;
+  top: -10px;
+  left: var(--x);
+  width: calc(var(--h) - 1px);
+  height: calc(var(--h) - 1px);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 4px rgba(255, 255, 255, .7);
+  opacity: 0;
+  animation: snowfall calc(15s + var(--i) * 1.7s) linear calc(var(--i) * -2.6s) infinite;
+}
+@keyframes snowfall {
+  0% { opacity: 0; transform: translate(0, 0); }
+  10% { opacity: .9; }
+  50% { transform: translate(-14px, 320px); }
+  90% { opacity: .8; }
+  100% { opacity: 0; transform: translate(10px, 640px); }
+}
+.arch-air.motes i {
+  position: absolute;
+  bottom: -10px;
+  left: var(--x);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff6d6;
+  box-shadow: 0 0 8px 2px rgba(255, 228, 160, .6);
+  opacity: 0;
+  animation: mote calc(9s + var(--i) * 1.3s) ease-in-out calc(var(--i) * -1.9s) infinite;
+}
+@keyframes mote {
+  0% { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: .9; }
+  50% { transform: translate(16px, -220px); }
+  80% { opacity: .7; }
+  100% { opacity: 0; transform: translate(-6px, -440px); }
+}
+@keyframes petal {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  8% { opacity: .8; }
+  30% { transform: translate(22px, 180px) rotate(120deg); }
+  60% { transform: translate(-4px, 380px) rotate(230deg); }
+  88% { opacity: .7; }
+  100% { opacity: 0; transform: translate(26px, 640px) rotate(360deg); }
+}
+.arch-air.stars i {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff3d9;
+  box-shadow: 0 0 6px 1px rgba(255, 228, 170, .65);
+  animation: twinkle calc(2.6s + var(--i) * .35s) ease-in-out calc(var(--i) * -.7s) infinite;
+}
+.arch-air.stars i:nth-child(3n) { width: 4px; height: 4px; }
+@keyframes twinkle { 0%, 100% { opacity: .15; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.15); } }
+.arch-touch { z-index: 1; cursor: pointer; }
+.arch-touch:focus-visible { outline-offset: -5px; border-radius: 999px 999px 24px 24px; }
+.whisper {
+  position: absolute;
+  z-index: 5;
+  max-width: 240px;
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 18px;
+  background: var(--raised);
+  color: var(--ink);
+  font: 14.5px/1.6 var(--font-serif);
+  letter-spacing: .5px;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 0 0 1px var(--gold-line), var(--shadow-soft);
+  pointer-events: none;
+  animation: whisper-in .38s var(--ease) both;
+}
+.whisper::after { content: ""; position: absolute; width: 11px; height: 11px; background: var(--raised); transform: rotate(45deg); }
+.whisper.leaving { animation: whisper-out .45s ease both; }
+@keyframes whisper-out { from { opacity: 1; } to { opacity: 0; transform: translateY(-4px); } }
+@keyframes whisper-in { from { opacity: 0; transform: translateY(6px) scale(.95); } to { opacity: 1; transform: none; } }
+.arch .whisper { top: 17%; left: 50%; translate: -50% 0; }
+.arch .whisper::after { left: 50%; bottom: -6px; margin-left: -5.5px; box-shadow: 1px 1px 0 var(--gold-line); }
+.chat-head .whisper { top: calc(100% + 10px); left: 40px; }
+.chat-head .whisper::after { top: -6px; left: 20px; box-shadow: -1px -1px 0 var(--gold-line); }
+.chat-avatar, .presence-card img { cursor: pointer; }
+.presence-card { position: relative; }
+.presence-card .whisper { top: -14px; left: 70px; }
+.presence-card .whisper::after { left: -5px; top: 50%; margin-top: -5.5px; box-shadow: -1px 1px 0 var(--gold-line); }
 .home-body {
   position: relative;
   max-width: 600px;
@@ -531,7 +712,9 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   padding: 26px 24px 72px;
 }
 .home-greeting { text-align: center; }
-.home-greeting .script { font-size: 30px; line-height: 1.1; }
+.home-greeting .script { display: inline-block; font-size: 30px; line-height: 1.1; animation: write-in 1.3s cubic-bezier(.45, .05, .3, 1) .15s both; }
+/* Her copperplate writes itself in, the way a pen would: greeting first, then her signature. */
+@keyframes write-in { from { clip-path: inset(-10% 100% -10% 0); } to { clip-path: inset(-10% -4% -10% 0); } }
 .home h1 {
   margin-top: 4px;
   font-family: var(--font-serif);
@@ -552,6 +735,8 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   letter-spacing: 1px;
 }
 .presence { display: inline-flex; align-items: center; gap: 6px; }
+#together:empty { display: none; }
+.together { display: inline-flex; align-items: center; gap: 4px; color: var(--rose); }
 .presence i { width: 6px; height: 6px; border-radius: 50%; background: var(--dim); }
 .presence i.online { background: var(--online); box-shadow: 0 0 0 3px rgba(110, 190, 150, .18); }
 /* Her note: pearl card with a gilded frame and a lace edge */
@@ -582,7 +767,27 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   line-height: 1.9;
   color: var(--ink);
 }
-.note-card .script { display: block; margin-top: 8px; font-size: 22px; text-align: right; }
+.note-card .script { display: block; width: fit-content; margin: 8px 0 0 auto; font-size: 22px; text-align: right; animation: write-in 1s cubic-bezier(.45, .05, .3, 1) 1s both; }
+/* The piece she would like to play for you today. */
+.today-piece { display: flex; align-items: flex-start; justify-content: center; gap: 8px; margin: 22px 8px 0; font-size: 13px; line-height: 1.8; color: var(--muted); text-align: left; }
+.today-piece svg { flex: none; margin-top: 3px; color: var(--gold); }
+.today-piece strong { font: 500 14px var(--font-serif); color: var(--ink); letter-spacing: .5px; }
+.today-piece em { display: block; font-style: normal; color: var(--dim); }
+/* Sunday: a page from her weekly journal. */
+.week-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 26px 0 0;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: radial-gradient(120% 160% at 0 0, var(--blue-soft), transparent 62%), var(--raised);
+  box-shadow: inset 0 0 0 1px var(--gold-faint), var(--shadow-soft);
+  animation: fade-up .5s var(--ease) .3s both;
+}
+.week-card img { flex: none; width: 44px; height: 66px; border-radius: 3px 6px 6px 3px; transform: rotate(-4deg); box-shadow: 0 6px 12px rgba(30, 20, 50, .2); }
+.week-card .script { display: block; font-size: 19px; line-height: 1; }
+.week-card p { margin-top: 6px; font: 14.5px/1.8 var(--font-serif); color: var(--ink); text-wrap: pretty; }
 .letter-prompt {
   display: flex;
   align-items: center;
@@ -677,6 +882,28 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   color: var(--muted);
 }
 .row-more { width: 36px; height: 36px; color: var(--dim); }
+/* A letter she answered since you last looked, and one she is writing right now */
+.unread-dot { flex: none; align-self: center; width: 7px; height: 7px; border-radius: 50%; background: var(--rose); box-shadow: 0 0 0 3px var(--rose-soft); }
+.letter-row.unread .letter-line strong { font-weight: 600; }
+.letter-row.unread .letter-text small { color: var(--ink); }
+.letter-text small.writing-line { display: flex; align-items: center; gap: 8px; color: var(--rose); font-family: var(--font-serif); letter-spacing: .5px; }
+.writing-line .typing-hearts { gap: 2px; }
+.letter-row.writing .monogram { box-shadow: 0 0 0 1px var(--rose), inset 0 0 0 3px var(--raised), inset 0 0 0 4px var(--rose-soft); }
+/* Placeholders while the first answer from the host is on its way */
+@keyframes shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+.letter-skeleton i, .memory-skeleton > div, .vault-skeleton span {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(100deg, var(--sunken) 30%, var(--hover) 50%, var(--sunken) 70%) 0 0 / 220% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+.letter-skeleton > div { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--soft-border); }
+.letter-skeleton .monogram { opacity: .6; }
+.letter-skeleton > div > span:last-child { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.letter-skeleton i { width: 42%; height: 13px; }
+.letter-skeleton i + i { width: 76%; height: 10px; }
+.letter-skeleton > div:nth-child(2) i { width: 34%; }
+.letter-skeleton > div:nth-child(3) i + i { width: 58%; }
 
 /* ==========================================================================
    Chat
@@ -795,16 +1022,21 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .message-head time, .message-meta time { font-size: 12px; color: var(--dim); }
 .message-head .state, .message-meta .state { font-size: 12px; color: var(--rose); }
 .from-sakiko .message-content { font-size: 16px; line-height: 1.85; }
-.from-sakiko.streaming .message-content > :last-child::after {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-left: 6px;
-  border-radius: 50%;
-  background: var(--rose);
-  vertical-align: middle;
-  animation: beat 1.2s ease-in-out infinite;
+/* The pen is still on the paper: a small heart at the end of the line she is writing.
+   --clock keeps every looping mark in step although the list is redrawn while she writes. */
+.ink-caret {
+  display: inline-flex;
+  margin-left: 4px;
+  vertical-align: -1px;
+  color: var(--rose);
+  animation: beat 1.2s ease-in-out var(--clock, 0s) infinite;
+}
+.unwritten { font: 14.5px/1.85 var(--font-serif); color: var(--muted); }
+.resend-letter { margin-top: 6px; }
+.message.sealed-now .message-head .avatar-sm { animation: seal-glow 1.4s var(--ease) both; }
+@keyframes seal-glow {
+  0%, 100% { box-shadow: 0 0 0 1.5px var(--raised), 0 0 0 2.5px var(--gold-faint); }
+  35% { box-shadow: 0 0 0 1.5px var(--raised), 0 0 0 3px var(--rose), 0 0 0 9px var(--rose-soft); }
 }
 .from-user { display: flex; flex-direction: column; align-items: flex-end; }
 .from-user .message-content { max-width: 84%; }
@@ -822,7 +1054,7 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .message-meta { display: flex; align-items: center; gap: 2px; margin-top: 4px; }
 .message-meta time { margin-right: 4px; }
 .message-actions { display: flex; align-items: center; gap: 2px; margin: 6px 0 0 -9px; }
-.message-actions button, .message-meta button {
+.message-actions button, .message-meta button:not(.text-button) {
   width: 34px;
   height: 34px;
   display: grid;
@@ -830,7 +1062,9 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   border-radius: 50%;
   color: var(--dim);
 }
-.message-actions button:hover, .message-meta button:hover { color: var(--rose); background: var(--rose-soft); }
+.message-actions button:hover, .message-meta button:not(.text-button):hover { color: var(--rose); background: var(--rose-soft); }
+.message-meta .text-button { min-height: 30px; padding: 0 8px; border-radius: 999px; white-space: nowrap; gap: 4px; font-size: 13px; }
+.message-meta .text-button:hover { opacity: 1; background: var(--rose-soft); }
 .message-files { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; margin-top: 10px; }
 .from-user .message-files { justify-content: flex-end; }
 .file-chip {
@@ -866,6 +1100,39 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .image-bubble small { display: block; padding: 8px 10px 4px; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
 .event-artifact { margin: 16px 0; }
 .event-artifact small { display: block; margin-bottom: 8px; font-size: 12px; color: var(--dim); }
+/* Her work notes: every step of one reply folded into a single line, opened on request. */
+.work-notes { margin: 10px 0 20px; font-size: 13px; color: var(--muted); }
+.work-notes summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-height: 34px;
+  padding: 4px 12px 4px 12px;
+  border-radius: 999px;
+  background: var(--raised);
+  box-shadow: 0 0 0 1px var(--gold-faint);
+  cursor: pointer;
+  list-style: none;
+}
+.work-notes summary::-webkit-details-marker { display: none; }
+.work-notes summary > span:not(.quill-writing) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.work-notes summary > svg:first-child, .quill-writing { color: var(--gold); }
+.work-notes summary > svg:last-child { color: var(--dim); transition: transform .2s ease; }
+.work-notes[open] summary > svg:last-child { transform: rotate(180deg); }
+.work-notes.live summary { color: var(--ink); box-shadow: 0 0 0 1px var(--gold-line); }
+.work-notes.alert summary { color: var(--rose); box-shadow: 0 0 0 1px var(--rose); }
+.work-notes.alert summary > svg:first-child { color: var(--rose); }
+.quill-writing { display: inline-grid; animation: quill 1.2s ease-in-out var(--clock, 0s) infinite; }
+@keyframes quill { 0%, 100% { transform: none; } 50% { transform: translate(2px, -1.5px) rotate(-10deg); } }
+.work-notes ol { display: flex; flex-direction: column; gap: 6px; list-style: none; margin: 10px 0 0 17px; padding: 2px 0 2px 14px; border-left: 1px solid var(--gold-faint); }
+.work-notes li { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; line-height: 1.65; }
+.work-notes li > svg { margin-top: 4px; color: var(--gold); }
+.work-notes li > span { flex: 1; min-width: 0; }
+.work-notes li.working { color: var(--ink); }
+.work-notes li.working > svg { color: var(--rose); animation: quill 1.2s ease-in-out var(--clock, 0s) infinite; }
+.work-notes li.alert, .work-notes li.alert > svg { color: var(--rose); }
+.work-notes li pre { flex-basis: 100%; margin: 4px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--sunken); font-size: 11px; white-space: pre-wrap; word-break: break-word; }
 .event-pill { margin: 12px 0; font-size: 13px; color: var(--muted); }
 .event-pill summary { display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none; }
 .event-pill summary::-webkit-details-marker { display: none; }
@@ -882,14 +1149,88 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 }
 .event-pill pre { font-size: 11px; white-space: pre-wrap; word-break: break-word; }
 .event-pill .text-button { display: flex; margin-top: 10px; }
-.narration { margin: 18px 0; font: 15px/1.9 var(--font-serif); color: var(--muted); text-align: center; }
-.queued { opacity: .65; }
-.queued .text-button { margin-top: 4px; font-size: 13px; }
+/* A short note she slips in while she works ("我先看一眼天气") — her voice, so in her serif. */
+.narration { display: flex; align-items: flex-start; gap: 8px; max-width: 90%; margin: 14px 0 18px; font: 14.5px/1.85 var(--font-serif); color: var(--muted); }
+.narration svg { flex: none; margin-top: 6px; color: var(--gold); }
+.queued .user-text { opacity: .72; }
+.queued .state.sending { display: inline-flex; align-items: center; gap: 6px; color: var(--dim); }
+.queued .state.sending svg { color: var(--rose); animation: envelope 1.6s var(--ease) infinite; }
+@keyframes envelope { 0%, 100% { transform: none; } 50% { transform: translate(2px, -3px) rotate(-8deg); } }
+.queued.failed .user-text { opacity: .9; box-shadow: inset 0 0 0 1px var(--danger); }
+.queued.failed .state { color: var(--danger); }
+/* While she reads and looks things up; once words arrive, the heart at the end of her line takes over. */
 .typing { display: flex; align-items: center; gap: 10px; margin: 0 0 24px; font-size: 13px; color: var(--rose); }
+.typing-cameo { position: relative; display: grid; }
+.typing-cameo::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid var(--rose);
+  opacity: 0;
+  animation: halo 2.4s ease-out var(--clock, 0s) infinite;
+}
+@keyframes halo { 0% { transform: scale(.9); opacity: .7; } 100% { transform: scale(1.5); opacity: 0; } }
+.typing-text { font-family: var(--font-serif); letter-spacing: .5px; }
+.typing[data-phase="long"] .typing-text { color: var(--muted); }
+.typing-sticker {
+  width: 56px;
+  height: 56px;
+  margin: -12px 0 -12px 2px;
+  filter: drop-shadow(0 3px 6px rgba(60, 30, 50, .14));
+  transform-origin: 50% 90%;
+  animation: sticker-sway 2.4s ease-in-out var(--clock, 0s) infinite;
+}
+@keyframes sticker-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+/* A sticker she sends for a moment: pops in, tilts, then goes back. */
+.sticker-pop {
+  position: fixed;
+  right: max(18px, calc(50vw - 360px));
+  bottom: calc(150px + var(--safe-bottom));
+  z-index: 250;
+  width: 132px;
+  height: 132px;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 16px rgba(60, 30, 50, .2));
+  animation: sticker-in .5s cubic-bezier(.2, 1.4, .4, 1) both;
+}
+.sticker-pop.leaving { animation: sticker-out .45s ease both; }
+@keyframes sticker-out { from { opacity: 1; transform: rotate(-4deg); } to { opacity: 0; transform: translateY(12px) scale(.9) rotate(-4deg); } }
+@keyframes sticker-in { from { opacity: 0; transform: scale(.4) rotate(-14deg); } to { opacity: 1; transform: rotate(-4deg); } }
 .typing-hearts { display: inline-flex; gap: 3px; color: var(--rose); }
-.typing-hearts svg { animation: beat 1.3s ease-in-out infinite; }
-.typing-hearts svg:nth-child(2) { animation-delay: .2s; }
-.typing-hearts svg:nth-child(3) { animation-delay: .4s; }
+.typing-hearts svg { animation: beat 1.2s ease-in-out var(--clock, 0s) infinite; }
+.typing-hearts svg:nth-child(2) { animation-delay: calc(var(--clock, 0s) + .2s); }
+.typing-hearts svg:nth-child(3) { animation-delay: calc(var(--clock, 0s) + .4s); }
+/* Past midnight, once: she asks you to go to sleep. */
+.night-care {
+  flex: none;
+  align-self: center;
+  width: calc(100% - 32px);
+  max-width: 720px;
+  margin: 12px 0 0;
+  padding: 14px 18px 8px;
+  border-radius: 18px;
+  background: radial-gradient(120% 160% at 100% 0, var(--blue-soft), transparent 62%), var(--raised);
+  box-shadow: inset 0 0 0 1px var(--gold-line), var(--shadow-soft);
+  animation: fade-up .45s var(--ease) both;
+}
+.night-care { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; }
+.night-care > * { grid-column: 2; }
+.night-care .night-sticker { grid-column: 1; grid-row: 1 / span 3; width: 72px; height: 72px; align-self: center; filter: drop-shadow(0 4px 8px rgba(60, 30, 50, .16)); }
+.night-care .script { display: block; font-size: 20px; line-height: 1; }
+.night-care p { margin-top: 6px; font: 15px/1.8 var(--font-serif); }
+.night-care div { display: flex; justify-content: flex-end; gap: 16px; }
+.chat-loading {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font: 14px var(--font-serif);
+  color: var(--muted);
+  letter-spacing: 1px;
+}
 .chat-empty {
   min-height: 100%;
   display: flex;
@@ -1014,6 +1355,8 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .13), inset 0 -3px 5px rgba(60, 10, 30, .22), 0 4px 10px rgba(140, 51, 80, .26);
 }
 .send-button:hover { filter: brightness(1.06); }
+.send-button:active { transform: scale(.9); }
+.send-button { transition: transform .16s var(--ease), box-shadow .2s ease, color .2s ease; }
 .send-button.idle { background: var(--sunken); color: var(--dim); box-shadow: none; }
 .send-button.stop { background: var(--raised); color: var(--rose); box-shadow: 0 0 0 1px var(--rose); }
 #record-status { margin-left: 4px; font-size: 12px; color: var(--rose); white-space: nowrap; }
@@ -1040,6 +1383,18 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 /* ==========================================================================
    Memory — keepsakes
    ========================================================================== */
+/* Her keepsake journal: navy cover, gold roses, a ribbon marker. */
+.journal-head { display: flex; align-items: flex-end; gap: 18px; }
+.journal-head .page-head { flex: 1; min-width: 0; }
+.journal-cover {
+  flex: none;
+  width: 64px;
+  height: 96px;
+  margin-bottom: 26px;
+  border-radius: 4px 8px 8px 4px;
+  box-shadow: 0 8px 18px rgba(30, 20, 50, .22), inset 0 0 0 1px rgba(255, 255, 255, .08);
+  transform: rotate(-4deg);
+}
 .memory-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
 .memory-item {
   position: relative;
@@ -1052,6 +1407,14 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
   box-shadow: inset 0 0 0 1px var(--gold-line), inset 0 0 0 5px var(--raised), inset 0 0 0 6px var(--gold-faint), var(--shadow-soft);
 }
 .memory-list.entering .memory-item { animation: fade-up .45s var(--ease) both; }
+.memory-item.kept { animation: memory-kept 1.8s var(--ease) both; }
+@keyframes memory-kept {
+  0% { box-shadow: inset 0 0 0 1px var(--rose), inset 0 0 0 5px var(--raised), inset 0 0 0 6px var(--rose-soft), 0 0 0 6px var(--rose-soft); }
+  100% { box-shadow: inset 0 0 0 1px var(--gold-line), inset 0 0 0 5px var(--raised), inset 0 0 0 6px var(--gold-faint), var(--shadow-soft); }
+}
+.memory-skeleton { display: flex; flex-direction: column; gap: 14px; }
+.memory-skeleton > div { height: 116px; border-radius: 20px; }
+.memory-skeleton > div + div { height: 92px; }
 .memory-no { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font: 18px/1 var(--font-script); color: var(--gold); }
 .memory-no svg { color: var(--rose); }
 .memory-item p { margin-top: 8px; font: 16px/1.85 var(--font-serif); white-space: pre-wrap; word-break: break-word; }
@@ -1095,6 +1458,8 @@ input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius
 .artifact-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 16px; }
 .artifact-card { display: flex; flex-direction: column; min-width: 0; text-align: left; }
 .artifact-grid > .empty { grid-column: 1 / -1; }
+.vault-skeleton { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 18px 14px; }
+.vault-skeleton span { aspect-ratio: 1 / 1; border-radius: 22px; }
 .artifact-visual {
   aspect-ratio: 1 / 1;
   display: grid;
@@ -1167,6 +1532,26 @@ button.group-row:hover { background: var(--hover); }
 .slider-row > span { display: flex; justify-content: space-between; font-size: 15px; }
 .slider-row > span small { font-size: 13px; color: var(--rose); }
 .slider-ends { display: flex; justify-content: space-between; font-size: 12px; color: var(--dim); }
+.nickname-row input {
+  flex: none;
+  width: 44%;
+  max-width: 190px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--sunken);
+  color: var(--rose);
+  font: 15px var(--font-serif);
+  text-align: right;
+}
+.nickname-row input:focus { background: var(--raised); }
+.voice-sample { margin: 0; padding: 16px 20px 18px; background: radial-gradient(120% 160% at 0 0, var(--rose-soft), transparent 62%); }
+.voice-sample .script { display: block; font-size: 21px; line-height: 1; }
+.voice-sample blockquote { margin: 10px 0 0; font: 15.5px/1.85 var(--font-serif); color: var(--ink); text-wrap: pretty; }
+.voice-sample blockquote::before { content: "「"; }
+.voice-sample blockquote::after { content: "」"; }
+.voice-sample blockquote.changed { animation: fade-in .35s ease; }
+.voice-sample figcaption { margin-top: 6px; font-size: 12px; color: var(--dim); }
 .details-gap { margin-top: 10px; }
 details.group > summary {
   display: flex;
@@ -1206,9 +1591,10 @@ details.group[open] > summary svg { transform: rotate(180deg); }
   display: flex;
   align-items: center;
   gap: 8px;
-  max-width: min(90vw, 520px);
-  padding: 12px 20px;
-  border-radius: 999px;
+  width: max-content;
+  max-width: min(calc(100vw - 40px), 520px);
+  padding: 11px 20px;
+  border-radius: 20px;
   background: var(--ink);
   color: var(--bg);
   font-size: 13px;
@@ -1258,6 +1644,11 @@ dialog .primary { width: 100%; }
 .sheet-list button svg { color: var(--rose); }
 .sheet-list button:hover { background: var(--rose-soft); }
 .sheet-section { margin-top: 24px; }
+.confirm-actions { display: flex; gap: 12px; margin-top: 4px; }
+.confirm-actions > * { flex: 1; min-height: 50px; }
+.danger-primary { background: linear-gradient(180deg, #c65a72, #a9445e); }
+.file-chip.just-added { animation: chip-in .5s cubic-bezier(.2, 1.4, .4, 1) both; }
+@keyframes chip-in { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: none; } }
 .sheet-section > span { display: block; margin-bottom: 10px; font-size: 13px; color: var(--muted); }
 .field-note { margin: 0 0 18px; font-size: 12px; line-height: 1.8; color: var(--dim); }
 .form-error { margin-top: 12px; font-size: 13px; line-height: 1.8; color: var(--danger); }
@@ -1278,7 +1669,7 @@ dialog .primary { width: 100%; }
   padding-top: 18px;
   border-top: 1px solid var(--gold-faint);
 }
-.reading-footer > span { margin-right: auto; font: 24px/1 var(--font-script); color: var(--gold); }
+.reading-footer > span { margin-right: auto; font: 24px/1 var(--font-script); color: var(--gold); animation: write-in 1.1s cubic-bezier(.45, .05, .3, 1) .5s both; }
 .media-preview { max-height: 65dvh; max-width: 100%; margin: auto; border-radius: 16px; object-fit: contain; }
 .media-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 20px; }
 .media-actions .primary { width: auto; }
@@ -1464,4 +1855,5 @@ dialog.model-sheet[open] { display: flex; flex-direction: column; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .arch-air { display: none; }
 }

@@ -66,7 +66,8 @@ export async function initializeAndroid(pair:(token:string,device:string)=>void,
     button.disabled=!loaded.bootstrap.origin;
     input.oninput=()=>{button.disabled=!input.value.trim() && !loaded.bootstrap.origin;};
     button.onclick=async()=>{
-      button.disabled=true;label.textContent='正在接回琴房…';
+      button.disabled=true;button.setAttribute('aria-busy','true');label.textContent='正在接回琴房…';
+      screen.querySelector('.android-connection-error')!.textContent='';
       try {
         let config=loaded.bootstrap;
         if(input.value.trim())config=JSON.parse(atob(input.value.trim().replace(/-/g,'+').replace(/_/g,'/'))) as Bootstrap;
@@ -77,8 +78,11 @@ export async function initializeAndroid(pair:(token:string,device:string)=>void,
         if(response.status!==200)throw new Error(response.data?.detail || '连接码暂时没有对上。');
         const connection:Connection={origin:config.origin,token:response.data.token,device:response.data.device};
         await native.save({connection});localStorage.setItem('haji-api-origin',connection.origin);pair(connection.token,connection.device);
-        screen.remove();resolve();
-      } catch(error) {screen.querySelector('.android-connection-error')!.textContent=error instanceof Error?error.message:'琴房暂时没有接好。';button.disabled=false;label.textContent='再接一次';}
+        // A breath of welcome before the room appears behind her.
+        button.removeAttribute('aria-busy');button.classList.add('connected');label.textContent='接上了，欢迎回来';
+        const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+        setTimeout(()=>{screen.classList.add('leaving');setTimeout(()=>{screen.remove();resolve();},still?0:520);},still?200:650);
+      } catch(error) {const note=screen.querySelector<HTMLElement>('.android-connection-error')!;note.textContent=error instanceof Error?error.message:'琴房暂时没有接好。';note.classList.remove('shown');void note.offsetWidth;note.classList.add('shown');button.removeAttribute('aria-busy');button.disabled=false;label.textContent='再接一次';}
     };
   });
 }

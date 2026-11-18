@@ -90,6 +90,7 @@ class Reminders:
     def deliver_due(self) -> int:
         current, count = datetime.now(timezone.utc), 0
         stamp = current.isoformat()
+        nickname = ' '.join(str(self.store.settings().get('nickname') or '').split())
         with self.store.connect() as db:
             rows = db.execute('SELECT * FROM reminders WHERE enabled=1 AND due_at<=? ORDER BY due_at LIMIT 100', (stamp,)).fetchall()
             for row in rows:
@@ -101,7 +102,9 @@ class Reminders:
                     count += 1
                     if row['conversation_id']:
                         message_id = uid()
-                        message = '约好的时间到了。\n\n' + row['content']
+                        # She holds up the promise you wrote, in her own words around it.
+                        message = ((nickname + '，' if nickname else '') + '约好的时间到了。\n\n> '
+                                   + row['content'].strip().replace('\n', '\n> ') + '\n\n我替你记着呢。')
                         db.execute('INSERT INTO messages VALUES(?,?,?,?,?,?,?,NULL)',
                             (message_id, row['conversation_id'], 'assistant', message, 'completed', stamp, '[]'))
                         db.execute('UPDATE conversations SET updated_at=? WHERE id=?', (stamp, row['conversation_id']))

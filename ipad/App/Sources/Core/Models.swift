@@ -35,8 +35,15 @@ struct Conversation: Identifiable, Codable, Equatable, Sendable {
     var pinned: Bool
     var archived: Bool
     var updatedAt: String
+    var createdAt: String?
     var preview: String?
-    enum CodingKeys: String, CodingKey { case id, title, group, pinned, archived, preview; case updatedAt = "updated_at" }
+    /// Who wrote the latest words, and whether she is writing back right now (newer hosts only).
+    var previewRole: String?
+    var writing: Bool?
+    enum CodingKeys: String, CodingKey {
+        case id, title, group, pinned, archived, preview, writing
+        case updatedAt = "updated_at", createdAt = "created_at", previewRole = "preview_role"
+    }
 }
 
 struct Artifact: Identifiable, Codable, Equatable, Sendable {
@@ -131,6 +138,8 @@ struct TheaterSettings: Codable, Equatable, Sendable {
     var transparency: String = "balanced"
     var personality: Personality = Personality()
     var sound: Bool = false
+    /// What she calls you in the warm moments; nil or empty means simply “你”.
+    var nickname: String?
 }
 
 enum ConnectionState: String, Codable, Sendable { case offline, connecting, connected, failed }

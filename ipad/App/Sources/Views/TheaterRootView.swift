@@ -62,6 +62,17 @@ struct TheaterRootView: View {
     @State private var afterMainActions: (() -> Void)?
     @State private var teaPreference: Bool? = nil
     @State private var moodMoment: String?
+    /// Days since your last letter when this session began, for "好久不见" (counted once).
+    @State private var awayDays: Int?
+    /// Taps on her portrait in a row, and the line she answers with.
+    @State private var pokes = 0
+    @State private var pokeLine: String?
+    @State private var pokeTask: Task<Void, Never>?
+    /// Where the last tap landed: her small portrait in the top bar, or the window on the stage.
+    @State private var pokedStage = false
+    /// While you are writing to her, the header says she is waiting.
+    @State private var composing = false
+    @State private var composingTask: Task<Void, Never>?
 
     private var palette: TheaterPalette {
         TheaterPalette(isDark: model.settings.theme == "night" || (model.settings.theme == "auto" && systemScheme == .dark))
@@ -84,7 +95,7 @@ struct TheaterRootView: View {
                     Rectangle().fill(palette.line).frame(width: 0.5)
                 }
                 VStack(spacing: 0) {
-                    topBar
+                    topBar.zIndex(2)
                     TheaterRule()
                     ConversationStage(model: model,
                                       onOpenConnection: { sheet = .connection },
@@ -101,6 +112,8 @@ struct TheaterRootView: View {
                                       onPreview: { pencil.showPreview($0) },
                                       portrait: mood)
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .overlay(alignment: .bottom) { keepsake }
+                    .animation(.spring(response: 0.42, dampingFraction: 0.86), value: model.keepsakeLine)
                 if geometry.size.width >= 1024 && showInspector {
                     Rectangle().fill(palette.line).frame(width: 0.5)
                     inspector.frame(width: min(540, geometry.size.width * (inspectorMode == .portrait ? 0.32 : 0.38)))
@@ -119,6 +132,19 @@ struct TheaterRootView: View {
         .preferredColorScheme(preferredScheme)
         .onChange(of: model.draft) { old, new in
             if old != new && !new.isEmpty { teaPreference = nil }
+            composingTask?.cancel()
+            composing = !new.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            if composing {
+                composingTask = Task { try? await Task.sleep(nanoseconds: 4_000_000_000); if !Task.isCancelled { composing = false } }
+            }
+        }
+        .onChange(of: model.connection) { old, new in
+            if old == .failed && new == .connected { model.say("……灯亮了。欢迎回来。") }
+        }
+        .onChange(of: model.conversations) { _, list in
+            guard awayDays == nil, model.isConnected, !list.isEmpty else { return }
+            let latest = list.compactMap { hostDate($0.updatedAt) }.max() ?? .now
+            awayDays = Int(Date().timeIntervalSince(latest) / 86_400)
         }
         .task(id: model.searchText) {
             do { try await Task.sleep(for: .milliseconds(250)); await model.search() } catch { }
@@ -232,13 +258,20 @@ struct TheaterRootView: View {
     private var topBar: some View {
         HStack(spacing: 6) {
             GlyphButton(label: showSidebar && isWide ? "收起名录" : "打开名录", glyph: .sidebar, active: showSidebar && isWide) { toggleSidebar() }
-            CameoPortrait(image: mood, size: 34, online: (isWide && showSidebar) ? nil : model.isConnected).padding(.horizontal, 4)
+            Button { pokedStage = false; poke() } label: {
+                CameoPortrait(image: mood, size: 34, online: (isWide && showSidebar) ? nil : model.isConnected)
+                    .overlay(alignment: .top) { if pokeLine != nil { SealBurst().id(pokes) } }
+            }.buttonStyle(.plain).padding(.horizontal, 4).accessibilityLabel("轻轻叫她一声")
+                .overlay(alignment: .topLeading) { if !pokedStage { pokeBubble.offset(x: 6, y: 44) } }
             VStack(alignment: .leading, spacing: 2) {
                 Text(model.selectedConversation?.title ?? "哈基祥").font(.theaterSerif(17)).tracking(0.5).lineLimit(1)
                 HStack(spacing: 5) {
                     if model.isGenerating {
                         HeartMark(size: 8)
-                        Text("正在写回信…")
+                        Text(replyStatus)
+                    } else if composing && model.isConnected && model.selectedConversation != nil {
+                        TheaterGlyph(kind: .quill).stroke(lineWidth: 1.1).frame(width: 11, height: 11)
+                        Text(CompanionMood.composingLine(model.settings))
                     } else if model.selectedConversation != nil {
                         Text(model.isConnected ? "祥子 · 在你身边" : "琴房的灯暂时熄了 · 草稿会替你留着")
                     } else {
@@ -297,13 +330,21 @@ struct TheaterRootView: View {
             }.padding(.leading, 20).padding(.trailing, 8).padding(.top, 16).padding(.bottom, 14)
             TimelineView(.everyMinute) { context in
                 VStack(alignment: .leading, spacing: 4) {
-                    ScriptLine(text: CompanionMood.salutation(context.date), size: 26)
-                    Text(CompanionMood.greeting(context.date)).font(.theaterSerif(16)).lineSpacing(4)
+                    HandwrittenScript(text: awayDays.flatMap { CompanionMood.reunion(daysAway: $0, settings: model.settings) } != nil
+                                      ? "Welcome back" : CompanionMood.salutation(context.date, settings: model.settings), size: 26)
+                    Text(awayDays.flatMap { CompanionMood.reunion(daysAway: $0, settings: model.settings) }
+                         ?? CompanionMood.greeting(context.date, settings: model.settings)).font(.theaterSerif(16)).lineSpacing(4)
                         .foregroundStyle(palette.text).fixedSize(horizontal: false, vertical: true)
                     HStack(spacing: 7) {
                         Text(CompanionMood.dateLine(context.date))
                         Circle().fill(model.isConnected ? palette.online : palette.dim).frame(width: 5, height: 5)
                     }.font(.system(size: 12)).foregroundStyle(palette.dim).padding(.top, 4)
+                    if let days = togetherDays {
+                        HStack(spacing: 4) {
+                            HeartShape().fill(palette.rose).frame(width: 8, height: 7.4)
+                            Text("相识第 \(days) 天")
+                        }.font(.system(size: 12)).foregroundStyle(palette.rose)
+                    }
                 }
             }.padding(.horizontal, 20)
             Button { Task { await model.createConversation(); if !isWide { sheet = nil } } } label: {
@@ -334,10 +375,25 @@ struct TheaterRootView: View {
                 LazyVStack(alignment: .leading, spacing: 2) {
                     if model.conversations.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
-                            if !model.searchText.isEmpty || !model.selectedGroup.isEmpty {
-                                Text("还没找到这一段回忆。").font(.system(size: 14)).foregroundStyle(palette.secondary)
+                            if !model.searchText.isEmpty {
+                                // She went looking in the rain, under the streetlamp.
+                                Image("search_streetlamp").resizable().scaledToFill().frame(width: 112, height: 148)
+                                    .clipShape(UnevenRoundedRectangle(topLeadingRadius: 56, bottomLeadingRadius: 14, bottomTrailingRadius: 14, topTrailingRadius: 56))
+                                    .overlay(UnevenRoundedRectangle(topLeadingRadius: 56, bottomLeadingRadius: 14, bottomTrailingRadius: 14, topTrailingRadius: 56)
+                                        .stroke(palette.goldLine, lineWidth: 1))
+                                    .accessibilityLabel("雨夜里，祥子站在路灯下")
+                                Text("我在路灯下找了一圈……\n还没找到「\(model.searchText)」。").font(.theaterSerif(14)).lineSpacing(4).foregroundStyle(palette.secondary)
                                 Button("看看全部信笺") { model.searchText = ""; model.selectedGroup = ""; Task { await model.search() } }
                                     .font(.system(size: 14)).foregroundStyle(palette.rose)
+                            } else if !model.selectedGroup.isEmpty {
+                                Text("这一册还空着。写一封放进来吧？").font(.system(size: 14)).foregroundStyle(palette.secondary)
+                                Button("看看全部信笺") { model.searchText = ""; model.selectedGroup = ""; Task { await model.search() } }
+                                    .font(.system(size: 14)).foregroundStyle(palette.rose)
+                            } else if !model.isReadyForNavigation {
+                                HStack(spacing: 8) {
+                                    TypingHearts()
+                                    Text("正在取回信笺…").font(.theaterSerif(14)).foregroundStyle(palette.secondary)
+                                }
                             } else {
                                 Text("第一封信，从今天开始。").font(.theaterSerif(15)).foregroundStyle(palette.text)
                                 Text("想到什么，就写给她吧。").font(.system(size: 13)).foregroundStyle(palette.secondary)
@@ -379,19 +435,31 @@ struct TheaterRootView: View {
     }
     private func conversationRow(_ conversation: Conversation) -> some View {
         let selected = model.selectedConversationID == conversation.id
+        let writing = conversation.writing == true || (selected && model.isGenerating)
+        let unread = model.isUnread(conversation)
         return Button {
             Task { await model.selectConversation(conversation); if !isWide { sheet = nil } }
         } label: {
             HStack(alignment: .top, spacing: 11) {
                 MonogramRoundel(title: conversation.title, pinned: conversation.pinned, size: 40)
+                    .overlay(Circle().strokeBorder(palette.rose, lineWidth: 1).opacity(writing ? 1 : 0))
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(alignment: .center, spacing: 6) {
-                        Text(conversation.title).font(.theaterSerif(15)).lineLimit(1)
+                        Text(conversation.title).font(.theaterSerif(15)).fontWeight(unread ? .semibold : .regular).lineLimit(1)
                         Spacer(minLength: 4)
+                        if unread {
+                            Circle().fill(palette.rose).frame(width: 7, height: 7)
+                                .background(Circle().fill(palette.rose.opacity(0.14)).frame(width: 13, height: 13))
+                        }
                         Text(letterDate(conversation.updatedAt)).font(.system(size: 11)).foregroundStyle(palette.dim)
                     }
-                    if let preview = conversation.preview, !preview.isEmpty {
-                        Text(readablePreview(preview)).font(.system(size: 12)).foregroundStyle(palette.secondary).lineLimit(2).multilineTextAlignment(.leading)
+                    if writing {
+                        HStack(spacing: 7) {
+                            TypingHearts()
+                            Text("正在给你写回信…").font(.theaterSerif(12.5)).foregroundStyle(palette.rose)
+                        }
+                    } else if let preview = conversation.preview, !preview.isEmpty {
+                        Text(readablePreview(preview)).font(.system(size: 12)).foregroundStyle(unread ? palette.text : palette.secondary).lineLimit(2).multilineTextAlignment(.leading)
                     }
                 }.padding(.top, 2)
             }.frame(maxWidth: .infinity, alignment: .leading).padding(.horizontal, 10).padding(.vertical, 10)
@@ -399,6 +467,7 @@ struct TheaterRootView: View {
                 .contentShape(Rectangle())
         }.buttonStyle(.plain)
             .accessibilityAddTraits(selected ? .isSelected : [])
+            .accessibilityValue(writing ? "她正在写回信" : unread ? "有新的回信" : "")
             .contextMenu {
                 Button("重新命名") { beginRename(conversation) }.disabled(!model.isConnected)
                 Button(conversation.pinned ? "不再置顶" : "放在心上（置顶）") { Task { await model.togglePin(conversation) } }
@@ -540,12 +609,12 @@ struct TheaterRootView: View {
                 : teaPreference == true ? .tea
                 : !model.draft.isEmpty ? .reading
                 : teaPreference == nil && late ? .tea : .idle
-            let stage = LivingStageView(isNight: palette.isDark, posture: posture, closeUp: closeUp,
-                                       isPresented: ((isWide && showInspector) || sheet == .inspector) && (sheet == nil || sheet == .inspector))
+            let visible = ((isWide && showInspector) || sheet == .inspector) && (sheet == nil || sheet == .inspector)
+            let stage = LivingStageView(isNight: palette.isDark, posture: posture, closeUp: closeUp, isPresented: visible)
             if closeUp { stage }
             else {
                 VStack(spacing: 0) {
-                    stage.frame(maxWidth: .infinity, maxHeight: .infinity)
+                    stageWindow(stage, visible: visible)
                     VStack(alignment: .leading, spacing: 6) {
                         ScriptLine(text: "Sakiko", size: 24)
                         Text(stageCaption(posture: posture, late: late))
@@ -565,7 +634,89 @@ struct TheaterRootView: View {
         }
     }
 
+    /// Her window on the stage: the season drifting past, the rainy room while the light is out,
+    /// and a tap says hello.
+    private func stageWindow(_ stage: LivingStageView, visible: Bool) -> some View {
+        stage.frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay { SeasonalAir(isNight: palette.isDark, animate: visible) }
+            .overlay { if model.connection == .failed { RainyRoom(animate: visible).transition(.opacity) } }
+            .animation(.easeInOut(duration: 0.9), value: model.connection == .failed)
+            .overlay(alignment: .top) { if pokedStage { pokeBubble.padding(.top, 24) } }
+            .contentShape(Rectangle())
+            .onTapGesture { pokedStage = true; poke() }
+            .accessibilityAddTraits(.isButton).accessibilityHint("轻轻叫她一声")
+    }
+
+    /// "相识第 N 天", counted from the first letter on this host.
+    private var togetherDays: Int? {
+        model.conversations.compactMap { $0.createdAt.flatMap(hostDate) }.min().map { CompanionMood.daysTogether(since: $0) }
+    }
+    /// She answers when you tap her portrait; tap often enough and she gets flustered.
+    private func poke() {
+        pokes += 1
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) { pokeLine = CompanionMood.pokeLine(pokes, settings: model.settings) }
+        moodMoment = pokes >= 5 ? (model.settings.personality.teasing >= 60 ? "tsundere_chide" : "happy_achieved") : "proud_smug"
+        pokeTask?.cancel()
+        pokeTask = Task {
+            try? await Task.sleep(nanoseconds: 2_600_000_000)
+            guard !Task.isCancelled else { return }
+            withAnimation(.easeOut(duration: 0.3)) { pokeLine = nil }
+            moodMoment = nil
+            try? await Task.sleep(nanoseconds: 5_400_000_000)
+            if !Task.isCancelled { pokes = 0 }
+        }
+    }
+    @ViewBuilder private var pokeBubble: some View {
+        if let line = pokeLine {
+            HStack(spacing: 7) {
+                HeartShape().fill(palette.rose).frame(width: 10, height: 9)
+                Text(line).font(.theaterSerif(14)).foregroundStyle(palette.text).fixedSize()
+            }.padding(.horizontal, 14).frame(minHeight: 36)
+                .background(palette.raised, in: Capsule())
+                .overlay(Capsule().strokeBorder(palette.goldLine, lineWidth: 0.8))
+                .shadow(color: palette.shadow, radius: 8, x: 0, y: 3)
+                .transition(.opacity.combined(with: .scale(scale: 0.94, anchor: .topLeading)))
+                .allowsHitTesting(false)
+                .accessibilityElement(children: .combine)
+        }
+    }
+
+    /// Her short reply when something is kept: a pearl capsule that rises, then leaves.
+    @ViewBuilder private var keepsake: some View {
+        if let line = model.keepsakeLine {
+            HStack(spacing: 8) {
+                if let sticker = model.keepsakeSticker {
+                    Image(sticker).resizable().scaledToFit().frame(width: 58, height: 58)
+                        .rotationEffect(.degrees(-4)).padding(.vertical, -10).accessibilityHidden(true)
+                } else {
+                    HeartShape().fill(palette.rose).frame(width: 12, height: 11)
+                }
+                Text(line).font(.theaterSerif(14)).foregroundStyle(palette.text)
+            }.padding(.horizontal, 18).frame(minHeight: 40)
+                .background(palette.raised, in: Capsule())
+                .overlay(Capsule().strokeBorder(palette.goldLine, lineWidth: 0.8))
+                .shadow(color: palette.shadow, radius: 10, x: 0, y: 4)
+                .padding(.bottom, 132)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .allowsHitTesting(false)
+                .accessibilityElement(children: .combine)
+        }
+    }
+
+    /// The header follows the reply on its way: reading your letter, looking things up, then writing.
+    private var replyStatus: String {
+        if let reply = model.messages.last(where: { !$0.isUser }), !reply.content.isEmpty,
+           ["running", "streaming"].contains(reply.status) { return "正在写回信…" }
+        let step = model.events.last { $0.runID == model.activeRunID && $0.layer == "L2" && $0.kind == "tool" }
+        let state = (step?.payload["state"]?.stringValue ?? "").lowercased()
+        if step != nil, state.range(of: "done|complete|success|finish|block|fail|error|denied|permission|cancel", options: .regularExpression) == nil {
+            return "在查资料…"
+        }
+        return "在读你的信…"
+    }
+
     private func stageCaption(posture: StagePosture, late: Bool) -> String {
+        if model.connection == .failed { return "灯熄着。接回琴房，她就会回到窗边。" }
         if posture == .tea { return late ? "夜深了，先松一松肩膀。" : "茶还温着，慢慢喝。" }
         if model.isGenerating { return "她在想，怎么回你才好。" }
         if posture == .reading { return "你写，她在旁边看着呢。" }

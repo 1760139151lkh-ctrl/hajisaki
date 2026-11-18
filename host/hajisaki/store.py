@@ -24,7 +24,7 @@ def encoded(value: Any) -> str:
 
 DEFAULT_SETTINGS = {
     "theme": "auto", "transparency": "balanced", "sound": False,
-    "personality": {"formality": 65, "detail": 50, "teasing": 25},
+    "personality": {"formality": 65, "detail": 50, "teasing": 25}, "nickname": "",
 }
 
 
