@@ -303,3 +303,18 @@ export function emptyHeading(date = new Date()): string {
   const part = dayPart(date.getHours());
   return part === "morning" ? "早上的第一封信，是写给我的吗？" : part === "evening" ? "今天发生了什么，都告诉我吧。" : part === "night" || part === "dawn" ? "夜里的话，我都听。" : "这一刻，只听你说。";
 }
+
+/** Her first word of the day, the first time you open the room that day. */
+export function firstVisitLine(settings: Settings, date = new Date(), upLateLastNight = false): string {
+  const voice = voiceOf(settings);
+  const part = dayPart(date.getHours());
+  if (part === "morning" && upLateLastNight)
+    return voice.teasing ? "昨晚那么晚才睡……今天不许硬撑。" : "昨晚睡得太晚了。今天慢一点也没关系。";
+  switch (part) {
+    case "morning": return voice.teasing ? "……早。头发还乱着吧？" : voice.sweet ? named("早安，{nick}。昨晚梦到我了吗？", voice) : "早安。昨晚睡得好吗？";
+    case "noon": return voice.teasing ? "终于想起我了？……午安。" : "午安。今天也来见我了呢。";
+    case "afternoon": return voice.sweet ? "你来了。红茶刚泡好，给你留了一杯。" : "来得正好，红茶刚泡好。";
+    case "evening": return voice.teasing ? "现在才来……算了，今天辛苦了。" : voice.sweet ? "你回来了。今天也辛苦了。" : "你来了。今天辛苦了。";
+    default: return voice.teasing ? "这么晚还不睡……真拿你没办法。" : "这么晚还来见我……陪你一会儿。";
+  }
+}

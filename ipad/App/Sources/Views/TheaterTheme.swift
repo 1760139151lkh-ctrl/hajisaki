@@ -969,6 +969,21 @@ enum CompanionMood {
         default: return "这一刻，只听你说。"
         }
     }
+    /// Her first word of the day, the first time you open the room that day.
+    static func firstVisitLine(_ settings: TheaterSettings, date: Date = .now, upLateLastNight: Bool = false) -> String {
+        let voice = voice(settings)
+        let part = dayPart(date)
+        if part == .morning && upLateLastNight {
+            return voice.teasing ? "昨晚那么晚才睡……今天不许硬撑。" : "昨晚睡得太晚了。今天慢一点也没关系。"
+        }
+        switch part {
+        case .morning: return voice.teasing ? "……早。头发还乱着吧？" : voice.sweet ? named("早安，{nick}。昨晚梦到我了吗？", voice) : "早安。昨晚睡得好吗？"
+        case .noon: return voice.teasing ? "终于想起我了？……午安。" : "午安。今天也来见我了呢。"
+        case .afternoon: return voice.sweet ? "你来了。红茶刚泡好，给你留了一杯。" : "来得正好，红茶刚泡好。"
+        case .evening: return voice.teasing ? "现在才来……算了，今天辛苦了。" : voice.sweet ? "你回来了。今天也辛苦了。" : "你来了。今天辛苦了。"
+        default: return voice.teasing ? "这么晚还不睡……真拿你没办法。" : "这么晚还来见我……陪你一会儿。"
+        }
+    }
     /// When you put a heart on something she wrote.
     static func heartLine(_ settings: TheaterSettings) -> String {
         let voice = voice(settings)

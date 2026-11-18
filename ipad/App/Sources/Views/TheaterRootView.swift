@@ -138,6 +138,17 @@ struct TheaterRootView: View {
                 composingTask = Task { try? await Task.sleep(nanoseconds: 4_000_000_000); if !Task.isCancelled { composing = false } }
             }
         }
+        .task {
+            // The first time you open the room each day, she says a word.
+            try? await Task.sleep(nanoseconds: 1_600_000_000)
+            let today = Calendar.current.startOfDay(for: .now).timeIntervalSince1970
+            guard UserDefaults.standard.double(forKey: "hajisaki.greetedDay") != today else { return }
+            UserDefaults.standard.set(today, forKey: "hajisaki.greetedDay")
+            let evening = Calendar.current.dateComponents([.year, .month, .day], from: Date().addingTimeInterval(-12 * 3600))
+            let lastNight = "\(evening.year ?? 0)-\(evening.month ?? 0)-\(evening.day ?? 0)"
+            let upLate = UserDefaults.standard.string(forKey: "hajisaki.nightCare") == lastNight
+            model.say(CompanionMood.firstVisitLine(model.settings, upLateLastNight: upLate))
+        }
         .onChange(of: model.connection) { old, new in
             if old == .failed && new == .connected { model.say("……灯亮了。欢迎回来。") }
         }

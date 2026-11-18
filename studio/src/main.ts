@@ -17,7 +17,7 @@ import {
   cacheKey,
 } from "./api";
 import { markdown, enhance, escape as esc } from "./render";
-import { homeGreeting, dailyNote, dayPart, lateNight, draftPlaceholder, phaseLine, phaseStatus, voiceSample, taskPraise, daysTogether, milestoneNote, reunion, pokeLine, composingLine, nightCare, longReplyLine, heartLine, openLine, weekLine, todaysPiece, emptyHeading, type Phase, type LetterContext } from "./voice";
+import { homeGreeting, dailyNote, dayPart, lateNight, draftPlaceholder, phaseLine, phaseStatus, voiceSample, taskPraise, daysTogether, milestoneNote, reunion, pokeLine, composingLine, nightCare, longReplyLine, heartLine, openLine, weekLine, todaysPiece, emptyHeading, firstVisitLine, type Phase, type LetterContext } from "./voice";
 import type {
   Conversation,
   Message,
@@ -673,6 +673,7 @@ async function loadConversations() {
     awayDays = latest === undefined ? 0 : Math.floor((Date.now() - latest) / 86400000);
   }
   if (page === "hub") refreshHubWords();
+  if (firstAnswer && page === "hub") greetFirstVisit();
   // The host names a new letter after its first line; the open letter takes the name as it arrives.
   const named = page === "chat" && conversation ? conversations.find((c) => c.id === conversation!.id) : undefined;
   if (named && conversation && named.title !== conversation.title) {
@@ -697,6 +698,21 @@ async function loadConversations() {
     if (document.querySelector(".home")) refreshHubLatest();
     else renderHub();
   }
+}
+/** The first time you open the room each day, she says a word from the window. */
+function greetFirstVisit() {
+  const today = new Date().toDateString();
+  let upLate = false;
+  try {
+    if (localStorage.getItem(cacheKey("greeted")) === today) return;
+    localStorage.setItem(cacheKey("greeted"), today);
+    // The bedtime card was shown last night (its key is the evening's date).
+    upLate = localStorage.getItem(cacheKey("night-care")) === new Date(Date.now() - 86400000).toDateString();
+  } catch { return; }
+  window.setTimeout(() => {
+    const arch = document.querySelector<HTMLElement>(".arch");
+    if (page === "hub" && arch) whisper(arch, firstVisitLine(settings, new Date(), upLate));
+  }, 1400);
 }
 /** Greeting, note and day count follow the letters once they arrive, with a soft cross-fade. */
 function refreshHubWords() {
